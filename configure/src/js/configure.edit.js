@@ -93,14 +93,17 @@ define(["./configure","./connect"],function(Configure,Connection){
 				for(var i=0,circle;circle=set[i];i++){
 					configure.connect.beforeCircleMove(circle);
 					if(i === 0){
-						var els = circle.connectedArr[0].els;
-						var target = set[1];
-						for(var j=0,el;el=els[j++];){
-							if(el.id === target.id){
-								//如果第一个circle所关联的组件包含了另一端的circle 
-								//则说明连接的组件闭合形成循环 
-								//另一端就不用再获取关联组件了
-								return;
+						var connectedArr = circle.connectedArr;
+						if(connectedArr && connectedArr.length > 0){
+							var els = connectedArr[0].els;
+							var target = set[1];
+							for(var j=0,el;el=els[j++];){
+								if(el.id === target.id){
+									//如果第一个circle所关联的组件包含了另一端的circle 
+									//则说明连接的组件闭合形成循环 
+									//另一端就不用再获取关联组件了
+									return;
+								}
 							}
 						}
 					}
