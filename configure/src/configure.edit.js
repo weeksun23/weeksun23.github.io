@@ -28,7 +28,9 @@ define(["./configure","./connect"],function(Configure,Connection){
 					circle && circle.hide();
 				}
 			}
-			clickEl.length = 0;
+			if(!target){
+				clickEl.length = 0;
+			}
 		},
 		//保存数据
 		saveData : function(){
@@ -49,6 +51,47 @@ define(["./configure","./connect"],function(Configure,Connection){
 			},this);
 			obj.relation = this.connect.relation;
 			return JSON.stringify(obj);
+		},
+		removeEl : function(el){
+			var type = el.data("type");
+			var connect = this.connect;
+			//先解除连接关系
+			connect.remove(el.id);
+			if(type === 'device' || type === "line"){
+				var set = el.data("circleSet");
+				if(type === "line"){
+					var other = el.data("other");
+					other && other.remove();
+					if(this.curPath === el){
+						//取消选择
+						this.curPath = null;
+					}
+					if(set){
+						//解除连接关系
+						set.forEach(function(el){
+							this.remove(el.id);
+						},connect);
+					}
+				}else{
+					//取消选择
+					this.clearChoose(el);
+				}
+				set && set.method("remove");
+			}
+			el.remove();
+		},
+		removeElConn : function(el){
+			var connect = this.connect;
+			var type = el.data("type");
+			if(type === "line"){
+				var set = el.data("circleSet");
+				//解除连接关系
+				set.forEach(function(el){
+					this.remove(el.id);
+				},connect);
+			}else{
+				connect.remove(el.id);
+			}
 		}
 	});
 	(function(){
@@ -78,7 +121,6 @@ define(["./configure","./connect"],function(Configure,Connection){
 					newRelation[getElIdByTempId(paper,Number(i))] = newConnArr;
 				}
 			}
-			Configure.log(newRelation);
 		};
 	})();
 	/***************************静态绑定***************************/
@@ -412,9 +454,6 @@ define(["./configure","./connect"],function(Configure,Connection){
 			afterInit : function(el,attrParams){
 				el.attr(Configure.mix(attrParams._attr,attrParams.attr,true));
 				Bind.click(el,this).drag(el,this);
-				Configure.$(el).rightClick(function(){
-					alert("line");
-				});
 			},
 			double : function(path,attrParams){
 				var innerAttr = Configure.mix(attrParams._innerAttr,attrParams.attr,true);
@@ -427,9 +466,6 @@ define(["./configure","./connect"],function(Configure,Connection){
 				Bind.click(outerPath,this,path)
 				//drag outerPath时触发path的drag事件
 					.drag(outerPath,this,path);
-				Configure.$(outerPath).rightClick(function(){
-					alert("double");
-				});
 			},
 			toData : function(el,typeVal){
 				var obj = {
@@ -496,11 +532,6 @@ define(["./configure","./connect"],function(Configure,Connection){
 					.data("belong",{id : attrParams.id,position : attrParams.position})
 					.toFront();
 				Bind.drag(circle,this);
-			},
-			pathCircle : function(circle){
-				Configure.$(circle).rightClick(function(){
-					alert("circle");
-				});
 			}
 		});
 		(function(){
@@ -516,12 +547,11 @@ define(["./configure","./connect"],function(Configure,Connection){
 				}
 				return arr;
 			}
-			function common(el,attrParams,rightClickFunc){
+			function common(el,attrParams){
 				var points = attrParams.points;
 				points && el.data("connectPoints",typeof points == 'object' 
 					? points : getPoints(points));
 				Bind.drag(el,this);
-				Configure.$(el).rightClick(rightClickFunc);
 			}
 			function makeImg(configure,type,obj,core){
 				var img = core[type].call(configure,obj.typeVal,[Configure.path + type + "/" + obj.src + ".png",
@@ -532,9 +562,7 @@ define(["./configure","./connect"],function(Configure,Connection){
 			}
 			Configure.extend("connector",{
 				afterInit : function(connector,attrParams){
-					common.call(this,connector,attrParams,function(){
-						alert("connector");
-					});
+					common.call(this,connector,attrParams);
 				},
 				toData : function(el){
 					return getImgObj(el);
@@ -544,9 +572,7 @@ define(["./configure","./connect"],function(Configure,Connection){
 				}
 			}).extend("device",{
 				afterInit : function(device,attrParams){
-					common.call(this,device,attrParams,function(){
-						alert("device");
-					});
+					common.call(this,device,attrParams);
 					Bind.click(device,this);
 				},
 				toData : function(el){

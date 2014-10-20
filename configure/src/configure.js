@@ -8,19 +8,6 @@ define(['./lib/raphael/raphael-cmd-min','./configure.imglib'],function(Raphael,i
 	Configure.prototype.add = function(type,typeVal,initParams,attrParams){
 		return core[type].call(this,typeVal,initParams,attrParams);
 	};
-	Configure.version = "1.0";
-	Configure.init = function(path){
-		Configure.path = path;
-		if(!window.JSON){
-			throw new Error("缺少JSON对象");
-		}
-	};
-	Configure.imgLib = imgLib;
-	Configure.log = function(){
-		try{
-			window.console && console.log.apply(console,arguments);
-		}catch(e){}
-	};
 	Configure.prototype.loadData = function(data){
 		data = JSON.parse(data);
 		this.paper.clear();
@@ -54,35 +41,41 @@ define(['./lib/raphael/raphael-cmd-min','./configure.imglib'],function(Raphael,i
 		}
 		return a;
 	};
-	//静态绑定
-	Configure.bind = {};
-	/********************************element**************************************/
-	(function(){
-		var $func = Configure.$ = function(element){
-			return new $func.prototype.init(element);
-		};
-		mix($func.prototype,{
-			init : function(element){
-				this.el = element;
-				return this;
-			},
-			rightClick : function(func){
-				this.el.mousedown(function(e){
-					if(e.button === 2){
-						var me = this;
-						var oncontextmenu = document.oncontextmenu;
-						document.oncontextmenu = function(){
-							oncontextmenu && oncontextmenu.apply(this,arguments);
-							func.call(me,e);
-							document.oncontextmenu = oncontextmenu;
-							return false;
-						};
-					}
-				});
-				return this;
+	mix(Configure,{
+		version : 1.0,
+		init : function(path){
+			Configure.path = path;
+			if(!window.JSON){
+				throw new Error("缺少JSON对象");
 			}
-		}).init.prototype = $func.prototype;
-	})();
+		},
+		imgLib : imgLib,
+		log : function(){
+			try{
+				window.console && console.log.apply(console,arguments);
+			}catch(e){}
+		},
+		//静态绑定
+		bind : {}
+	});
+	/********************************扩展el**************************************/
+	Raphael.el.rightClick = function(func){
+		if(this.data("typeVal") === "double"){
+			//double line路径，需同时为outerpath绑定事件
+			var outerpath = this.data("other");
+			var me = this;
+			outerpath.mousedown(function(e){
+				if(e.button === 2){
+					func.call(me,e);
+				}
+			});
+		}
+		return this.mousedown(function(e){
+			if(e.button === 2){
+				func.call(this,e);
+			}
+		});
+	};
 	/********************************core**************************************/
 	var core = Configure.core = {};
 	/*

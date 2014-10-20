@@ -4,7 +4,10 @@
 	<meta charset="UTF-8">
 	<title></title>
     <link rel="stylesheet" type="text/css" href="demo.css">
-	<script src="../src/js/lib/avalon/avalon.js"></script>
+    <link rel="stylesheet" type="text/css" href="../src/lib/avalon/base.css">
+    <link rel="stylesheet" type="text/css" href="../src/lib/avalon/menu/avalon.menu.css">
+    <link rel="stylesheet" type="text/css" href="demo.css">
+	<script src="../src/lib/avalon/avalon.js"></script>
 </head>
 <body ms-controller='configure'>
     <div class='west'>
@@ -38,6 +41,7 @@
             ms-css-width='proxy.width' ms-css-height='proxy.height' 
             ms-data-type-val='proxy.typeVal'/>
     </div>
+    <div ms-widget="menu,elmenu,$elmenuOpts"></div>
     <script>
         function getItem(name){
             return {
@@ -56,7 +60,7 @@
             }
             return result;
         }
-        require(["../../configure.edit","../../data1"],function(Configure,configureData){
+        require(["../../configure.edit","../../data1","menu/avalon.menu"],function(Configure,configureData){
             Configure.init("../src/imglib/");
             var imgLib = Configure.imgLib;
             var configure = new Configure("paper");
@@ -133,13 +137,16 @@
                     var up = avalon.bind(document,"mouseup",function(upE){
                         if(upE.pageX > panelW){
                             if(type === "line"){
-                                configure.add(type,img.typeVal,[proxy.left - panelW,proxy.top]);
+                                var el = configure.add(type,img.typeVal,[proxy.left - panelW,proxy.top]);
                             }else if(type === "connector" || type === "device"){
-                                configure.add(type,img.typeVal,[Configure.path + proxy.src,
+                                var el = configure.add(type,img.typeVal,[Configure.path + proxy.src,
                                     proxy.left - panelW,proxy.top,proxy.width,proxy.height],{
                                         points : img.$points
                                     });
                             }
+                            el.rightClick(function(e){
+                                avalon.vmodels.elmenu.show(e.pageX,e.pageY,this);
+                            });
                         }
                         proxy.show = false;
                         avalon.unbind(document,"mouseup",up);
@@ -153,9 +160,22 @@
                 vm.$loadData = function(){
                     configure.loadData(configureData);
                 };
+                vm.$elmenuOpts = {
+                    isShow : false,
+                    menuList : [{
+                        text : "删除",
+                        click : function(target){
+                            configure.removeEl(target);
+                        }
+                    },{
+                        text : "解除连接关系",
+                        click : function(target){
+                            configure.removeElConn(target);
+                        }
+                    }]
+                };
             });
             avalon.scan();
-            configure.loadData(configureData);
         });
     </script>
 </body>
