@@ -145,6 +145,9 @@ define(["./configure","./connect"],function(Configure,Connection){
 			};
 		}
 		function pathDragging(configure,dx,dy){
+			if(dx === 0 && dy === 0){
+				return;
+			}
 			var arr = Raphael.parsePathString(this.sPath);
 			var posArr = [];
 			for(var i=0,ii=arr.length;i<ii;i++){
@@ -226,6 +229,9 @@ define(["./configure","./connect"],function(Configure,Connection){
 			},
 			image : function(configure){
 				this.drag(function(dx,dy){
+					if(dx === 0 && dy === 0){
+						return;
+					}
 					//不能滑出边缘
 					var bbox = this.getBBox();
 					var obj = edage(this.sX + dx,this.sY + dy,this.attr("width"),this.attr("height"),configure);
@@ -275,6 +281,9 @@ define(["./configure","./connect"],function(Configure,Connection){
 			},
 			circle : function(configure){
 				this.drag(function(dx,dy){
+					if(dx === 0 && dy === 0){
+						return;
+					}
 					configure.connect.circleMove(this,dx,dy);
 				},function(){
 					configure.connect.beforeCircleMove(this.toFront());
