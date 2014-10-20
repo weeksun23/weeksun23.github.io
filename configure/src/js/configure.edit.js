@@ -30,11 +30,58 @@ define(["./configure","./connect"],function(Configure,Connection){
 			}
 			clickEl.length = 0;
 		},
+		//保存数据
 		saveData : function(){
-			
+			var paper = this.paper;
+			var obj = {};
+			paper.forEach(function(el){
+				var type = el.data("type");
+				if(type){
+					var result = Configure.core[type].toData(el,this);
+					if(result){
+						var arr = obj[type];
+						if(!arr){
+							arr = obj[type] = [];
+						}
+						arr.push(result);
+					}
+				}
+			},this);
+			obj.relation = this.connect.relation;
+			return JSON.stringify(obj);
 		}
 	});
-
+	(function(){
+		function getElIdByTempId(paper,tempId){
+			var result;
+			paper.forEach(function(el){
+				if(tempId === el.data("tempId")){
+					result = el.id;
+					return false;
+				}
+			});
+			return result;
+		}
+		Configure.prototype.restoreRelation = function(relation){
+			var newRelation = this.connect.relation = {};
+			var paper = this.paper;
+			for(var i in relation){
+				var connArr = relation[i];
+				if(connArr && connArr.length > 0){
+					var newConnArr = [];
+					for(var j=0,jj;jj=connArr[j++];){
+						newConnArr.push({
+							id : getElIdByTempId(paper,jj.id),
+							position : jj.position
+						});
+					}
+					newRelation[getElIdByTempId(paper,Number(i))] = newConnArr;
+				}
+			}
+			Configure.log(newRelation);
+		};
+	})();
+	/***************************静态绑定***************************/
 	(function(){
 		function edage(x,y,w,h,configure){
 			var maxX = configure.paperW;
@@ -259,7 +306,7 @@ define(["./configure","./connect"],function(Configure,Connection){
 					);
 					this.data("circleSet",newSet);
 				}else{
-					set.method("show");
+					set.method("show").method("toFront");
 				}
 				configure.curPath = this;
 			}
@@ -315,111 +362,213 @@ define(["./configure","./connect"],function(Configure,Connection){
 			return Bind;
 		};
 	})();
-	Configure.extend("line",{
-		beforeInit : function(initParams,attrParams){
-			var x = initParams[0];
-			if(typeof x == 'number'){
-				var y = initParams[1];
-				return [["M",x," ",y,"L",x + attrParams._len," ",y].join("")];
-			}else{
-				return [x];
-			}
-		},
-		afterInit : function(el,attrParams){
-			el.attr(attrParams._attr);
-			Bind.click(el,this).drag(el,this);
-			Configure.$(el).rightClick(function(){
-				alert("line");
-			});
-		},
-		double : function(path,attrParams){
-			path.attr(attrParams._innerAttr);
-			var outerPath = this.paper.path(path.attr("path")).attr(attrParams._outerAttr);
-			outerPath.toFront().data("other",path);
-			path.toFront().data("other",outerPath).data("main",true);
-			//点击outerPath时触发path的点击事件
-			Bind.click(outerPath,this,path)
-			//drag outerPath时触发path的drag事件
-				.drag(outerPath,this,path);
-			Configure.$(outerPath).rightClick(function(){
-				alert("double");
-			});
-		}
-	}).extend("circle",{
-		defaultAttr : {
-			_stroke : "green",
-			_fill : "#66ff33",
-			_size : 5
-		},
-		beforeInit : function(initParams,attrParams){
-			return initParams.concat(attrParams._size);
-		},
-		init : function(x,y,r){
-			return this.circle(x,y,r);
-		},
-		afterInit : function(circle,attrParams){
-			if(attrParams.position !== undefined){
-				var cursor = ["nw-resize","ne-resize","sw-resize","se-resize"][attrParams.position];
-			}else{
-				cursor = "nw-resize";
-			}
-			circle.attr({stroke : attrParams._stroke,fill : attrParams.bgColor || attrParams._fill,cursor : cursor})
-				.data("belong",{id : attrParams.id,position : attrParams.position})
-				.toFront();
-			Bind.drag(circle,this);
-		},
-		pathCircle : function(circle){
-			Configure.$(circle).rightClick(function(){
-				alert("circle");
-			});
-		}
-	});
+	/***************************扩展***************************/
 	(function(){
-		function getPoints(str){
-			if(!str) return null;
-			var arr = [];
-			var points = JSON.parse(str);
-			for(var i=0,ii=points.length;i<ii;i++){
-				arr.push({
-					x : points[i][0],
-					y : points[i][1]
+		function getPathCircleData(configure,path){
+			var set = path.data("circleSet");
+			if(set){
+				var result = [],
+					isSave = false;
+				set.forEach(function(el){
+					//如果其中一个连线圆已被连接 则需要保存这两个连线圆数据
+					if(!isSave && configure.connect.isConnect(el.id)){
+						isSave = true;
+					}
+					result.push({
+						cx : el.attr('cx'),
+						cy : el.attr('cy'),
+						tempId : el.id,
+						position : el.data("belong").position
+					});
 				});
+				return isSave ? result : null;
 			}
-			return arr;
+			return null;
 		}
-		function common(el,attrParams,rightClickFunc){
-			var points = attrParams.points;
-			points && el.data("connectPoints",typeof points == 'object' 
-				? points : getPoints(points));
-			Bind.drag(el,this);
-			Configure.$(el).rightClick(rightClickFunc);
+		function getImgObj(el){
+			var bbox = el.getBBox();
+			//image元素
+			var src = el.attr("src");
+			src = src.substring(src.lastIndexOf("/") + 1).split(".")[0];
+			return {
+				x : bbox.x,
+				y : bbox.y,
+				width : bbox.width,
+				height : bbox.height,
+				src : src,
+				tempId : el.id
+			};
 		}
-		Configure.extend("connector",{
-			afterInit : function(connector,attrParams){
-				common.call(this,connector,attrParams,function(){
-					alert("connector");
+		Configure.extend("line",{
+			beforeInit : function(initParams,attrParams){
+				var x = initParams[0];
+				if(typeof x == 'number'){
+					var y = initParams[1];
+					return [["M",x," ",y,"L",x + attrParams._len," ",y].join("")];
+				}else{
+					return [x];
+				}
+			},
+			afterInit : function(el,attrParams){
+				el.attr(Configure.mix(attrParams._attr,attrParams.attr,true));
+				Bind.click(el,this).drag(el,this);
+				Configure.$(el).rightClick(function(){
+					alert("line");
 				});
+			},
+			double : function(path,attrParams){
+				var innerAttr = Configure.mix(attrParams._innerAttr,attrParams.attr,true);
+				var outerAttr = Configure.mix(attrParams._outerAttr,attrParams.outerAttr,true);
+				path.attr(innerAttr);
+				var outerPath = this.paper.path(path.attr("path")).attr(outerAttr);
+				outerPath.toFront().data("other",path);
+				path.toFront().data("other",outerPath).data("main",true);
+				//点击outerPath时触发path的点击事件
+				Bind.click(outerPath,this,path)
+				//drag outerPath时触发path的drag事件
+					.drag(outerPath,this,path);
+				Configure.$(outerPath).rightClick(function(){
+					alert("double");
+				});
+			},
+			toData : function(el,typeVal){
+				var obj = {
+					typeVal : typeVal,
+					path : el.attr("path").toString(),
+					attr : {
+						stroke : el.attr("stroke"),
+						"stroke-width" : el.attr("stroke-width")
+					},
+					tempId : el.id,
+					circles : getPathCircleData(this,el)
+				};
+				return obj;
+			},
+			toData_dotted : function(el,obj){
+				obj.attr["stroke-dasharray"] = el.attr("stroke-dasharray");
+			},
+			toData_double : function(el,obj){
+				var outer = el.data("other");
+				obj.attr["stroke-dasharray"] = el.attr("stroke-dasharray");
+				obj.outerAttr = {
+					stroke : outer.attr("stroke"),
+					"stroke-width" : outer.attr("stroke-width")
+				};
+			},
+			toEl : function(obj,core){
+				var el = core.line.call(this,obj.typeVal,[obj.path],{
+					attr : obj.attr,
+					outerAttr : obj.outerAttr
+				});
+				var circles = obj.circles;
+				if(circles){
+					var set = this.paper.set();
+					for(var i=0,item;item = circles[i++];){
+						var circle = core.circle.call(this,"pathCircle",[item.cx,item.cy],{
+							id : el.id,
+							position : item.position
+						});
+						set.push(circle.data("tempId",item.tempId).hide());
+					}
+					el.data("circleSet",set);
+					el.data("tempId",obj.tempId);
+				}
 			}
-		}).extend("device",{
-			afterInit : function(device,attrParams){
-				common.call(this,device,attrParams,function(){
-					alert("device");
+		}).extend("circle",{
+			defaultAttr : {
+				_stroke : "green",
+				_fill : "#66ff33",
+				_size : 5
+			},
+			beforeInit : function(initParams,attrParams){
+				return initParams.concat(attrParams._size);
+			},
+			init : function(x,y,r){
+				return this.circle(x,y,r);
+			},
+			afterInit : function(circle,attrParams){
+				if(attrParams.position !== undefined){
+					var cursor = ["nw-resize","ne-resize","sw-resize","se-resize"][attrParams.position];
+				}else{
+					cursor = "nw-resize";
+				}
+				circle.attr({stroke : attrParams._stroke,fill : attrParams.bgColor || attrParams._fill,cursor : cursor})
+					.data("belong",{id : attrParams.id,position : attrParams.position})
+					.toFront();
+				Bind.drag(circle,this);
+			},
+			pathCircle : function(circle){
+				Configure.$(circle).rightClick(function(){
+					alert("circle");
 				});
-				Bind.click(device,this);
 			}
 		});
+		(function(){
+			function getPoints(str){
+				if(!str) return null;
+				var arr = [];
+				var points = JSON.parse(str);
+				for(var i=0,ii=points.length;i<ii;i++){
+					arr.push({
+						x : points[i][0],
+						y : points[i][1]
+					});
+				}
+				return arr;
+			}
+			function common(el,attrParams,rightClickFunc){
+				var points = attrParams.points;
+				points && el.data("connectPoints",typeof points == 'object' 
+					? points : getPoints(points));
+				Bind.drag(el,this);
+				Configure.$(el).rightClick(rightClickFunc);
+			}
+			function makeImg(configure,type,obj,core){
+				var img = core[type].call(configure,obj.typeVal,[Configure.path + type + "/" + obj.src + ".png",
+                	obj.x,obj.y,obj.width,obj.height],{
+                	points : Configure.imgLib[obj.src].points
+				});
+				img.data("tempId",obj.tempId);
+			}
+			Configure.extend("connector",{
+				afterInit : function(connector,attrParams){
+					common.call(this,connector,attrParams,function(){
+						alert("connector");
+					});
+				},
+				toData : function(el){
+					return getImgObj(el);
+				},
+				toEl : function(obj,core){
+					makeImg(this,"connector",obj,core);
+				}
+			}).extend("device",{
+				afterInit : function(device,attrParams){
+					common.call(this,device,attrParams,function(){
+						alert("device");
+					});
+					Bind.click(device,this);
+				},
+				toData : function(el){
+					return getImgObj(el);
+				},
+				toEl : function(obj,core){
+					makeImg(this,"device",obj,core);
+				}
+			});
+		})();
 	})();
 	//扩展set
 	Raphael.st.method = function(method){
 		var oArg = arguments;
-		this.forEach(function(el){
+		return this.forEach(function(el){
 			el[method].apply(el,Array.prototype.splice.call(oArg,1));
 		});
 	};
 	//设置set中每一个元素的cx cy坐标
 	Raphael.st.move = function(posArr,func){
 		var i = 0;
-		this.forEach(function (el) {
+		return this.forEach(function (el) {
 			var item = posArr[i++];
 			item && el.attr({
 				cx : item[0],

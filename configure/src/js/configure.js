@@ -1,4 +1,4 @@
-define(['./lib/raphael/raphael-cmd-min'],function(Raphael){
+define(['./lib/raphael/raphael-cmd-min','./configure.imglib'],function(Raphael,imgLib){
 	"use strict";
 	/********************************paper**************************************/
 	function Configure(paperId,w,h){
@@ -9,17 +9,43 @@ define(['./lib/raphael/raphael-cmd-min'],function(Raphael){
 		return core[type].call(this,typeVal,initParams,attrParams);
 	};
 	Configure.version = "1.0";
+	Configure.init = function(path){
+		Configure.path = path;
+		if(!window.JSON){
+			throw new Error("缺少JSON对象");
+		}
+	};
+	Configure.imgLib = imgLib;
 	Configure.log = function(){
 		try{
 			window.console && console.log.apply(console,arguments);
 		}catch(e){}
 	};
+	Configure.prototype.loadData = function(data){
+		data = JSON.parse(data);
+		this.paper.clear();
+		for(var i in data){
+			if(i !== "relation"){
+				var item = data[i];
+				for(var j=0,obj;obj=item[j++];){
+					core[i].toEl(obj,this);
+				}
+			}
+		}
+		if(this.edit){
+			this.restoreRelation(data.relation);
+		}
+	};
 	/********************************帮助函数**************************************/
 	//空函数
 	var noop = Configure.noop = function(){};
 	//简单扩展
-	var mix = Configure.mix = function(a,b){
-		a = a || {};
+	var mix = Configure.mix = function(a,b,unChangeA){
+		if(unChangeA){
+			a = Configure.mix({},a);
+		}else{
+			a = a || {};
+		}
 		b = b || {};
 		for(var i in b){
 			if(b[i] !== undefined){
@@ -70,10 +96,13 @@ define(['./lib/raphael/raphael-cmd-min'],function(Raphael){
 		Paper.rect(x, y, width, height, [r])
 	[typeVal]init 根据typeVal进行初始化
 
-	exec(typeVal,initParams,attrParams)
+	Configure.core.type(typeVal,initParams,attrParams)
 	typeVal 必须为字符串
 	initParams 必须为数组
 	attrParams 必须为对象
+
+	toData
+	toData[-typeVal]
 	*/
 	var extend = Configure.extend = function(name,options){
 		var exec = core[name];
@@ -104,6 +133,23 @@ define(['./lib/raphael/raphael-cmd-min'],function(Raphael){
 				target[typeVal] && target[typeVal].call(this,el,attrParams);
 				return el;
 			};
+			exec.toData = function(el,configure){
+				var typeVal = el.data("typeVal");
+				var target = exec.options;
+				var obj = target.toData && target.toData.call(configure,el,typeVal);
+				if(!obj){
+					return false;
+				}
+				var func = target["toData_" + typeVal];
+				if(func){
+					func.call(configure,el,obj);
+				}
+				return obj;
+			};
+			exec.toEl = function(obj,configure){
+				var target = exec.options;
+				target.toEl && target.toEl.call(configure,obj,core);
+			};
 			exec.options = options;
 		}
 		return Configure;
@@ -114,6 +160,7 @@ define(['./lib/raphael/raphael-cmd-min'],function(Raphael){
 	extend("line",{
 		defaultAttr : {
 			_len : 150,
+			_dasharray : '- ',
 			_attr : {
 				"stroke" : "#888",
 				"stroke-width" : 5,
@@ -134,8 +181,10 @@ define(['./lib/raphael/raphael-cmd-min'],function(Raphael){
 		init : function(str){
 			return this.path(str);
 		},
-		dotted : function(path){
-			path.attr("stroke-dasharray","- ");
+		dotted : function(path,attrParams){
+			if(!attrParams.attr || !attrParams.attr["stroke-dasharray"]){
+				path.attr("stroke-dasharray",attrParams._dasharray);
+			}
 		}
 	});
 	(function(){
