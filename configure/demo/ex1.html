@@ -49,7 +49,8 @@
                 src : null,
                 width : null,
                 height : null,
-                typeVal : null
+                typeVal : null,
+                $points : null
             };
         }
         function getItemList(str){
@@ -126,6 +127,7 @@
                     });
                     var panelW = 200;
                     var move = avalon.bind(document,"mousemove",function(moveE){
+                        moveE.preventDefault();
                         if(moveE.pageX > panelW){
                             proxy.cursor = "move";
                         }else{
@@ -145,7 +147,7 @@
                                     });
                             }
                             el.rightClick(function(e){
-                                avalon.vmodels.elmenu.show(e.pageX,e.pageY,this);
+                                avalon.vmodels.elmenu.show(e.clientX,e.clientY,this);
                             });
                         }
                         proxy.show = false;

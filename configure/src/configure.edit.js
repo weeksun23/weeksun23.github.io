@@ -1,4 +1,4 @@
-define(["./configure","./connect"],function(Configure,Connection){
+define(["./configure","./connect",'./choose'],function(Configure,Connection,Choose){
 	"use strict";
 	var Bind = Configure.bind;
 	Configure.mix(Configure.prototype,{
@@ -11,6 +11,8 @@ define(["./configure","./connect"],function(Configure,Connection){
 			this.clickEl = [];
 			//连接类实例
 			this.connect = new Connection(this);
+			//框选类实例
+			this.choose = new Choose(this);
 		},
 		//清空所有或特定选择的元素
 		clearChoose : function(target){
@@ -511,7 +513,8 @@ define(["./configure","./connect"],function(Configure,Connection){
 					for(var i=0,item;item = circles[i++];){
 						var circle = core.circle.call(this,"pathCircle",[item.cx,item.cy],{
 							id : el.id,
-							position : item.position
+							position : item.position,
+							bgColor : "#d2d2d2"
 						});
 						set.push(circle.data("tempId",item.tempId).hide());
 					}
@@ -521,7 +524,7 @@ define(["./configure","./connect"],function(Configure,Connection){
 			}
 		}).extend("circle",{
 			defaultAttr : {
-				_stroke : "green",
+				_stroke : "#008000",
 				_fill : "#66ff33",
 				_size : 5
 			},
@@ -537,9 +540,14 @@ define(["./configure","./connect"],function(Configure,Connection){
 				}else{
 					cursor = "nw-resize";
 				}
-				circle.attr({stroke : attrParams._stroke,fill : attrParams.bgColor || attrParams._fill,cursor : cursor})
-					.data("belong",{id : attrParams.id,position : attrParams.position})
+				circle.attr({
+					stroke : attrParams._stroke,
+					"stroke-width" : 1,
+					fill : attrParams.bgColor || attrParams._fill,
+					cursor : cursor
+					}).data("belong",{id : attrParams.id,position : attrParams.position})
 					.toFront();
+
 				Bind.drag(circle,this);
 			}
 		});

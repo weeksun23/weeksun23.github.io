@@ -28,9 +28,15 @@ define(function(){
 		remove : function(id){
 			var relation = this.relation;
 			var removeCon = relation[id];
+			var paper = this.configure.paper;
 			if(removeCon){
 				for(var i=0,ii=removeCon.length;i<ii;i++){
-					var targetCon = relation[removeCon[i].id];
+					var removeConId = removeCon[i].id;
+					//解除效果
+					var el = paper.getById(removeConId);
+					var bbox = el.getBBox();
+					connectEffect(paper,bbox.x + bbox.width / 2,bbox.y + bbox.height / 2);
+					var targetCon = relation[removeConId];
 					if(targetCon){
 						for(var j=0,jj=targetCon.length;j<jj;j++){
 							if(targetCon[j].id === id){
@@ -166,7 +172,14 @@ define(function(){
 			this.beforeMove(el);
 			this.move(el,dx,dy);
 			this.afterMove(el);
-		}
+		},
+		getConnectedEls : function(el){
+			var els = [el];
+			getConnectedEls(this.configure.paper,this.relation,el,els);
+			el.connectedEls = els;
+			return els;
+		},
+		setStartXStartY : setStartXStartY
 	};
 	function setCircleTarget(paper,circle){
 		var item = circle.data("belong");
@@ -421,9 +434,9 @@ define(function(){
 	function connectEffect(paper,x,y){
 		var circle = paper.circle(x,y,8);
 		circle.attr({
-			stroke : "red",
+			stroke : "#FE1212",
 			'stroke-opacity' : 0.7,
-			fill : "red",
+			fill : "#FE1212",
 			'fill-opacity' : 0.7
 		}).animate({
 			'fill-opacity' : 0.1,
