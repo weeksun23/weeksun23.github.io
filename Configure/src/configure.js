@@ -10,7 +10,11 @@ define(['./lib/raphael/raphael-cmd-min','./configure.imglib'],function(Raphael,i
 	};
 	Configure.prototype.loadData = function(data){
 		data = JSON.parse(data);
-		this.paper.clear();
+		if(this.edit){
+			this.choose.clearEls();
+		}else{
+			this.paper.clear();
+		}
 		for(var i in data){
 			if(i !== "relation"){
 				var item = data[i];
