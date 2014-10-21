@@ -81,8 +81,8 @@ function beforeCopy(src,dst){
 		copy(src,dstItem);
 	});
 }
-beforeCopy(["../Configure/src","../Configure/demo"],
-["./Configure/src","./Configure/demo"]);
+beforeCopy(["../YuriUI/src","../YuriUI/demo"],
+["./YuriUI/src","./YuriUI/demo"]);
 /*
 //先删除文件夹
 deleteFolderRecursive("../weeksun23.github.io/Configure");
