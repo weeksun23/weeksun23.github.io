@@ -51,9 +51,11 @@
                             text : "tab"
                         },{
                             text : "tree"
+                        },{
+                            text : "accordion"
                         }]
                     }],
-                    $onSelect : function(el){
+                    onSelect : function(el){
                         if(el.id === 0) return;
                         addTab(el.text,el.text + ".html");
                     }
