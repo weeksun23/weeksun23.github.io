@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="css/icon.css">
+    <link rel="stylesheet" type="text/css" href="css/demo.css">
+    
+    <link rel="stylesheet" type="text/css" href="../src/base.css">
+    <link rel="stylesheet" type="text/css" href="../src/combobox/avalon.combobox.css">
+    <script src="../src/avalon.js"></script>
+    <style type="text/css">
+    </style>
+</head>
+<body ms-controller='demo'>
+    <p style='margin:10px;'>
+        <span ms-widget="combobox,test,$testOpts"></span>
+        <button ms-click="$loadData()">loadData</button>
+    </p>
+    <p style='margin:10px;'>
+        sdsdsdsd
+    </p>
+    <script>
+        require(["combobox/avalon.combobox"], function() {
+            var vmodel = avalon.define("demo",function(vm){
+                vm.$testOpts = {
+                    data : [{
+                        val : 0,text : "23deer"
+                    },{
+                        val : 4,text : "wefwe"
+                    },{
+                        val : 5,text : "qw3d"
+                    },{
+                        val : 3,text : "sdvs"
+                    },{
+                        val : "78",text : "sdvew"
+                    },{
+                        val : undefined,text : 'undefined'
+                    },{
+                        val : null,text : 'null'
+                    },{
+                        val : 99, text : '0'
+                    },{
+                        val : '',text : '空'
+                    }],
+                    value : 0,
+                    valueField : "val",
+                    panelHeight : 300,
+                    width : 80,
+                    multiple : false,
+                    onSelect : function(el){
+                        avalon.log("onSelect",this,el);
+                    },
+                    onUnselect : function(el){
+                        avalon.log("onUnselect",this,el);
+                    }
+                };
+                vm.$loadData = function(){
+                    avalon.vmodels.test.loadData([{
+                        val : "33",text : "dfdf"
+                    },{
+                        val : "445",text : 'dfee'
+                    }]);
+                };
+            });
+            avalon.scan();
+        });
+    </script>
+</body>
+</html>
