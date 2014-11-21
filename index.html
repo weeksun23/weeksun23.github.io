@@ -9,6 +9,9 @@
 	<title>weeksun23's home</title>
 	<link rel="stylesheet" type="text/css" href="css/responsive.css">
 	<link rel="stylesheet" type="text/css" href="css/index.css">
+	<!--[if lt IE 9]> 
+	<link rel="stylesheet" type="text/css" href="css/index_ie.css">
+	<![endif]-->
 	<script src='YuriUI/src/avalon.js'></script>
 </head>
 <body ms-controller="weeksun">
@@ -23,6 +26,7 @@
 				<li ms-class='selected:curPage==="log"'><a href='#log' data-type='log'>日志</a></li>
 				<li ms-class='selected:curPage==="about"'><a href='#about' data-type='about'>关于</a></li>
 			</ul>
+			<a class='bar-content-menu hide' href='javascript:void(0)'>菜单</a>
 		</div>
 	</div>
 	<div class='content' ms-visible="curPage==='lab'">

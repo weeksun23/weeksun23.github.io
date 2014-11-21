@@ -1,0 +1,24 @@
+.bar{
+	float: left;width:220px;height: 100%;
+	overflow: auto;text-align: center;
+	float: left;width:220px;
+	overflow: auto;text-align: center;
+	box-shadow:5px 10px 5px 5px #ccc;
+	-webkit-box-shadow:5px 10px 5px 5px #ccc;
+	-moz-box-shadow:5px 10px 5px 5px #ccc;
+}
+.bar-logop{padding:15px 0;}
+.bar-logop img{
+	width: 110px;height: 110px;
+	border-radius: 60px;
+	-webkit-border-radius: 60px;
+	-moz-border-radius: 60px;
+	border:5px solid #fff;
+}
+.bar-nav{margin-top: 15px}
+.bar-nav li{margin-bottom: 5px}
+.bar-nav a{
+	padding: 10px 0;
+	margin:0 10px;
+}
+.content{margin-left: 220px;padding:0 15px 0 25px;height: 100%;}
