@@ -25,22 +25,43 @@
 	.content{margin-left: 220px;padding:0 15px 0 25px;height: 100%;}
 }
 
-@media (max-width: 767px) and (min-width: 480px){
+@media (max-width: 767px) and (min-width: 524px){
 	.bar{
-		padding:0 20px;
+		padding:0 20px;height: 90px;
 		box-shadow:5px 8px 5px #ccc;
 	}
-	.bar-content{overflow: hidden;padding:13px 0 0 20px;}
-	.bar-logop{float: left;padding: 8px 0;}
+	.bar-logop,.bar-logop img{
+		box-sizing:border-box;
+		-moz-box-sizing:border-box;
+		-webkit-box-sizing:border-box;
+	}
+	.bar-logop{
+		float: left;padding: 8px 0;height: 100%;
+	}
 	.bar-logop img{
-		width: 80px;height: 80px;
+		height: 100%;
 		border-radius: 42px;
 		-webkit-border-radius: 42px;
 		-moz-border-radius: 42px;
 		border:3px solid #fff;
 	}
-	.bar-nav{margin-top: 10px}
-	.bar-nav li{float: left;margin-bottom: 5px}
+	.bar-content{
+		overflow: hidden;height: 100%;padding-left: 10px;
+		display:-moz-box;
+		display:-webkit-box;
+		display:box;
+		-moz-box-align:center;
+		-webkit-box-align:center;
+		-o-box-align:center;
+		box-align:center;
+	}
+	.bar-title{
+		-moz-box-flex:0;
+		-webkit-box-flex:0;
+		box-flex:0;
+	}
+	.bar-nav{margin-left: 5px;}
+	.bar-nav li{float: left;}
 	.bar-nav a{
 		padding: 10px 20px;
 		margin-right:5px;
@@ -48,34 +69,41 @@
 	.content{padding: 0 15px;}
 }
 
-@media (max-width : 479px) {
+@media (max-width : 523px) {
 	.bar{
-		padding:0 20px;
+		padding:0 20px;height: 90px;
 		box-shadow:5px 8px 5px #ccc;
 	}
-	.bar-content{
-		position: relative;height: 40px;padding:32px 0 0 0px;
+	.bar-logop,.bar-logop img,.bar-content-menu a{
+		box-sizing:border-box;
+		-moz-box-sizing:border-box;
+		-webkit-box-sizing:border-box;
 	}
-	.bar-title{
-		line-height: 40px;
-	}
-	.bar-title a{
-		margin-left: 20px;
-	}
-	.bar-logop{float: left;padding: 8px 0;}
+	.bar-logop{float: left;padding: 8px 0;height: 100%;}
 	.bar-logop img{
-		width: 80px;height: 80px;
+		height: 100%;
 		border-radius: 42px;
 		-webkit-border-radius: 42px;
 		-moz-border-radius: 42px;
 		border:3px solid #fff;
 	}
+	.bar-content{
+		position: relative;
+		height: 100%;padding-left: 10px;
+		display:-moz-box;
+		display:-webkit-box;
+		display:box;
+		-moz-box-align:center;
+		-webkit-box-align:center;
+		-o-box-align:center;
+		box-align:center;
+	}
 	.bar-nav{
-		position: absolute;right: 0;top: 100%;background-color:#454545; 
-		width: 200px;border : 1px solid #999999;margin-top: -1px;padding-top: 5px;
-		box-shadow:5px 5px 5px #999999;
-		-webkit-box-shadow:5px 5px 5px #999999;
-		-moz-box-shadow:5px 5px 5px #999999;
+		position: absolute;right: 0;top: 50%;background-color:#454545;margin-top: 19px;
+		width: 200px;border : 1px solid #999;padding-top: 5px;display: none;
+		box-shadow:5px 5px 5px #999;
+		-webkit-box-shadow:5px 5px 5px #999;
+		-moz-box-shadow:5px 5px 5px #999;
 		border-radius: 5px;
 		-webkit-border-radius: 5px;
 		-moz-border-radius: 5px;
@@ -86,13 +114,32 @@
 		margin:0 10px;
 	}
 	.bar-content-menu{
-		display: block!important;position: absolute;height: 38px;width: 50px;line-height: 40px;text-align: center;
-		font-size: 14px;right: 0;bottom: 0;background-color: #454545;
-		border:1px solid #999999;color:#fff;cursor: pointer;
+		display: block!important;
+		height: 40px;
+		-moz-box-flex:1;
+		-webkit-box-flex:1;
+		box-flex:1;
+	}
+	.bar-content-menu a{
+		display: block;padding:0 10px;
+		float: right;height: 100%;
+		font-size: 14px;background-color: #454545;
+		border:1px solid #999;cursor: pointer;
 		border-radius: 5px;
 		-webkit-border-radius: 5px;
 		-moz-border-radius: 5px;
 	}
-	.bar-content-menu:hover{color: #ccc}
+	.bar-content-menu a i{display: block;margin-top: 7px;height: 3px;width: 28px;background-color: #fff}
+	.bar-content-menu a i:first-child{margin-top: 8px;}
+	.bar-content-menu a:hover{background-color: #676767}
 	.content{padding: 0 15px;}
+}
+@media (max-width : 354px) {
+	.bar-title{display: none;}
+	.bar-nav-title{
+		display: block!important;
+	}
+	.bar-nav .bar-nav-title a{color: #99998E;font-size: 20px;}
+	.bar-nav .bar-nav-title a:hover{background-color: transparent;text-shadow:0 0 5px green;color: #99998E;}
+
 }

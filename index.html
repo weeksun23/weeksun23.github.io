@@ -21,12 +21,17 @@
 		</p>
 		<div class='bar-content'>
 			<h1 class='bar-title'><a href=''>weeksun23's home</a></h1>
-			<ul class='bar-nav clearfix' ms-click="$onClickNav()">
+			<ul class='bar-nav clearfix' ms-class='_show:isMenuShow' ms-click="$onClickNav()">
+				<li class='hide bar-nav-title'><a href=''>weeksun23's home</a></li>
 				<li ms-class='selected:curPage==="lab"'><a href='#lab' data-type='lab'>实验</a></li>
 				<li ms-class='selected:curPage==="log"'><a href='#log' data-type='log'>日志</a></li>
 				<li ms-class='selected:curPage==="about"'><a href='#about' data-type='about'>关于</a></li>
 			</ul>
-			<a class='bar-content-menu hide' href='javascript:void(0)'>菜单</a>
+			<div class='bar-content-menu hide'>
+				<a href='javascript:void(0)' ms-click='$toggleMenu()'>
+					<i></i><i></i><i></i>
+				</a>
+			</div>
 		</div>
 	</div>
 	<div class='content' ms-visible="curPage==='lab'">
@@ -73,6 +78,7 @@
 			vm.curPage = 'lab';
 			vm.windowHtml = "";
 			vm.windowSrc = "";
+			vm.isMenuShow = false;
 			vm.isWindowOpen = false;
 			vm.$onClickMask = function(){
 				vm.isWindowOpen = false;
@@ -89,8 +95,14 @@
 				var target = e.target;
 				var tagName = target.tagName;
 				if(tagName && tagName.toLowerCase() === 'a'){
-					vm.curPage = target.getAttribute("data-type");
+					var type = target.getAttribute("data-type");
+					if(type){
+						vm.curPage = type;
+					}
 				}
+			};
+			vm.$toggleMenu = function(){
+				vm.isMenuShow = !vm.isMenuShow;
 			};
 		});
 	</script>
