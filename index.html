@@ -7,6 +7,8 @@
 	<meta name="keywords" content="weeksun23,js,css,avalon,jquery" />
 	<meta name="description" content="weeksun23的个人博客" />
 	<title>weeksun23's home</title>
+	<link rel="icon" href="favicon.ico" type="image/x-icon">
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 	<link rel="stylesheet" type="text/css" href="css/responsive.css">
 	<link rel="stylesheet" type="text/css" href="css/index.css">
 	<!--[if lt IE 9]> 
@@ -21,7 +23,8 @@
 		</p>
 		<div class='bar-content'>
 			<h1 class='bar-title'><a href=''>weeksun23's home</a></h1>
-			<ul class='bar-nav clearfix' ms-class='_show:isMenuShow' ms-click="$onClickNav()">
+			<ul class='bar-nav clearfix' tabindex='-1' ms-class='_show:isMenuShow' ms-blur='$onMenuBlur()' 
+				ms-click="$onClickNav()">
 				<li class='hide bar-nav-title'><a href=''>weeksun23's home</a></li>
 				<li ms-class='selected:curPage==="lab"'><a href='#lab' data-type='lab'>实验</a></li>
 				<li ms-class='selected:curPage==="log"'><a href='#log' data-type='log'>日志</a></li>
@@ -102,7 +105,12 @@
 				}
 			};
 			vm.$toggleMenu = function(){
-				vm.isMenuShow = !vm.isMenuShow;
+				if(vm.isMenuShow = !vm.isMenuShow){
+					this.parentNode.parentNode.children[1].focus();
+				}
+			};
+			vm.$onMenuBlur = function(){
+				vm.isMenuShow = false;
 			};
 		});
 	</script>

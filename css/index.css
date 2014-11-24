@@ -55,6 +55,7 @@ a:active{color: #428BCA;}
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
 }
+.bar-nav{outline:none;}
 .bar-nav a:hover,.bar-nav .selected a{background-color: #696969;color: #fff}
 
 .content{overflow: auto;}
