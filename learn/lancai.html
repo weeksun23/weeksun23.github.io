@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'/>
+    <title></title>
+    <style type="text/css">
+        body{font-size: 16px;font-family: 微软雅黑;}
+        body,p{margin:0;padding-left:10px;}
+        p{padding: 10px 0 0 10px;}
+        .vam{vertical-align: middle;}
+        .w60{width: 60px;}
+        .w150{width: 150px}
+        .vbh{visibility: hidden;}
+        .red{color: red}
+        input{margin: 0;padding: 3px;border: 1px solid #d2d2d2}
+        input[readonly]{background-color: #e2e2e2}
+        a{text-decoration:none;}
+        a:visited{color:#0066ff;}
+        a:hover{color: #0066ff;}
+        a:active{color: #12eb87;}
+
+        .investdetail{border-collapse:collapse;text-align: center;margin-top: 10px}
+        .investdetail th{padding: 5px 30px;}
+        .investdetail th,.investdetail td{border:1px dotted #ccc;}
+
+    </style>
+    <script src='../YuriUI/src/avalon.js'></script>
+</head>
+<body ms-controller='lancai'>
+    <p>
+        <label>
+            <span class='vam'><i class='vbh'>(元)</i>平均赔率</span>
+            <input class='vam w60' readonly type='text' ms-duplex='odds' />
+        </label>
+    </p>
+    <p>
+        <label>
+            <span class='vam'>投注金额(倍)</span>
+            <input class='vam w150' type='text' ms-duplex='invest' ms-keydown='$doInvest()'/>
+            <span class='vam'>{{invest * 2}}￥</span>
+        </label>
+        <button ms-click='$clickInvest()'>确认投注</button>
+    </p>
+    <table class='investdetail'>
+        <thead>
+            <tr><th width=""><i class='vbh'>第N天</i></th><th>投注</th><th>奖金</th><th>盈亏</th><th>操作</th></tr>
+        </thead>
+        <tbody>
+            <tr ms-repeat='invests'>
+                <td>第{{$index + 1}}天</td>
+                <td>{{el.invest}}</td>
+                <td>{{el.award}}</td>
+                <td><span ms-class='red:el.isProfit'>{{el.profitLoss}}</span></td>
+                <td><a href='#' ms-click='$myRemove($index)'>delete</a></td>
+            </tr>
+        </tbody>
+    </table>
+    <script>
+        avalon.define("lancai",function(vm){
+            vm.invest = 1;
+            vm.invests = [];
+            vm.odds = 2.89;
+            function getInvestObj(sum,invest){
+                var award = (invest * vm.odds).toFixed(2);
+                return{
+                    invest : invest,
+                    award : award,
+                    isProfit : award > sum,
+                    profitLoss : (award - sum).toFixed(2)
+                };
+            }
+            function doInvest(){
+                if(!/^\d+$/.test(vm.invest)){
+                    return alert("请输入正整数");
+                }
+                var invest = +vm.invest * 2;
+                var sum = invest;
+                avalon.each(vm.invests,function(i,item){
+                    sum += item.invest;
+                });
+                vm.invests.push(getInvestObj(sum,invest));
+                vm.invest = "";
+            }
+            vm.$myRemove = function(i){
+                var invests = vm.invests;
+                invests.removeAt(i);
+                for(var j=i,len=invests.length;j<len;j++){
+                    var sum = 0;
+                    for(var k=0;k<j;k++){
+                        sum += invests[k].invest;
+                    }
+                    avalon.mix(invests[j],getInvestObj(sum,invests[j].invest));
+                }
+            };
+            vm.$doInvest = function(e){
+                if(e.keyCode === 13){
+                    doInvest();
+                }
+            };
+            vm.$clickInvest = function(){
+                doInvest();
+            }
+        });
+    </script>
+</body>
+</html>
