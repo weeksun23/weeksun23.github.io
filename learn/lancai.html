@@ -5,11 +5,11 @@
     <title></title>
     <style type="text/css">
         body{font-size: 16px;font-family: 微软雅黑;}
-        body,p{margin:0;padding-left:10px;}
+        body,p,h1{margin:0;padding: 0}
         p{padding: 10px 0 0 10px;}
         .vam{vertical-align: middle;}
         .w60{width: 60px;}
-        .w150{width: 150px}
+        .w100{width: 100px}
         .vbh{visibility: hidden;}
         .red{color: red}
         input{margin: 0;padding: 3px;border: 1px solid #d2d2d2}
@@ -18,6 +18,7 @@
         a:visited{color:#0066ff;}
         a:hover{color: #0066ff;}
         a:active{color: #12eb87;}
+        .zone{border:1px solid #d2d2d2;padding:10px;margin:10px 10px 0;background-color: #f2f2f2}
 
         .investdetail{border-collapse:collapse;text-align: center;margin-top: 10px}
         .investdetail th{padding: 5px 30px;}
@@ -26,49 +27,117 @@
     </style>
     <script src='../YuriUI/src/avalon.js'></script>
 </head>
-<body ms-controller='lancai'>
-    <p>
-        <label>
-            <span class='vam'><i class='vbh'>(元)</i>平均赔率</span>
-            <input class='vam w60' readonly type='text' ms-duplex='odds' />
-        </label>
-    </p>
-    <p>
-        <label>
-            <span class='vam'>投注金额(倍)</span>
-            <input class='vam w150' type='text' ms-duplex='invest' ms-keydown='$doInvest()'/>
-            <span class='vam'>{{invest * 2}}￥</span>
-        </label>
-        <button ms-click='$clickInvest()'>确认投注</button>
-    </p>
-    <table class='investdetail'>
-        <thead>
-            <tr><th width=""><i class='vbh'>第N天</i></th><th>投注</th><th>奖金</th><th>盈亏</th><th>操作</th></tr>
-        </thead>
-        <tbody>
-            <tr ms-repeat='invests'>
-                <td>第{{$index + 1}}天</td>
-                <td>{{el.invest}}</td>
-                <td>{{el.award}}</td>
-                <td><span ms-class='red:el.isProfit'>{{el.profitLoss}}</span></td>
-                <td><a href='#' ms-click='$myRemove($index)'>delete</a></td>
-            </tr>
-        </tbody>
-    </table>
+<body>
+    <div class='zone' ms-controller='freeInvest'>
+        <h1>自由投注</h1>
+        <p>
+            <label>
+                <span class='vam'>平均赔率</span>
+                <input class='vam w60' readonly type='text' ms-duplex='odds' />
+            </label>
+        </p>
+        <p>
+            <label>
+                <span class='vam'>投注注数</span>
+                <input class='vam w60' type='text' ms-duplex='invest' ms-keydown='$doInvest()'/>
+                <span class='vam'>{{invest * 2}}￥</span>
+            </label>
+            <button ms-click='$clickInvest()'>确认投注</button>
+        </p>
+        <table class='investdetail'>
+            <thead>
+                <tr>
+                    <th width=""><i class='vbh'>第N天</i></th>
+                    <th>注数</th>
+                    <th>金额(￥)</th>
+                    <th>奖金(￥)</th>
+                    <th>盈亏(￥)</th>
+                    <th>总投入(￥)</th>
+                    <th>收益率</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ms-repeat='invests'>
+                    <td>第{{$index + 1}}天</td>
+                    <td>{{el.invest / 2}}</td>
+                    <td>{{el.invest}}</td>
+                    <td>{{el.award}}</td>
+                    <td><span ms-class='red:el.isProfit'>{{el.profitLoss}}</span></td>
+                    <td>{{el.sum}}</td>
+                    <td>{{el.profitPercent}}%</td>
+                    <td><a href='#' ms-click='$myRemove($index)'>delete</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class='zone' ms-controller='planInvest'>
+        <h1>计划投注</h1>
+        <p>
+            <label>
+                <span class='vam'>平均赔率</span>
+                <input class='vam w60' readonly type='text' ms-duplex='odds' />
+            </label>
+        </p>
+        <p>
+            <label>
+                <span class='vam'>起始注数</span>
+                <input class='vam w60' type='text' ms-duplex='invest' ms-blur='$format("invest")'/>
+                <span class='vam'>{{invest * 2}}￥</span>
+            </label>
+            <label>
+                <span class='vam'>期望收益率(%)</span>
+                <input class='vam w60' type='text' ms-duplex='profitPercent' ms-blur='$restrictPercent()'/>
+            </label>
+            <label>
+                <span class='vam'>最大天数</span>
+                <input class='vam w60' type='text' ms-duplex='maxDay' ms-blur='$format("maxDay")'/>
+            </label>
+            <button ms-click='$analyse()'>确定</button>
+        </p>
+        <table class='investdetail'>
+            <thead>
+                <tr>
+                    <th width=""><i class='vbh'>第N天</i></th>
+                    <th>注数</th>
+                    <th>金额(￥)</th>
+                    <th>奖金(￥)</th>
+                    <th>盈亏(￥)</th>
+                    <th>总投入(￥)</th>
+                    <th>收益率</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ms-repeat='invests'>
+                    <td>第{{$index + 1}}天</td>
+                    <td>{{el.invest / 2}}</td>
+                    <td>{{el.invest}}</td>
+                    <td>{{el.award}}</td>
+                    <td><span ms-class='red:el.isProfit'>{{el.profitLoss}}</span></td>
+                    <td>{{el.sum}}</td>
+                    <td>{{el.profitPercent}}%</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     <script>
-        avalon.define("lancai",function(vm){
+        function getInvestObj(sum,invest,odds){
+            var award = (invest * odds).toFixed(2);
+            var profitLoss = (award - sum).toFixed(2);
+            return{
+                invest : invest,
+                award : award,
+                isProfit : award > sum,
+                profitLoss : profitLoss,
+                sum : sum,
+                profitPercent : (profitLoss / sum * 100).toFixed(2)
+            };
+        }
+        //自由投注
+        avalon.define("freeInvest",function(vm){
             vm.invest = 1;
             vm.invests = [];
             vm.odds = 2.89;
-            function getInvestObj(sum,invest){
-                var award = (invest * vm.odds).toFixed(2);
-                return{
-                    invest : invest,
-                    award : award,
-                    isProfit : award > sum,
-                    profitLoss : (award - sum).toFixed(2)
-                };
-            }
             function doInvest(){
                 if(!/^\d+$/.test(vm.invest)){
                     return alert("请输入正整数");
@@ -78,18 +147,19 @@
                 avalon.each(vm.invests,function(i,item){
                     sum += item.invest;
                 });
-                vm.invests.push(getInvestObj(sum,invest));
+                vm.invests.push(getInvestObj(sum,invest,vm.odds));
                 vm.invest = "";
             }
             vm.$myRemove = function(i){
                 var invests = vm.invests;
                 invests.removeAt(i);
                 for(var j=i,len=invests.length;j<len;j++){
-                    var sum = 0;
+                    var item = invest[j];
+                    var sum = item.invest;
                     for(var k=0;k<j;k++){
                         sum += invests[k].invest;
                     }
-                    avalon.mix(invests[j],getInvestObj(sum,invests[j].invest));
+                    avalon.mix(item,getInvestObj(sum,item.invest,vm.odds));
                 }
             };
             vm.$doInvest = function(e){
@@ -100,6 +170,57 @@
             vm.$clickInvest = function(){
                 doInvest();
             }
+        });
+        //计划投注
+        avalon.define("planInvest",function(vm){
+            vm.odds = 2.89;
+            vm.invest = 1;
+            vm.profitPercent = 80;
+            vm.maxDay = 1;
+            vm.invests = [];
+            vm.$restrictPercent = function(){
+                var max = (vm.odds - 1) * 100;
+                var profitPercent = +vm.profitPercent;
+                if(!/^\d+$/.test(vm.profitPercent) || profitPercent <= 0){
+                    vm.profitPercent = 1;
+                }else if(profitPercent > max){
+                    vm.profitPercent = max;
+                    alert("最大收益率 = (平均赔率 - 1) * 100");
+                }
+            };
+            vm.$format = function(key){
+                if(!/^\d+$/.test(vm[key])){
+                    vm[key] = 1;
+                }
+                if(key === 'maxDay' && +vm.maxDay > 50){
+                    vm.maxDay = 50;
+                }
+            };
+            vm.$analyse = function(e){
+                vm.invests = [];
+                //起始投入
+                var startInvest = +vm.invest * 2;
+                var maxDay = +vm.maxDay;
+                vm.invests.push(getInvestObj(startInvest,startInvest,vm.odds));
+                if(maxDay === 1){
+                    return;
+                }
+                var profitPercent = +vm.profitPercent / 100;
+                var invests = vm.invests;
+                for(var i=1;i<maxDay;i++){
+                    var sum = 0;
+                    avalon.each(invests,function(i,item){
+                        sum += item.invest;
+                    });
+                    var min = (sum + sum * profitPercent) / (vm.odds - 1 - profitPercent);
+                    if(min % 2 > 0){
+                        var shouldInvest = (parseInt(min / 2) + 1) * 2;
+                    }else{
+                        shouldInvest = min;
+                    }
+                    invests.push(getInvestObj(sum + shouldInvest,shouldInvest,vm.odds));
+                }
+            };
         });
     </script>
 </body>
