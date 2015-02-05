@@ -55,7 +55,7 @@
 					<a href='Pick/test/base.html' target="_blank">Pick</a>
 				</h6>
 				<p class='content-item-info'>
-					2015-2-5
+					2015-02-05
 				</p>
 				<div class='content-item-artical'>
 					移动端滑动选择插件
@@ -121,7 +121,9 @@
 				}
 			};
 			vm.$onMenuBlur = function(){
-				vm.isMenuShow = false;
+				setTimeout(function(){
+					vm.isMenuShow = false;
+				},100);
 			};
 		});
 	</script>
