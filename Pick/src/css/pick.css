@@ -1,0 +1,13 @@
+.pick{position: relative;overflow: hidden;}
+.pick-list{list-style: none;}
+.pick-list,.pick-list-item{margin: 0;padding: 0}
+.pick-list-item{text-align: center;}
+.pick-list-item.vbh{visibility: hidden;}
+.pick-top{top: 0;border-bottom: 1px solid #ccc}
+.pick-bottom{bottom: 0;border-top: 1px solid #ccc}
+.pick-center,.pick-top,.pick-bottom{position: absolute;left: 0;right: 0;z-index: 10;}
+.pick-top,.pick-bottom{background-color: #f2f2f2;opacity: 0.8;}
+.pick-center{text-align: center;}
+.pick-center i:first-child{visibility: hidden;}
+.pick-center span{display: inline-block;margin:0 10px;visibility: hidden;}
+.pick-unit{font-style: normal;}

@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset='utf-8'>
+	<meta name="format-detection" content="telephone=no" >
+	<meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<title>pick base</title>
+	<link rel='stylesheet' href='../src/css/pick.css'>
+	<style type="text/css">
+		body{font-family: 宋体,Helvetica,Arial,sans-serif;font-size: 12px;}
+		body,h1,h2,h3,h4,h5,p{margin: 0;padding:0;}
+		h1{font-size: 4em;text-align: center;color: #333333;font-weight: bolder;}
+		.tac{text-align: center;}
+		* {
+		  -webkit-box-sizing: border-box;
+		  -moz-box-sizing: border-box;
+		  box-sizing: border-box;
+		}
+		.zone{margin:10px auto;}
+		#pick1{border: 1px solid #d2d2d2;height: 300px;width: 200px;}
+	</style>
+</head>
+<body>
+	<h1>Pick</h1>
+	<div class='tac'>
+		<button id='getValue'>getValue</button>
+		<button id='setValue'>setValue</button>
+		<button id='loadData'>loadData</button>
+	</div>
+	<div class='zone' id='pick1'></div>
+	
+	<!-- 
+	<script src='../lib/jquery/jquery-2.1.3.min.js'></script>
+	<script src='../lib/jquery/jquery-1.10.2.min.js'></script>
+	
+	-->
+	<script src='../lib/zepto/zepto.min.js'></script>
+	<script src='../lib/zepto/data.js'></script>
+	<script src='../lib/iscroll/iscroll-lite.js'></script>
+	<script src="../src/js/pick.js"></script>
+	<script>
+		(function(){
+			function log(){
+				console.log.apply(console,arguments);
+			}
+			$("#pick1").pick({
+				data : [{
+					text : "C++",value : "C++"
+				},{
+					text : "javascript",value : "javascript"
+				},{
+					text : "java",value : "java"
+				},{
+					text : "C#",value : "C#"
+				},{
+					text : "python",value : "python"
+				}],
+				onPick : function(){
+					log(arguments);
+				}
+			});
+			$("#getValue").click(function(){
+				log($("#pick1").pick('getValue'));
+			});
+			$("#setValue").click(function(){
+				$("#pick1").pick('setValue','python');
+			});
+			$("#loadData").click(function(){
+				$("#pick1").pick("loadData",[{
+					text : "1",value : 1
+				},{
+					text : "2",value : 2
+				},{
+					text : "3",value : 3
+				},{
+					text : "4",value : 4
+				},{
+					text : "5",value : 5
+				}])
+			});
+		})();
+	</script>
+</body>
+</html>
