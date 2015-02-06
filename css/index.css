@@ -60,6 +60,7 @@ a:active{color: #428BCA;}
 
 .content{overflow: auto;}
 .content-list{}
+.content-item{float: left;border:2px dotted #ddd;margin: 5px 5px 0 0;padding: 0 8px 8px}
 .content-item-title{font-size: 30px;padding: 10px 0;border-bottom: 2px dotted #ddd}
 .content-item-info{color: #999;margin:10px 0 20px;font-size: 16px;font-weight: bolder;}
 .content-item-artical{font-size: 14px;}
