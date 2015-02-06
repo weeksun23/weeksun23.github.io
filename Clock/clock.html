@@ -1,0 +1,331 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <style type="text/css">
+    	html,body{width: 100%;height: 100%;}
+    	body{margin: 0;padding:0;background-color: #ccc}
+       	.clock{
+       		position: absolute;width: 440px;height:440px;left: 0;right: 0;top: 0;bottom: 0;
+       		margin: auto;
+       	}
+       	.clock-item{
+       		position: absolute;width:50%;height:50%;
+       	}
+	    .clock-outer-ring{
+	    	background-color: #00374C;
+	    }
+	    .clock-outer-mask{
+	    	background-color: #fff;
+	    }
+	    .clock-outer-mask-rotated{
+	    	transform:rotate(90deg);-webkit-transform:rotate(90deg);
+	    }
+	    .clock-outer-mask-rotate{
+	    	animation: maskRotate 0.8s;/*infinite*/
+			-webkit-animation: maskRotate 0.8s;
+			animation-timing-function: linear;
+			-webkit-animation-timing-function: linear;
+	    }
+	    @keyframes maskRotate{
+			0%   {transform:rotate(0deg);}
+			100% {transform:rotate(90deg);}
+		}
+		@-webkit-keyframes maskRotate{
+			0%   {-webkit-transform:rotate(0deg);}
+			100% {-webkit-transform:rotate(90deg);}
+		}
+		.clock-inner{
+	    	width: 45.454545%;height: 45.454545%;
+	    	background-color: #015B7E;z-index: 100;
+	    }
+	    /*top right*/
+	    .clock-tr{
+       		border-top-right-radius: 100%;
+	    	left: 50%;top:0;
+       	}
+	    .clock-tr.clock-inner{
+	    	top: 20px;
+	    }
+	    .clock-tr.clock-outer-ring{
+	    	z-index: 19;
+	    }
+	    .clock-tr.clock-outer-mask{
+	    	transform-origin:0 100%;
+	    	-webkit-transform-origin:0 100%;
+	    	z-index: 20;
+	    }
+	    /*bottom right*/
+	    .clock-br{
+       		border-bottom-right-radius: 100%;
+	    	left: 50%;top:50%;
+       	}
+	    .clock-br.clock-inner{
+	    }
+	    .clock-br.clock-outer-ring{
+	    	z-index: 21;
+	    }
+	    .clock-br.clock-outer-mask{
+	    	transform-origin:0 0;
+	    	-webkit-transform-origin:0 0;
+	    	z-index: 22;
+	    }
+	    /*bottom left*/
+	    .clock-bl{
+	    	border-bottom-left-radius: 100%;
+	    	left: 0;top:50%;
+	    }
+	    .clock-bl.clock-inner{
+	    	left:20px;
+	    }
+	    .clock-bl.clock-outer-ring{
+	    	z-index: 23;
+	    }
+	    .clock-bl.clock-outer-mask{
+	    	transform-origin:100% 0;
+	    	-webkit-transform-origin:100% 0;
+	    	z-index: 24;
+	    }
+	    /*top left*/
+	    .clock-tl{
+	    	border-top-left-radius: 100%;
+	    	left: 0;top:0;
+	    }
+	    .clock-tl.clock-inner{
+	    	top:20px;left:20px;
+	    }
+	    .clock-tl.clock-outer-ring{
+	    	z-index: 25;
+	    }
+	    .clock-tl.clock-outer-mask{
+	    	transform-origin:100% 100%;
+	    	-webkit-transform-origin:100% 100%;
+	    	z-index: 26;
+	    }
+	    /*center*/
+	    .clock-center{
+	    	position: absolute;width: 20%;height: 20%;left: 0;right: 0;top:0;bottom: 0;
+	    	margin: auto;z-index: 200;border-radius: 100%;
+	    }
+	    .clock-center-toprect{position: absolute;height: 150%;width: 50%;top: -100%;left: 25%;background-color: #fff;overflow: hidden;}
+	    .clock .right,.clock .left{
+	    	position: absolute;height: 100%;top: 0;background-color: #00374C;
+	    }
+	    .clock-center-toprect .right{left: 50%;width: 100%;}
+	    .clock-center-toprect .left{left: -50%;width: 0;}
+
+	    .clock-center-bottomrect{
+	    	position: absolute;height: 75%;width: 50%;top: 50%;left: 25%;background-color: #fff;overflow: hidden;
+	    }
+	    .clock-center-bottomrect .left{right: 50%;width: 0}
+	    .clock-center-bottomrect .right{right: -50%;width: 0;}
+
+	    .clock-center .animate{
+	    	animation: rectWidth 0.8s;/*infinite*/
+			-webkit-animation: rectWidth 0.8s;
+			animation-timing-function: linear;
+			-webkit-animation-timing-function: linear;
+	    }
+
+	    .clock-top .animate{
+	    	animation: topRectWidth 0.8s;/*infinite*/
+			-webkit-animation: topRectWidth 0.8s;
+			animation-timing-function: linear;
+			-webkit-animation-timing-function: linear;
+	    }
+	    .clock-up .animate{
+	    	animation: upRectWidth 0.8s;/*infinite*/
+			-webkit-animation: upRectWidth 0.8s;
+			animation-timing-function: linear;
+			-webkit-animation-timing-function: linear;
+	    }
+	    .clock-b .animate{
+	    	animation: bRectWidth 0.8s;/*infinite*/
+			-webkit-animation: bRectWidth 0.8s;
+			animation-timing-function: linear;
+			-webkit-animation-timing-function: linear;
+	    }
+
+	    @keyframes rectWidth{
+			0%   {width:0;}
+			100% {width:100%;}
+		}
+		@-webkit-keyframes rectWidth{
+			0%   {width:0;}
+			100% {width:100%;}
+		}
+		@keyframes topRectWidth{
+			0%   {width:0;}
+			100% {width:500%;}
+		}
+		@-webkit-keyframes topRectWidth{
+			0%   {width:0;}
+			100% {width:500%;}
+		}
+		@keyframes upRectWidth{
+			0%   {width:0;}
+			100% {width:250%;}
+		}
+		@-webkit-keyframes upRectWidth{
+			0%   {width:0;}
+			100% {width:250%;}
+		}
+		@-webkit-keyframes bRectWidth{
+			0%   {width:0;}
+			100% {width:400%;}
+		}
+
+		.clock-top{
+			position: absolute;width: 10%;height: 16%;left: 45%;top:-8%;background-color: #fff;
+			overflow: hidden;
+		}
+		.clock-top>.right{
+			left: 50%;width: 500%;
+		}
+		.clock-top>.left{
+			left: -450%;width: 0;
+		}
+
+		.clock-up{
+			position: absolute;width: 20%;height: 10%;left: 40%;top: -18%;background-color: #fff;
+			overflow: hidden;
+		}
+		.clock-up>.right{
+			left: 50%;width: 250%;
+		}
+		.clock-up>.left{
+			left: -200%;width: 0;
+		}
+		.clock-b{
+			/*(85.355339%)*/
+			background-color: #fff;height: 29.289322%;width: 12.5%;position: absolute;left: 79.105339%;top: 2.2727275%;
+			transform-origin:50% 50%;
+	    	-webkit-transform-origin:50% 50%;
+	    	transform:rotate(45deg);
+	    	-webkit-transform:rotate(45deg);
+	    	overflow: hidden;
+		}
+		.clock-b-mask{
+			/*67.157288*/
+			width: 0;height: 100%;position: absolute;background-color: #00374C;
+			left:-232.842712%;
+		}
+    </style>
+</head>
+<body>
+	<div class='clock'>
+		<div class='clock-item clock-tr clock-outer-ring'></div>
+		<div class='clock-item clock-tr clock-outer-mask clock-outer-mask-rotate'></div>
+		<div class='clock-item clock-tr clock-inner'></div>
+
+		<div class='clock-item clock-br clock-outer-ring'></div>
+		<div class='clock-item clock-br clock-outer-mask'></div>
+		<div class='clock-item clock-br clock-inner'></div>
+
+		<div class='clock-item clock-bl clock-outer-ring'></div>
+		<div class='clock-item clock-bl clock-outer-mask'></div>
+		<div class='clock-item clock-bl clock-inner'></div>
+
+		<div class='clock-item clock-tl clock-outer-ring'></div>
+		<div class='clock-item clock-tl clock-outer-mask'></div>
+		<div class='clock-item clock-tl clock-inner'></div>
+
+		<div class='clock-center'>
+			<div class='clock-item clock-tr clock-outer-ring'></div>
+			<div class='clock-item clock-tr clock-outer-mask clock-outer-mask-rotate'></div>
+
+			<div class='clock-item clock-br clock-outer-ring'></div>
+			<div class='clock-item clock-br clock-outer-mask'></div>
+			
+			<div class='clock-item clock-bl clock-outer-ring'></div>
+			<div class='clock-item clock-bl clock-outer-mask'></div>
+			
+			<div class='clock-item clock-tl clock-outer-ring'></div>
+			<div class='clock-item clock-tl clock-outer-mask'></div>
+
+			<div class='clock-center-toprect'>
+				<div class='right animate'></div>
+				<div class='left' id='centerTopLeft'></div>
+			</div>
+			<div class='clock-center-bottomrect'>
+				<div class='right' id='centerBottomRight'></div>
+				<div class='left' id='centerBottomLeft'></div>
+			</div>
+		</div>
+		<div class='clock-top'>
+			<div class='right animate'></div>
+			<div class='left' id='topLeft'></div>
+		</div>
+		<div class='clock-up'>
+			<div class='right animate'></div>
+			<div class='left' id='upLeft'></div>
+		</div>
+		<div class='clock-b'>
+			<div class='clock-b-mask animate' id='clockBMask'></div>
+		</div>
+	</div>
+    <script>
+    	(function(){
+    		'use strict';
+			function getPreNode(n){
+				var x = n.previousSibling;
+				while (x && x.nodeType !== 1) {
+					x = x.previousSibling;
+				}
+				return x;
+			}
+			function initAnimate(masks){
+				for(var i=0,ii=masks.length;i<ii;i++){
+	    			var index = i + 1;
+	    			var item = masks[i];
+	    			(function(index){
+	    				item.addEventListener(names[0],function(){
+		    				this.classList.remove('clock-outer-mask-rotate');
+		    				this.classList.add("clock-outer-mask-rotated");
+		    				index < ii && masks[index].classList.add("clock-outer-mask-rotate");
+		    			});
+	    			})(index);
+	    		}
+	    		masks[3].addEventListener(names[1],function(){
+					getPreNode(masks[0]).style.zIndex = 27;
+					document.querySelector("#centerTopLeft").classList.add('animate');
+					document.querySelector("#topLeft").classList.add('animate');
+					document.querySelector("#upLeft").classList.add('animate');
+				});
+			}
+    		var isWebkit = 'WebkitAppearance' in document.documentElement.style || typeof document.webkitHidden != "undefined";
+    		var names = isWebkit ? ['webkitAnimationEnd','webkitAnimationStart'] : ['animationend','animationstart'];
+    		var masks = document.querySelectorAll(".clock-outer-mask");
+    		masks = [].slice.call(masks,0);
+    		//外环
+    		initAnimate(masks.slice(0,4));
+    		//内环
+    		initAnimate(masks.slice(4));
+    		//由于本来的宽度为0，动画结束后要置为100%
+    		["#centerTopLeft","#centerBottomLeft","#centerBottomRight","#topLeft",'#upLeft','#clockBMask'].forEach(function(idStr){
+    			var width = '100%';
+    			if(idStr === '#topLeft'){
+    				width = '500%';
+    			}else if(idStr === '#upLeft'){
+    				width = '250%';
+    			}else if(idStr === '#clockBMask'){
+    				width = '400%';
+    			}
+    			document.querySelector(idStr).addEventListener(names[0],function(){
+	    			this.style.width = width;
+	    		});
+    		});
+    		//
+    		masks[1].addEventListener(names[1],function(){
+    			document.querySelector("#centerBottomRight").classList.add("animate");
+			});
+			masks[2].addEventListener(names[1],function(){
+    			document.querySelector("#centerBottomLeft").classList.add("animate");
+			});
+    	})();
+
+    </script>
+</body>
+</html>
