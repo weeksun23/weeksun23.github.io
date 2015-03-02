@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'/>
+    <title></title>
+    <style>
+        body,html{width: 100%;height: 100%;}
+        body{overflow: auto;font-size: 16px;}
+        table{border-collapse: collapse;border-spacing: 0;}
+        body,p{margin: 0;padding: 0}
+        .red{color: red}
+        .betinfo{padding: 10px;}
+        .betinfo-items td{border-style: dotted;}
+        .info{font-size: 20px;margin-top: 10px;}
+        td,th{padding: 8px;border:1px solid #ccc;}
+        td{text-align: center;}
+    </style>
+</head>
+<body ms-controller='bet'>
+    <div class='betinfo'>
+        <table>
+            <thead>
+                <tr>
+                    <th>比赛类别</th>
+                    <th>下注时间</th>
+                    <th>投注项</th>
+                    <th>玩法</th>
+                    <th>投注金</th>
+                    <th>奖金</th>
+                    <th>盈亏</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ms-repeat='data'>
+                    <td>{{el.type}}</td>
+                    <td>{{el.time}}</td>
+                    <td>
+                        <table class='betinfo-items'>
+                            <tbody>
+                                <tr ms-repeat-item='el.items'>
+                                    <td>{{item.host}}</td>
+                                    <td>vs</td>
+                                    <td>{{item.visiting}}</td>
+                                    <td>@</td>
+                                    <td class='red'>{{item.play}}</td>
+                                    <td>@</td>
+                                    <td>{{item.odds}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td>{{el.play || (el.items.length === 1 ? '单场' : (el.items.length + '串1'))}}</td>
+                    <td>{{el.money}}</td>
+                    <td>{{el.reward}}</td>
+                    <td ms-class='red:el.reward - el.money > 0'>{{(el.reward - el.money).toFixed(2)}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <p class='info'>
+            总投注额:<span class='red'>{{sumMoney}}</span>
+            总奖金:<span class='red'>{{sumReward}}</span>
+            总盈亏:<span ms-class='red:sumReward - sumMoney > 0'>{{(sumReward - sumMoney).toFixed(2)}}</span>
+        </p>
+    </div>
+    <script src="avalon.min.js"></script>
+    <script src='data/2015-3.js'></script>
+    <script>
+        var vmodel = avalon.define("bet",function(vm){
+            vm.data = data;
+            vm.sumMoney = 0;
+            vm.sumReward = 0;
+        });
+        var sumMoney = 0,sumReward = 0;
+        avalon.each(vmodel.data,function(i,item){
+            sumMoney += item.money;
+            sumReward += item.reward;
+        });
+        vmodel.sumMoney = sumMoney;
+        vmodel.sumReward = sumReward;
+    </script>
+</body>
+</html>
