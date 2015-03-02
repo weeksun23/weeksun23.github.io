@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'/>
+    <title></title>
+    <style type="text/css">
+        
+
+    </style>
+    <script src='../YuriUI/src/avalon.js'></script>
+</head>
+<body ms-controller='invest'>
+    <p>
+        {{win}} 
+        <button ms-click='$doInvest(-1,"win")'>-</button>{{winInvest}}<button ms-click='$doInvest(1,"win")'>+</button> {{winInvest * win}}
+    </p>
+    <p>
+        {{draw}} 
+        <button ms-click='$doInvest(-1,"draw")'>-</button>{{drawInvest}}<button ms-click='$doInvest(1,"draw")'>+</button> {{drawInvest * draw}}
+    </p>
+    <p>
+        {{lose}} 
+        <button ms-click='$doInvest(-1,"lose")'>-</button>{{loseInvest}}<button ms-click='$doInvest(1,"lose")'>+</button> {{loseInvest * lose}}
+    </p>
+    <p>
+        总投入:{{winInvest + drawInvest + loseInvest}}
+    </p>
+    <script>
+        avalon.define("invest",function(vm){
+            vm.win = 2.28;
+            vm.draw = 2.85;
+            vm.lose = 3.75;
+            vm.winInvest = 2;
+            vm.drawInvest = 2;
+            vm.loseInvest = 2;
+            vm.$doInvest = function(d,type){
+                var target = vm[type + 'Invest'] + 2 * d;
+                if(target < 2){
+                    return;
+                }
+                vm[type + 'Invest'] = target;
+            };
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'/>
+    <title></title>
+    <style type="text/css">
+        .redius{
+             border-left:10em solid red;
+             border-top:10em solid;
+            border-top-left-radius:10em;
+            border-top-right-radius:0px;
+            border-bottom-right-radius:0px;
+            border-bottom-left-radius:0px;
+            width:0em;
+            height:0em;
+            padding:0;
+            background:#666;
+        }
+    </style>
+</head>
+<body>
+    <div class='redius'></div>
+    <table><tbody id='test'></tbody></table>
+    <script>
+        var tr = document.createElement("tr");
+        var td = document.createElement("td");
+        td.innerHTML = 'sdsadasdsadf';
+        tr.appendChild(td);
+        document.getElementById('test').appendChild(tr);
+    </script>
+</body>
+</html>

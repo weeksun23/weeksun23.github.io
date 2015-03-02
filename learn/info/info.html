@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'/>
+    <title></title>
+    <style type="text/css">
+    </style>
+</head>
+<body>
+    <table border='1'>
+        <tbody id='tbody'>
+            <tr>
+                <td rowspan='1'><img src='1.jpg' width='40' height='40'/></td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td rowspan='1'><img src='1.jpg' width='40' height='40'/></td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td rowspan='1'><img src='1.jpg' width='40' height='40'/></td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td rowspan='1'><img src='1.jpg' width='40' height='40'/></td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td rowspan='1'><img src='1.jpg' width='40' height='40'/></td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td rowspan='1'><img src='2.jpg' width='40' height='40'/></td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td rowspan='1'><img src='2.jpg' width='40' height='40'/></td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td rowspan='1'><img src='2.jpg' width='40' height='40'/></td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td rowspan='1'><img src='3.jpg' width='40' height='40'/></td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td rowspan='1'><img src='3.jpg' width='40' height='40'/></td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td rowspan='1'><img src='3.jpg' width='40' height='40'/></td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td rowspan='1'><img src='3.jpg' width='40' height='40'/></td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+            </tr>
+        </tbody>
+    </table>
+    <script type="text/javascript">
+        (function(){
+            function getTeamName(path){
+                var str = path.substring(path.lastIndexOf('/') + 1);
+                //XXX.XXX.XX.PNG
+                var ext = str.substring(str.lastIndexOf('.') + 1);
+                return str.substring(0,str.length - ext.length - 1);
+            }
+
+            var teams = ['76ERS','BLAZERS','BUCKS','BULLS','CAVALIERS','CELTICS','CLIPPERS',
+            'GRIZZLIES','HAWKS','HEAT','HORNETS','JAZZ','KINGS','KNICKS','LAKERS','MAGIC','MAVERICKS',
+            'NETS','NUGGETS','PACERS','PELICANS','PISTONS',
+            'RAPTORS','ROCKETS','SPURS','SUNS','THUNDER','TIMBERWOLVES','WARRIORS','WIZARDS'];
+            var teamNames = ['76人','开拓者','雄鹿','公牛','骑士','凯尔特人','快船',
+            '灰熊','老鹰','热火','黄蜂','爵士','国王','尼克斯','湖人','魔术','小牛',
+            '篮网','掘金','步行者','鹈鹕','活塞',
+            '猛龙','火箭','马刺','太阳','雷霆','森林狼','勇士','奇才'];
+            var teamsObj = {};
+            for(var k=0,kk=teams.length;k<kk;k++){
+                teamsObj[teams[k]] = {
+                    name : teamNames[k]
+                };
+            }
+            var tbodys = document.getElementsByTagName("tbody");
+            //储存所有没有伤病的tbody
+            var noMemberTbodys = [];
+            for(var k=0,tbody;tbody=tbodys[k++];){
+                var tds = tbody.getElementsByTagName("td");
+                if(tds.length === 0){
+                    //没有伤病
+                    noMemberTbodys.push(tbody);
+                }else{
+                    //有伤病
+                    var imgTds = [];
+                    //遍历获取所有有图片的td
+                    for(var i=0,item;item=tds[i++];){
+                        var imgs = item.getElementsByTagName("img");
+                        if(imgs.length === 1){
+                            var name = getTeamName(imgs[0].src);
+                            if(teamsObj[name]){
+                                teamsObj[name] = null;
+                            }
+                            imgTds.push(item);
+                        }
+                    }
+                    //设置第一个td的rowspan并删除剩下的td
+                    imgTds[0].setAttribute("rowspan",imgTds.length);
+                    for(var j=1,jj=imgTds.length;j<jj;j++){
+                        var imgTd = imgTds[j];
+                        imgTd.parentNode.removeChild(imgTd);
+                        imgTd = null;
+                    }
+                }
+            }
+            k=0;
+            //处理所有无伤病tbody
+            for(var i in teamsObj){
+                if(teamsObj[i]){
+                    if(!noMemberTbodys[k]){
+                        break;
+                    }
+                    var tr = document.createElement("tr");
+                    for(var j=0;j<5;j++){
+                        var td = document.createElement("td");
+                        if(j === 0){
+                            td.innerHTML = "<img src='/Public/Logos/"+i+".png' width='40' height='40' /><br />" + 
+                                teamsObj[i].name;
+                        }else{
+                            td.innerHTML = '无';
+                        }
+                        tr.appendChild(td);
+                    }
+                    noMemberTbodys[k].appendChild(tr);
+                    k++;
+                }
+            }
+        })();
+    </script>
+</body>
+</html>
