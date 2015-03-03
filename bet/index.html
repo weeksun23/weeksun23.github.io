@@ -1,68 +1,82 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset='UTF-8'/>
-    <title></title>
-    <style>
-        body,html{width: 100%;height: 100%;}
-        body{overflow: auto;font-size: 16px;}
-        table{border-collapse: collapse;border-spacing: 0;}
-        body,p{margin: 0;padding: 0}
-        .red{color: red}
-        .betinfo{padding: 10px;}
-        .betinfo-items td{border-style: dotted;}
-        .info{font-size: 20px;margin-top: 10px;}
-        td,th{padding: 8px;border:1px solid #ccc;}
-        td{text-align: center;}
-    </style>
+<meta charset='UTF-8'/>
+<meta name="format-detection" content="telephone=no" >
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+<title></title>
+<style>
+    html {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+    body{
+        font-family: Helvetica;overflow: auto;font-size: 12px;
+        -webkit-overflow-scrolling: touch;
+        -ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;
+    }
+    body,html{width: 100%;height: 100%;}
+    * {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    *:before,
+    *:after {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    /*box*/
+    .db{display: box;display:-webkit-box;}
+    .dbf1{box-flex:1;-webkit-box-flex:1;}
+    .dbac{box-align:center;-webkit-box-align:center;}
+    /**/
+    table{border-collapse: collapse;border-spacing: 0;}
+    ul{list-style: none;}
+    body,p,ul,li{margin: 0;padding: 0}
+    td{text-align: center;padding: 3px;border: 1px dotted #ccc}
+    .red{color: red}
+    .fz2{font-size: 2em;}
+    .tac{text-align: center;}
+    .mgb5{margin-bottom: 5px;}
+
+    .info{font-size: 1.5em;padding:0.2em;letter-spacing: 0}
+    .info>select,.info>span{vertical-align: middle;}
+    .betlist{border: 1px solid #d2d2d2;border-radius: 5px;}
+    .betlist>li{border-bottom: 1px solid #d2d2d2;padding: 5px;position: relative;}
+    .betlist>li:last-child{border-bottom: none}
+    .betlist-profit{position: absolute;top: 0;right: 5px;font-weight: bolder;opacity: 0.6;}
+</style>
 </head>
 <body ms-controller='bet'>
-    <div class='betinfo'>
-        <table>
-            <thead>
-                <tr>
-                    <th>比赛类别</th>
-                    <th>下注时间</th>
-                    <th>投注项</th>
-                    <th>玩法</th>
-                    <th>投注金</th>
-                    <th>奖金</th>
-                    <th>盈亏</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ms-repeat='data'>
-                    <td>{{el.type}}</td>
-                    <td>{{el.time}}</td>
-                    <td>
-                        <table class='betinfo-items'>
-                            <tbody>
-                                <tr ms-repeat-item='el.items'>
-                                    <td>{{item.host}}</td>
-                                    <td>vs</td>
-                                    <td>{{item.visiting}}</td>
-                                    <td>@</td>
-                                    <td class='red'>{{item.play}}</td>
-                                    <td>@</td>
-                                    <td>{{item.odds}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                    <td>{{el.play || (el.items.length === 1 ? '单场' : (el.items.length + '串1'))}}</td>
-                    <td>{{el.money}}</td>
-                    <td>{{el.reward}}</td>
-                    <td ms-class='red:el.reward - el.money > 0'>{{(el.reward - el.money).toFixed(2)}}</td>
-                </tr>
-            </tbody>
-        </table>
-        <p class='info'>
-            总投注额:<span class='red'>{{sumMoney}}</span>
-            总奖金:<span class='red'>{{sumReward}}</span>
-            总盈亏:<span ms-class='red:sumReward - sumMoney > 0'>{{(sumReward - sumMoney).toFixed(2)}}</span>
-        </p>
-    </div>
-    <script src="avalon.min.js"></script>
+    <p class='info'>
+        <select><option>2015</option></select>
+        <span class='red'>-{{sumMoney}}</span>
+        <span class='red'>+{{sumReward}}</span>
+        <span ms-class='red:sumReward - sumMoney > 0'>@{{(sumReward - sumMoney).toFixed(2)}}</span>
+    </p>
+    <ul class='betlist'>
+        <li ms-repeat='data'>
+            <p class='mgb5'>
+                {{el.type}}@{{el.time}}@{{el.play || (el.items.length === 1 ? '单场' : (el.items.length + '串1'))}}@{{-el.money}}@{{+el.reward}}
+            </p>
+            <table>
+                <tbody>
+                    <tr ms-repeat-item='el.items'>
+                        <td>{{item.host}}</td>
+                        <td>vs</td>
+                        <td>{{item.visiting}}</td>
+                        <td class='red'>{{item.play}}</td>
+                        <td>{{item.odds}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class='betlist-profit'>
+                <span class='fz2' ms-class='red:el.reward - el.money > 0'>{{(el.reward - el.money).toFixed(2)}}</span>
+            </div>
+        </li>
+    </ul>
+    <script src="avalon.mobile.min.js"></script>
     <script src='data/2015-3.js'></script>
     <script>
         var vmodel = avalon.define("bet",function(vm){
