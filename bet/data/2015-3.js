@@ -56,6 +56,7 @@
         {host : '因戈尔施塔特',visiting : '慕尼黑1860',play : '因戈尔施塔特-0.5',odds : 1.45,result : '输'}
     ]
 },{
+    /**************************0303***************************/
     type : '土超',time : '0303 00:08',money : 20,reward : 36.50,
     items : [
         {host : '特拉布宗体育',visiting : '卡拉布克士邦',play : '特拉布宗体育-0.5',odds : 1.825,result : '赢'}
@@ -73,7 +74,11 @@
         {host : '塞尔塔',visiting : '艾尔切',play : '特拉布宗体育-0.5',odds : 1.975,result : '赢'},
     ]
 },{
-    /**************************0303***************************/
+    type : 'NBA',time : '0303 00:09',money : 30,reward : 0,
+    items : [
+        {host : '小牛',visiting : '鹈鹕',play : '鹈鹕+8.5',odds : 1.9,result : '输'}
+    ]
+},{
     type : 'NBA滚',time : '0303 10:23',money : 186.87,reward : 356.76,
     items : [
         {host : '篮网',visiting : '勇士',play : '小222.5',odds : 1.9,result : '赢'}
