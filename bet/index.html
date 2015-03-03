@@ -3,6 +3,8 @@
 <head>
 <meta charset='UTF-8'/>
 <meta name="format-detection" content="telephone=no" >
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Pragma" content="no-cache">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
 <title></title>
 <style>
@@ -78,21 +80,33 @@
             </div>
         </li>
     </ul>
-    <script src="avalon.mobile.min.js"></script>
-    <script src='data/2015-3.js'></script>
+    <script src="../YuriUI/src/avalon.mobile.min.js"></script>
     <script>
-        var vmodel = avalon.define("bet",function(vm){
-            vm.data = data;
-            vm.sumMoney = 0;
-            vm.sumReward = 0;
+        require(['mmRequest'],function(){
+            var vmodel = avalon.define("bet",function(vm){
+                vm.data = [];
+                vm.sumMoney = 0;
+                vm.sumReward = 0;
+            });
+            avalon.ajax({
+                url : "data/2015-3.json",
+                type : 'get',
+                cache : false,
+                dataType : 'text',
+                success : function(data){
+                    var func = new Function("return " + data);
+                    vmodel.data = func();
+                    var sumMoney = 0,sumReward = 0;
+                    avalon.each(vmodel.data,function(i,item){
+                        sumMoney += item.money;
+                        sumReward += item.reward;
+                    });
+                    vmodel.sumMoney = sumMoney;
+                    vmodel.sumReward = sumReward;
+                }
+            });
+            avalon.scan();
         });
-        var sumMoney = 0,sumReward = 0;
-        avalon.each(vmodel.data,function(i,item){
-            sumMoney += item.money;
-            sumReward += item.reward;
-        });
-        vmodel.sumMoney = sumMoney;
-        vmodel.sumReward = sumReward;
     </script>
 </body>
 </html>
