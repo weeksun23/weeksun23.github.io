@@ -83,4 +83,35 @@
     items : [
         {host : '篮网',visiting : '勇士',play : '小222.5',odds : 1.9,result : '赢'}
     ]
+},{
+    type : '亚冠',time : '0303 13:49',money : 10,reward : 18,
+    items : [
+        {host : '山东鲁能',visiting : '全北汽车',play : '两队都得分',odds : 1.8,result : '赢'}
+    ]
+},{
+    type : '亚冠',time : '0303 13:59',money : 10,reward : 0,
+    items : [
+        {host : '广州富力',visiting : '武里南联',play : '广州富力赢',odds : 1.61,result : '输'}
+    ]
+},{
+    type : '亚冠',time : '0303 13:59',money : 8,reward : 0,
+    items : [
+        {host : '山东鲁能',visiting : '全北汽车',play : '两队都得分',odds : 1.8,result : '赢'},
+        {host : '广州富力',visiting : '武里南联',play : '广州富力赢',odds : 1.61,result : '输'}
+    ]
+},{
+    type : '亚冠',time : '0303 14:39',money : 28.76,reward : 0,
+    items : [
+        {host : '山东鲁能',visiting : '全北汽车',play : '角球大9.5',odds : 1.83,result : '输'}
+    ]
+},{
+    type : '亚冠滚',time : '0303 18:37',money : 10,reward : 0,
+    items : [
+        {host : '柏雷索尔',visiting : '平阳',play : '小2.5',odds : 1.72,result : '输'}
+    ]
+},{
+    type : '亚冠',time : '0303 19:20',money : 30,reward : 31.81,
+    items : [
+        {host : '广州富力',visiting : '武里南联',play : '武里南联+1.0',odds : 1.875,result : '结束投注'}
+    ]
 }];
