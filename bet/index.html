@@ -39,6 +39,7 @@
     .fz2{font-size: 2em;}
     .tac{text-align: center;}
     .mgb5{margin-bottom: 5px;}
+    .bg1{background-color: #DBF0F7}
 
     .info{font-size: 1.5em;padding:0.2em;letter-spacing: 0}
     .info>select,.info>span{vertical-align: middle;}
@@ -51,12 +52,12 @@
 <body ms-controller='bet'>
     <p class='info'>
         <select><option>2015</option></select>
-        <span class='red'>-{{sumMoney}}</span>
-        <span class='red'>+{{sumReward}}</span>
-        <span ms-class='red:sumReward - sumMoney > 0'>@{{(sumReward - sumMoney).toFixed(2)}}</span>
+        <span>-{{sumMoney | number(2)}}</span>
+        <span class='red'>+{{sumReward | number(2)}}</span>
+        <span ms-class='red:sumReward - sumMoney > 0'>@{{sumReward - sumMoney | number(2)}}</span>
     </p>
     <ul class='betlist'>
-        <li ms-repeat='data'>
+        <li ms-repeat='data' ms-class='bg1:$index % 2 === 0'>
             <p class='mgb5'>
                 {{el.type}}@{{el.time}}@{{el.play || (el.items.length === 1 ? '单场' : (el.items.length + '串1'))}}@{{-el.money}}@{{+el.reward}}
             </p>
@@ -68,11 +69,12 @@
                         <td>{{item.visiting}}</td>
                         <td class='red'>{{item.play}}</td>
                         <td>{{item.odds}}</td>
+                        <td>{{item.result}}</td>
                     </tr>
                 </tbody>
             </table>
             <div class='betlist-profit'>
-                <span class='fz2' ms-class='red:el.reward - el.money > 0'>{{(el.reward - el.money).toFixed(2)}}</span>
+                <span class='fz2' ms-class='red:el.reward - el.money > 0'>{{el.reward - el.money | number(2)}}</span>
             </div>
         </li>
     </ul>
