@@ -18,6 +18,9 @@
 	</div>
 	<script src='avalon.mobile.js'></script>
 	<script>
+		document.body.addEventListener("touchstart",function(){
+			return false;
+		});
 		require(['common/circlescale/avalon.circlescale'],function(){
 			avalon.define("circle",function(){
 
