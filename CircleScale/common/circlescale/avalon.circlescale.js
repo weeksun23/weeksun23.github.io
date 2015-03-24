@@ -173,17 +173,20 @@ define(["avalon","css!./avalon.circlescale.css"],function(avalon){
 			vm.$skipArray = [];
 			vm.$init = function(){
 				element.classList.add("circlescale");
-				element.innerHTML = "<div class='circlescale-handler'></div><div class='circlescale-value'>{{temp}}</div>";
+                element.setAttribute("ms-css-width",'circleSize');
+                element.setAttribute("ms-css-height",'circleSize');
+				element.innerHTML = 
+                    "<div class='circlescale-handler' ms-css-border-width='handlerBorderWidth' ms-css-height='handlerSize' ms-css-width='handlerSize'></div>"+
+                    "<div class='circlescale-value' ms-css-height='valueSize' ms-css-width='valueSize' ms-css-font-size='valueSize' "+
+                        "ms-css-line-height='{{valueSize}}px'>{{temp}}</div>";
 				circleData.handler = element.querySelector(".circlescale-handler");
 	            circleData.handler.addEventListener("touchstart",start);
                 avalon.scan(element,vmodel);
-                setTimeout(function(){
-                    initData();
-                    //初始计量位置和滑块位置
-                    var scaleStart = getHandlerPos(circleData.r + circleData.r * 0.5,2 * circleData.r);
-                    setHandlerPos(scaleStart.x,scaleStart.y);
-                    setScale(scaleStart.x,scaleStart.y);
-                },50);
+                initData();
+                //初始计量位置和滑块位置
+                var scaleStart = getHandlerPos(circleData.r + circleData.r * 0.5,2 * circleData.r);
+                setHandlerPos(scaleStart.x,scaleStart.y);
+                setScale(scaleStart.x,scaleStart.y);    
 			};
             vm.$noop = avalon.noop;
 		});
@@ -191,6 +194,10 @@ define(["avalon","css!./avalon.circlescale.css"],function(avalon){
 	};
 	widget.version = 1.0;
 	widget.defaults = {
-		temp : null
+		temp : null,
+        circleSize : 220,
+        handlerSize : 28,
+        handlerBorderWidth : 2,
+        valueSize : 120
 	};
 });

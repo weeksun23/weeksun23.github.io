@@ -1,12 +1,12 @@
 .circlescale{
-	width: 220px;height: 220px;border-radius: 100%;position: relative;
+	border-radius: 100%;position: relative;
 	background: url(tempscale.png) no-repeat center center;
 	background-size: 100% 100%;
 	box-shadow:0 0 15px 5px #4C98E1;
 	margin: 0px auto;
 }
 .circlescale-handler{
-	width: 28px;height: 28px;border-radius: 100%;position: absolute;
+	border-radius: 100%;position: absolute;
 	background-color: #F5865F;border:2px solid #76C5EE;left: 0;top: 0;
 }
 .circlescale-b{
@@ -14,7 +14,7 @@
 	background-color: #000;
 }
 .circlescale-value{
-	position: absolute;width: 120px;height: 120px;margin-left: -60px;margin-top: -60px;
-	text-align: center;line-height: 120px;font-size: 110px;color: #F5865F;
-	left: 50%;top: 50%;
+	position: absolute;margin: auto;
+	left: 0;top: 0;right: 0;bottom: 0;
+	text-align: center;color: #F5865F;
 }
