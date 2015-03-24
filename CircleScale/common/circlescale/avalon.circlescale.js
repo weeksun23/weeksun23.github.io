@@ -183,7 +183,7 @@ define(["avalon","css!./avalon.circlescale.css"],function(avalon){
                     var scaleStart = getHandlerPos(circleData.r + circleData.r * 0.5,2 * circleData.r);
                     setHandlerPos(scaleStart.x,scaleStart.y);
                     setScale(scaleStart.x,scaleStart.y);
-                });
+                },50);
 			};
             vm.$noop = avalon.noop;
 		});
