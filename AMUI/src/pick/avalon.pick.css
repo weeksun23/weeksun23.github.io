@@ -1,0 +1,20 @@
+.pick{position: relative;overflow: hidden;}
+.pick-list{list-style: none;}
+.pick-list,.pick-list-item{margin: 0;padding: 0}
+.pick-list-item{text-align: center;}
+.pick-list-item.vbh{visibility: hidden;}
+.pick-top{
+	top: 0;border-bottom: 1px solid rgba(190,190,190,1);
+	background: -webkit-gradient(linear,bottom, rgba(255,255,255,0.5), rgba(255,255,255,1));
+	background: -webkit-linear-gradient(bottom, rgba(255,255,255,0.5), rgba(255,255,255,1));
+}
+.pick-bottom{
+	bottom: 0;border-top: 1px solid rgba(190,190,190,1);
+	background: -webkit-gradient(linear,bottom, rgba(255,255,255,1), rgba(255,255,255,0.5));
+	background: -webkit-linear-gradient(bottom, rgba(255,255,255,1), rgba(255,255,255,0.5));
+}
+.pick-center,.pick-top,.pick-bottom{position: absolute;left: 0;right: 0;z-index: 10;}
+.pick-center{text-align: center;}
+.pick-center i{font-style: normal;font-size: 0.5em;}
+.pick-center i:first-child{visibility: hidden;}
+.pick-center span{display: inline-block;margin:0 0.2em;visibility: hidden;}

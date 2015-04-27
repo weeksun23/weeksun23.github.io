@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset='utf-8'>
+	<meta name="format-detection" content="telephone=no" >
+	<meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+	<title>avalon slidemenu</title>
+	<link rel="stylesheet" type="text/css" href="demo.css">
+	<style type="text/css">
+	</style>
+</head>
+<body ms-controller='demo'>
+	<h1 class='title'>SlideMenu</h1>
+	<div class='tac oper'>
+		<a href='javascript:void(0)' class='btn btn-lightblue btn-block' ms-on-tap='$simpleSlide("bottom")'>bottom</a>
+		<a href='javascript:void(0)' class='btn btn-lightblue btn-block' ms-on-tap='$simpleSlide("top")'>top</a>
+		<a href='javascript:void(0)' class='btn btn-lightblue btn-block' ms-on-tap='$simpleSlide("left")'>left</a>
+		<a href='javascript:void(0)' class='btn btn-lightblue btn-block' ms-on-tap='$simpleSlide("right")'>right</a>
+	</div>
+	<div ms-widget='slidemenu,$slidemenu1,$slidemenu1Opts'>
+		<div class='slidemenu-inner' style='padding:3px;'>
+			<h1>slidemenu</h1>
+			<p>wegvg333</p>
+			<p>vg2342r2</p>
+			<p>r4r4r4gg44</p>
+			<p>r34r34</p>
+			<a href='javascript:void(0)' class='btn btn-lightblue btn-block' ms-on-tap='$hide'>hide</a>
+		</div>
+	</div>
+	<script src='../src/avalon.mobile.js'></script>
+	<script>
+		require(["slidemenu/avalon.slidemenu"],function(){
+			avalon.define({
+				$id : 'demo',
+				$simpleSlide : function(str){
+					avalon.vmodels.$slidemenu1.position = str;
+					avalon.vmodels.$slidemenu1.show();
+				},
+				$hide : function(){
+					avalon.vmodels.$slidemenu1.hide();
+				}
+			});
+			avalon.scan();
+		});
+	</script>
+</body>
+</html>
