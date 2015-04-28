@@ -3,8 +3,12 @@ html{overflow:hidden;}
 body{
 	font-size:12px;font-family:"Lucida Grande", Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;background-color:#fff;
 	overflow: auto;
+	-webkit-overflow-scrolling: touch;
+  	-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;
 }
+[ms-controller],[ms-important]{display:none}
 /*reset*/
+input,button{-webkit-appearance: none;}
 body,ul,li,form,fieldset,textarea,p,th,td,input,h1,h2,h3,h4,h5,h6,select,input,legend{margin:0;padding:0;}
 h1,h2,h3,h4,h5,h6{font-weight: normal; font-size: 100%;}
 ul,ol{list-style:none;}
@@ -85,3 +89,32 @@ a:active{color: #428BCA;}
 .about>h2{padding: 15px 0;font-size: 20px;border-bottom: 2px dotted #ddd}
 .about label{display: inline-block;width:65px;text-align: right;padding-right: 20px;color: #808080}
 .about span{color: #444}
+
+.bar-nav-animate{
+	animation: showMenu 0.2s;
+	-webkit-animation: showMenu 0.2s;
+	animation-timing-function: linear;
+	-webkit-animation-timing-function: linear;
+}
+@keyframes showMenu{
+	0%   {transform: translateY(-50%);opacity: 0}
+	100% {transform: translateY(0);opacity: 1}
+}
+@-webkit-keyframes showMenu{
+	0%   {-webkit-transform: translateY(-50%);opacity: 0}
+	100% {-webkit-transform: translateY(0);opacity: 1}
+}
+.bar-nav-animate-hide{
+	animation: hideMenu 0.2s;
+	-webkit-animation: hideMenu 0.2s;
+	animation-timing-function: linear;
+	-webkit-animation-timing-function: linear;
+}
+@keyframes hideMenu{
+	0%   {transform: translateY(0);opacity: 1}
+	100% {transform: translateY(-50%);opacity: 0}
+}
+@-webkit-keyframes hideMenu{
+	0%   {-webkit-transform: translateY(0);opacity: 1}
+	100% {-webkit-transform: translateY(-50%);opacity: 0}
+}
