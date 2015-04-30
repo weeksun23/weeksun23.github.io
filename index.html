@@ -14,7 +14,7 @@
 	<!--[if lt IE 9]> 
 	<link rel="stylesheet" type="text/css" href="css/index_ie.css">
 	<![endif]-->
-	<script src='YuriUI/src/avalon.js'></script>
+	<script src='js/avalon.js'></script>
 </head>
 <body ms-controller="weeksun">
 	<div class='bar clearfix'>
@@ -86,6 +86,12 @@
 			vm.isWindowOpen = false;
 			vm.isMenuAnimateHide = false;
 			vm.labList = [{
+				title : 'jQuery',
+				children : [{
+					href : "jscroll/index.html",title : "jscroll",date : "2015-05-01",
+					desc : "jquery自定义滚动条插件,完善中..."
+				}]
+			},{
 				title : 'avalon',
 				children : [{
 					href : "YuriUI/demo/index.html",title : "Yuri ui",date : "2014-11-21",

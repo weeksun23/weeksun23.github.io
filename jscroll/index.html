@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset='utf-8'>
+	<title>jscroll</title>
+	<style type="text/css">
+		html,body{width: 100%;height: 100%;overflow: hidden;}
+		body{margin:0;padding: 0}
+		#scroll{position: absolute;top: 3px;right: 5px;height: 300px;width: 10px;}
+		.content{width: 100%;height: 100%;overflow: hidden;text-align: center;}
+	</style>
+</head>
+<body>
+	<div id='scroll'></div>
+	<div class='content'>
+		<div>
+			<h1>jscroll</h1>
+			<p>jyjtyjtytyretertertrttttttt</p><p>jyjtyjtytyretertertrttttttt</p>
+			<p>jyjtyjtytyretertertrttttttt</p><p>jyjtyjtytyretertertrttttttt</p>
+			<p>jyjtyjtytyretertertrttttttt</p><p>jyjtyjtytyretertertrttttttt</p>
+			<p>jyjtyjtytyretertertrttttttt</p><p>jyjtyjtytyretertertrttttttt</p>
+			<p>jyjtyjtytyretertertrttttttt</p><p>jyjtyjtytyretertertrttttttt</p>
+			<p>jyjtyjtytyretertertrttttttt</p><p>jyjtyjtytyretertertrttttttt</p>
+			<p>jyjtyjtytyretertertrttttttt</p><p>jyjtyjtytyretertertrttttttt</p>
+			<p>jyjtyjtytyretertertrttttttt</p><p>jyjtyjtytyretertertrttttttt</p>
+			<p>jyjtyjtytyretertertrttttttt</p><p>jyjtyjtytyretertertrttttttt</p>
+			<p>jyjtyjtytyretertertrttttttt</p><p>jyjtyjtytyretertertrttttttt</p>
+			<p>jyjtyjtytyretertertrttttttt</p><p>jyjtyjtytyretertertrttttttt</p>
+			<p>jyjtyjtytyretertertrttttttt</p><p>jyjtyjtytyretertertrttttttt</p>
+			<p>jyjtyjtytyretertertrttttttt</p><p>jyjtyjtytyretertertrttttttt</p>
+			<p>jyjtyjtytyretertertrttttttt</p><p>jyjtyjtytyretertertrttttttt</p>
+			<p>jyjtyjtytyretertertrttttttt</p><p>jyjtyjtytyretertertrttttttt</p>
+			<p>jyjtyjtytyretertertrttttttt</p><p>jyjtyjtytyretertertrttttttt</p>
+			<p>jyjtyjtytyretertertrttttttt</p><p>jyjtyjtytyretertertrttttttt</p>
+			<p>jyjtyjtytyretertertrttttttt</p><p>jyjtyjtytyretertertrttttttt</p>
+			<p>jyjtyjtytyretertertrttttttt</p><p>jyjtyjtytyretertertrttttttt</p>
+			<p>jyjtyjtytyretertertrttttttt</p><p>jyjtyjtytyretertertrttttttt</p>
+		</div>
+	</div>
+	<script src='jquery-1.11.2.js'></script>
+	<script src='sea.js' id='seajsnode'></script>
+	<script>
+		seajs.use("jscroll",function(){
+			$("#scroll").jscroll({
+				targetSelector : "div.content"
+			});
+			$(window).resize(function(){
+				$("#scroll").jscroll("resize");
+			});
+		});
+	</script>
+</body>
+</html>
