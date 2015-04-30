@@ -38,19 +38,23 @@
 		</div>
 	</div>
 	<div class='content' ms-visible="curPage==='lab'">
-		<ul class='content-list clearfix'>
-			<li ms-repeat='labList' class='content-item'>
-				<h6 class='content-item-title'>
-					<a ms-href='{{el.href}}' target="_blank">{{el.title}}</a>
-				</h6>
-				<p class='content-item-info'>
-					{{el.date}}
-				</p>
-				<div class='content-item-artical'>
-					{{el.desc}}
-				</div>
-			</li>
-		</ul>
+		<div class='content-outer' ms-repeat='labList'>
+			<h1>{{el.title}}</h1>
+			<ul class='clearfix'>
+				<li class='content-item' ms-repeat-item='el.children'>
+					<h2>
+						<a ms-href='{{item.href}}' target="_blank">{{item.title}}</a>
+					</h2>
+					<p class='content-item-info'>
+						{{item.date}}
+					</p>
+					<div class='content-item-artical'>
+						{{item.desc}}
+					</div>
+				</li>
+			</ul>
+		</div>
+		
 	</div>
 	<div class='content' ms-visible="curPage==='log'">
 		<h2 class='nomes'>暂无日志</h2>
@@ -82,17 +86,28 @@
 			vm.isWindowOpen = false;
 			vm.isMenuAnimateHide = false;
 			vm.labList = [{
-				href : "YuriUI/demo/index.html",title : "Yuri ui",date : "2014-11-21",desc : "基于avalon的ui库"
+				title : 'avalon',
+				children : [{
+					href : "YuriUI/demo/index.html",title : "Yuri ui",date : "2014-11-21",
+					desc : "基于avalon的ui库"
+				}]
 			},{
-				href : "Clock/clock.html",title : "Clock",date : "2015-02-06",desc : "css3+js的计时时钟"
+				title : 'avalon.mobile',
+				children : [{
+					href : "AMUI/demo/pick.html",title : "pick",date : "2015-04-28",desc : "滑动选择插件"
+				},{
+					href : "AMUI/demo/dialog.html",title : "dialog",date : "2015-04-28",desc : "对话框"
+				},{
+					href : "AMUI/demo/slideitem.html",title : "slideitem",date : "2015-04-28",desc : "滑动列表"
+				},{
+					href : "AMUI/demo/slidemenu.html",title : "slidemenu",date : "2015-04-28",
+					desc : "侧边滑动菜单"
+				}]
 			},{
-				href : "AMUI/demo/pick.html",title : "pick",date : "2015-04-28",desc : "滑动选择插件"
-			},{
-				href : "AMUI/demo/dialog.html",title : "dialog",date : "2015-04-28",desc : "对话框"
-			},{
-				href : "AMUI/demo/slideitem.html",title : "slideitem",date : "2015-04-28",desc : "滑动列表"
-			},{
-				href : "AMUI/demo/slidemenu.html",title : "slidemenu",date : "2015-04-28",desc : "侧边滑动菜单"
+				title : 'html5',
+				children : [{
+					href : "Clock/clock.html",title : "Clock",date : "2015-02-06",desc : "css3+js的计时时钟"
+				}]
 			}];
 			vm.$onClickMask = function(){
 				vmodel.isWindowOpen = false;

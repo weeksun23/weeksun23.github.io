@@ -63,10 +63,17 @@ a:active{color: #428BCA;}
 .bar-nav a:hover,.bar-nav .selected a{background-color: #696969;color: #fff}
 
 .content{overflow: auto;}
-.content-list{}
-.content-item{float: left;border:2px dotted #ddd;margin: 5px 5px 0 0;padding: 0 8px 8px}
-.content-item-title{font-size: 30px;padding: 10px 0;border-bottom: 2px dotted #ddd}
-.content-item-info{color: #999;margin:10px 0 20px;font-size: 16px;font-weight: bolder;}
+.content-outer{padding: 0 0 5px 5px;}
+.content h1{font-size: 30px;padding: 5px 0;color: #3F9EC3}
+.content h2{font-size: 20px;padding: 5px 0}
+.content-item{
+	float: left;border:1px solid #ddd;margin: 5px 10px 0 0;padding: 0 10px 8px;
+	border-left:5px solid #ccc;border-radius: 5px;position: relative;left: 0;top: 0
+}
+.content-item:hover{
+	top: -2px;
+}
+.content-item-info{color: #999;margin:5px 0;font-size: 12px;}
 .content-item-artical{font-size: 14px;}
 
 .mask{
