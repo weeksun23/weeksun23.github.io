@@ -1,0 +1,10 @@
+<ul class='nav nav-tabs'>
+	<li ms-repeat='headerData' ms-class='active : $index === curIndex' ms-click='$clickHeader($index)'>
+		<a href='javascript:void(0)'>{{el.title}}</a>
+	</li>
+</ul>
+<div class='tab-content'>
+	<div class='tab-pane' ms-repeat='contentData' ms-class='active : $index === curIndex'>
+		{{el.content | html}}
+	</div>
+</div>

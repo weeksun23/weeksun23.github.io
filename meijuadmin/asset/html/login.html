@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>美居后台管理系统登陆</title>
+<link href="../css/bootstrap/bootstrap.css" rel="stylesheet">
+<link href="../css/base.css" rel="stylesheet">
+<!--[if lt IE 9]>
+<script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+<script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<style>
+	body,html{width: 100%;height: 100%}
+	body{
+		background-color: #eee;
+	}
+	.login{
+		min-width: 230px;max-width: 400px;margin:0 auto;padding:0 20px 20px;border:1px solid #d2d2d2;
+		border-radius: 5px;background-color: #fff;
+	}
+	.login .form-control{
+		padding: 10px;font-size: 16px;height: auto;
+	}
+	.login .alert{margin:5px 0 0;padding: 5px 10px}
+	.valid{padding-right: 100px;}
+	.valid-img{
+		position: absolute;right: 0;height: 40px;top: 50%;margin-top: -20px;text-align: center;cursor: pointer;width: 90px;
+	}
+	.valid-img span{margin-top: 4px;}
+	.container-inner{position: absolute;left: 10px;right: 10px;height: 400px;top:50%;margin-top: -200px;}
+</style>
+</head>
+<body>
+<div class='container h100 posr'>
+	<div class='container-inner' ms-controller='login'>
+		<form class='login posr'>
+			<fieldset  ms-attr-disabled='loginDisabled'>
+				<h2 class="form-signin-heading">请登陆</h2>
+				<div class="form-group" ms-class='has-error:nameTip && name === ""'>
+					<input id='name' type="text" class="form-control" placeholder="用户名" ms-duplex-string='name'>
+					<p class="text-danger" ms-visible='nameTip && name === ""'>请输入用户名</p>
+				</div>
+				<div class="form-group" ms-class='has-error:passwordTip && password === ""'>
+					<input id='password' type="password" class="form-control" placeholder="密码" ms-duplex-string='password'>
+					<p class="text-danger" ms-visible='passwordTip && password === ""'>请输入密码</p>
+				</div>
+				<div class="form-group" ms-class='has-error:validCodeTip && validCode === ""'>
+					<div class='posr valid'>
+						<input id='validCode' type="text" class="form-control" placeholder="验证码" ms-duplex-string='validCode'>
+						<div class='valid-img' ms-click='$reloadValid' ms-class='notallowed:loginDisabled'>
+							<img height='40' width='85' src='' alt='验证码' ms-visible='!loadingValid'/>
+							<span class='loading' ms-visible='loadingValid'></span>
+						</div>
+					</div>
+					<p class="text-danger" ms-visible='validCodeTip && validCode === ""'>请输入验证码</p>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox"> 记住我
+					</label>
+					<a class='pull-right' href='#'>忘记密码?</a>
+				</div>
+				<button type='button' class="btn btn-primary btn-lg btn-block" ms-click='$login'>
+					{{loginDisabled ? '登陆中...' : '登陆'}}
+				</button>
+				<div class="alert alert-danger hide">
+					<button type="button" class="close"><span>&times;</span></button>
+					验证码错误
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</div>
+<script src='../module/avalon.js'></script>
+<script>
+	(function(){
+		var vmodel = avalon.define({
+			$id : "login",
+			$login : function(){
+				var isValid = true;
+				avalon.each(['name','password','validCode'],function(i,v){
+					if(vmodel[v] === ''){
+						document.getElementById(v).focus();
+						vmodel[v + 'Tip'] = true;
+						return isValid = false;
+					}
+				});
+				if(isValid){
+					vmodel.loginDisabled = true;
+					setTimeout(function(){
+						vmodel.loginDisabled = false;
+						location.href = 'index.html';
+					},2000);
+				}
+			},
+			$reloadValid : function(){
+				if(vmodel.loginDisabled) return;
+				vmodel.loadingValid = true;
+				setTimeout(function(){
+					vmodel.loadingValid = false;
+				},1000);
+			},
+			loginDisabled : false,
+			name : '',
+			nameTip : false,
+			passwordTip : false,
+			validCodeTip : false,
+			password : '',
+			validCode : '',
+			loadingValid : false
+		});
+	})();
+	
+</script>
+</body>
+</html>

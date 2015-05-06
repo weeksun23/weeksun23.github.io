@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tab demo</title>
+<link href="../css/bootstrap/bootstrap.css" rel="stylesheet">
+<link href="../css/base.css" rel="stylesheet">
+<!--[if lt IE 9]>
+<script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+<script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<style>
+	body{
+		background-color: #eee;
+	}
+	
+</style>
+</head>
+<body>
+<div class='container' ms-controller='demo'>
+	<div ms-widget="tab,$tab,$tabOpts">
+		<div title='ererter'>1</div>
+		<div title='ererter'>2</div>
+		<div title='ererter'>3</div>
+		<div title='ererter'>4</div>
+	</div>
+</div>
+<script src='../module/avalon.js'></script>
+<script>
+	(function(){
+		require(['lib/avalon/tab/avalon.tab'],function(){
+			avalon.define({
+				$id : 'demo',
+				$tabOpts : {
+
+				}
+			});
+			avalon.scan();
+		});
+	})();
+</script>
+</body>
+</html>

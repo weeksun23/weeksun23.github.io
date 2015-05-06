@@ -1,0 +1,5 @@
+[ms-controller],[ms-important]{display:none !important;}
+.h100{height: 100%;}
+.posr{position: relative;}
+.loading{display: inline-block;width: 32px;height: 32px;background: url(image/loading1.gif) no-repeat 0 0;}
+.notallowed{cursor: not-allowed !important;}
