@@ -1,6 +1,9 @@
 <ul class='nav nav-tabs'>
 	<li ms-repeat='headerData' ms-class='active : $index === curIndex' ms-click='$clickHeader($index)'>
-		<a href='javascript:void(0)'>{{el.title}}</a>
+		<a href='javascript:void(0)'>
+			<span ms-if='el.iconCls' class="glyphicon" ms-class='{{el.iconCls}}'></span>
+			{{el.title}}
+		</a>
 	</li>
 </ul>
 <div class='tab-content'>

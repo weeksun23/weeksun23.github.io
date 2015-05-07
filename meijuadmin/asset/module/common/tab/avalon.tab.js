@@ -6,9 +6,13 @@ define(["avalon","text!./avalon.tab.html"],function(avalon,templete){
 			var headerData = options.headerData = [];
 			var contentData = options.contentData = [];
 			avalon.each(children,function(i,v){
-				headerData.push({
+				var obj = {
 					title : v.title
+				};
+				avalon.each(['iconCls'],function(i,key){
+					obj[key] = v.getAttribute("data-" + key);
 				});
+				headerData.push(obj);
 				contentData.push({
 					content : v.innerHTML
 				});
@@ -33,8 +37,6 @@ define(["avalon","text!./avalon.tab.html"],function(avalon,templete){
 	};
 	widget.version = 1.0;
 	widget.defaults = {
-		headerData : [],
-		contentData : [],
 		curIndex : 0
 	};
 });

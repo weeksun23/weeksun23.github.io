@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>tab demo</title>
+<title>accordion demo</title>
 <link href="../css/bootstrap/bootstrap.css" rel="stylesheet">
 <link href="../css/base.css" rel="stylesheet">
 <!--[if lt IE 9]>
@@ -19,7 +19,7 @@
 </head>
 <body>
 <div class='container' ms-controller='demo'>
-	<div ms-widget="tab,$tab,$tabOpts">
+	<div ms-widget="accordion,$accordion,$accordionOpts">
 		<div title='ererter' data-iconCls="glyphicon-star">1</div>
 		<div title='ererter'>2</div>
 		<div title='ererter'>3</div>
@@ -29,10 +29,10 @@
 <script src='../module/avalon.js'></script>
 <script>
 	(function(){
-		require(['common/tab/avalon.tab'],function(){
+		require(['common/mmAnimate','common/accordion/avalon.accordion'],function(){
 			avalon.define({
 				$id : 'demo',
-				$tabOpts : {
+				$accordionOpts : {
 
 				}
 			});
