@@ -1,8 +1,8 @@
-//mmAnimate
-define(["avalon","text!./avalon.accordion.html","css!./avalon.accordion.css"],function(avalon,templete){
+//mmAnimate util
+define(["avalon.extend","text!./avalon.accordion.html","../mmAnimate","css!./avalon.accordion.css"],function(avalon,templete){
 	var widget = avalon.ui.accordion = function(element, data, vmodels){
 		var options = data.accordionOptions;
-		var children = element.children;
+		var children = avalon(element).children();
 		if(children.length > 0){
 			options.data = (function(){
 				var accordionData = [];
@@ -49,9 +49,10 @@ define(["avalon","text!./avalon.accordion.html","css!./avalon.accordion.css"],fu
 			})();
 		}
 		function togglePanel(i,action){
-			var target = element.children[i].children[1];
+			var panel = avalon(element).children()[i];
+			var target = avalon(panel).children()[1];
 			target.style.display = 'block';
-			var inner = target.children[0];
+			var inner = avalon(target).children()[0];
 			var h = avalon(inner).height();
 			if(action === 'slideDown'){
 				inner.style.height = 0;
@@ -70,14 +71,24 @@ define(["avalon","text!./avalon.accordion.html","css!./avalon.accordion.css"],fu
 				});
 			}
 		}
+		function findItem(func){
+			for(var i=0,ii;ii=vmodel.data[i++];){
+				for(var j=0,jj;jj=ii.children[j++];){
+					if(func(jj,i - 1)){
+						return jj;
+					}
+				}
+			}
+			return null;
+		}
 		var vmodel = avalon.define(data.accordionId,function(vm){
 			avalon.mix(vm,options);
-			vm.$skipArray = [];
+			vm.$skipArray = ['getSelectedItem','getItemByText','selectItem'];
 			vm.$init = function(){
 				avalon(element).addClass("panel-group maccordion");
 				element.innerHTML = templete;
 				avalon.scan(element, vmodel);
-				vmodel.curIndex = 0;
+				vmodel.onInit && vmodel.onInit.call(element, vmodel, vmodels);
 			};
 			vm.$remove = function(){
 				element.innerHTML = element.textContent = "";
@@ -89,17 +100,29 @@ define(["avalon","text!./avalon.accordion.html","css!./avalon.accordion.css"],fu
 					vmodel.curIndex = i;
 				}
 			};
-			vm.$selectItem = function(ch){
+			//选中item
+			vm.selectItem = function(ch){
 				if(ch.selected) return;
-				avalon.each(vmodel.data,function(i,v){
-					for(var j=0,jj;jj=v.children[j++];){
-						if(jj.selected){
-							jj.selected = false;
-							return false;
-						}
+				var sel = vmodel.getSelectedItem();
+				sel && (sel.selected = false);
+				ch.selected = true;
+				vmodel.onSelectItem(ch);
+			};
+			//获取所选的panel下的子item
+			vm.getSelectedItem = function(){
+				return findItem(function(jj){
+					return jj.selected;
+				});
+			};
+			//根据text选取item
+			vm.selectItemByText = function(text){
+				findItem(function(jj,i){
+					if(jj.text === text){
+						vmodel.curIndex = i;
+						vmodel.selectItem(jj);
+						return true;
 					}
 				});
-				ch.selected = true;
 			};
 		});
 		vmodel.$watch("curIndex",function(newVal,oldVal){
@@ -117,6 +140,17 @@ define(["avalon","text!./avalon.accordion.html","css!./avalon.accordion.css"],fu
 	widget.version = 1.0;
 	widget.defaults = {
 		curIndex : -1,
+		onInit : avalon.noop,
+		onSelectItem : avalon.noop,
+		/*
+		title : panel标题,
+		content : panel body html,
+		iconCls : panel标题左边的图标,
+		children : 若content为空，则取children为body内容
+			selected : 是否选中
+			text : 显示文字
+			iconCls : 文字左边图标
+		*/
 		data : []
 	};
 });

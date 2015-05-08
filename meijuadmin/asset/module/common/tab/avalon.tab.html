@@ -3,11 +3,12 @@
 		<a href='javascript:void(0)'>
 			<span ms-if='el.iconCls' class="glyphicon" ms-class='{{el.iconCls}}'></span>
 			{{el.title}}
+			<span ms-if='el.closeable' class='glyphicon glyphicon-remove' ms-click='$closeTab($event,$index)' style='cursor:pointer'></span>
 		</a>
 	</li>
 </ul>
 <div class='tab-content'>
 	<div class='tab-pane' ms-repeat='contentData' ms-class='active : $index === curIndex'>
-		{{el.content | html}}
+		{{el.html | html}}
 	</div>
 </div>

@@ -1,0 +1,13 @@
+@media (min-width: 768px){
+  .main {
+    margin-left: 230px;
+  }
+  .sidebar{
+    position: absolute;top: 0;left: 0;width: 230px;
+  }
+}
+.mnavbar{margin-bottom: 0}
+.mcontent{position: relative;}
+.main{
+	padding-top: 15px;
+}
