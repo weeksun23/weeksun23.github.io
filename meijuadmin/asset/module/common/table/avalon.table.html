@@ -1,0 +1,63 @@
+<div class="panel-heading" ms-if='title'>
+	<h3 class="panel-title">{{title}}</h3>
+</div>
+<div class="panel-body">
+	<div class='table-responsive mtable'>
+		<table class="table" ms-class='table-striped:striped' ms-class-1='table-bordered:border'>
+			<thead>
+				<tr>
+					<th ms-repeat='columns'>
+						<div>{{el.title}}</div>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ms-repeat-item="data.rows">
+					<td ms-repeat-el='columns'>
+						<div>{{el.formatter ? el.formatter(item[el.field],item) : item[el.field] | html}}</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<h2 ms-visible='!data || data.total === 0' class="text-muted text-center">暂无数据</h2>
+		<div ms-if='pagination' class='mpagination clearfix'>
+			<div class='pull-left' onselectstart='return false'>
+				<span ms-class='disabled:curPage <= 1'><i class='glyphicon glyphicon-triangle-left'></i></span>
+				<span ms-class='disabled:curPage <= 1' ms-click='$prePage'><i class='glyphicon glyphicon-chevron-left'></i></span>
+				<input class='form-control page' placeholder='页数' ms-duplex='changeCurPage' ms-keydown='$toPage'>
+				<span>共{{sumPage}}页</span>
+				<span ms-class='disabled:curPage >= sumPage' ms-click='$nextPage'><i class='glyphicon glyphicon-chevron-right'></i></span>
+				<span ms-class='disabled:curPage >= sumPage'><i class='glyphicon glyphicon-triangle-right'></i></span>
+			</div>
+			<div class='pull-right'>
+				<span>当前第{{curPage}}页,{{start}}~{{end}}条,共{{data.total}}条</span>
+				<select class='form-control' ms-duplex-number='pageSize' ms-change='$changePageSize'>
+					<option ms-repeat='pageSizeArr' ms-attr-value='{{el}}'>{{el}}</option>
+				</select>
+			<div>
+		</div>
+		<!-- 
+		<form ms-if='pagination' class='mpagination'>
+			<div class="form-group">
+				<div class="input-group">
+					<div class='input-group-addon'><i class='glyphicon glyphicon-triangle-left'></i></div>
+					<div class='input-group-addon'><i class='glyphicon glyphicon-chevron-left'></i></div>
+					<input type="text" class="form-control" placeholder="请输入页数">
+					<div class='input-group-addon'>共1页</div>
+					<div class='input-group-addon'><i class='glyphicon glyphicon-chevron-right'></i></div>
+					<div class='input-group-addon'><i class='glyphicon glyphicon-triangle-right'></i></div>
+					<select class='form-control'>
+						<option>10</option>
+						<option>20</option>
+						<option>30</option>
+						<option>40</option>
+					</select>
+				</div>
+			</div>
+		</form>
+		-->
+		<div>
+
+		</div>
+	</div>
+</div>
