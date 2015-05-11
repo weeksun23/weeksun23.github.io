@@ -37,12 +37,12 @@ define(["avalon.extend","text!./avalon.table.html","css!./avalon.table.css"],fun
 				}
 				loadDataByPage(page);
 			};
-			vm.loadData = function(data){
-				
-			};
 		});
 		function loadDataByPage(page,func){
 			if(!vmodel.url){
+				if(!vmodel.frontPageData){
+					avalon.error("若不定义url，则请将数据源赋值给frontPageData属性");
+				}
 				vmodel.curPage = vmodel.changeCurPage = page;
 				updatePagination();
 				var start = (page - 1) * vmodel.pageSize;
@@ -60,7 +60,7 @@ define(["avalon.extend","text!./avalon.table.html","css!./avalon.table.css"],fun
 				vmodel.data[vmodel.rowsKey] = re;
 				func && func();
 			}else{
-
+				
 			}
 		}
 		//初始化前台分页数据
@@ -107,6 +107,7 @@ define(["avalon.extend","text!./avalon.table.html","css!./avalon.table.css"],fun
 		data[opts.rowsKey] = 0;
 	}
 	widget.version = 1.0;
+	//url frontPageData
 	widget.defaults = {
 		//table标题
 		title : null,

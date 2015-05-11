@@ -1,4 +1,4 @@
-require(['common/accordion/avalon.accordion','common/tab/avalon.tab'],function(){
+require(['common/accordion/avalon.accordion','common/tab/avalon.tab','common/dialog/avalon.dialog'],function(){
 	var top = avalon.define({
 		$id : "top",
 		navCollapse : true,
@@ -17,16 +17,16 @@ require(['common/accordion/avalon.accordion','common/tab/avalon.tab'],function()
 			},{
 				title : "家庭管理",iconCls : "glyphicon-home",
 				children : [{
-					text : "家庭列表",iconCls : "glyphicon-list-alt",url : "usermanage/userinfo.html"
+					text : "家庭列表",iconCls : "glyphicon-list-alt",url : "homemanage/homelist.html"
 				}]
 			},{
 				title : "家电管理",iconCls : "glyphicon-blackboard",
 				children : [{
-					text : "家电列表",iconCls : "glyphicon-list-alt",url : "usermanage/userinfo.html"
+					text : "家电列表",iconCls : "glyphicon-list-alt"
 				},{
-					text : "家电类型",iconCls : "glyphicon-link",url : "usermanage/userinfo.html"
+					text : "家电类型",iconCls : "glyphicon-link"
 				},{
-					text : "家电型号",iconCls : "glyphicon-phone",url : "usermanage/userinfo.html"
+					text : "家电型号",iconCls : "glyphicon-phone"
 				}]
 			},{
 				title : "升级包管理",iconCls : "glyphicon-cloud-upload",
