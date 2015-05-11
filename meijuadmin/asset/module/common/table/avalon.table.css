@@ -1,9 +1,11 @@
-div.mtable thead tr th{padding: 0;}
-div.mtable thead tr th>div{padding: 8px;position: relative;}
+.panel-table.panel{border: 0;position: relative;}
+.panel-table.panel .panel-heading{border-width:1px 1px 0 1px;border-style: solid;}
+.mtable.panel-body{padding:0;}
+.mtable .table-responsive table{margin-bottom: 5px}
+.mtable .table-responsive th{padding: 0;}
+.mtable .table-responsive th>div{padding: 8px;position: relative;}
 .mpagination>div>span{display: inline-block;}
 .mpagination .form-control{display: inline-block;width: auto;}
-.mpagination .glyphicon{border:1px solid #ccc;padding: 8px;cursor: pointer;border-radius: 3px}
-.mpagination>div>span.disabled{opacity: 0.5;filter:alpha(opacity=50);}
-.mpagination>div>span.disabled .glyphicon{cursor: not-allowed;}
+.mpagination input.form-control{vertical-align: middle;}
 .mpagination .glyphicon:hover{background-color: #e2e2e2}
 .mpagination .page{width: 80px}
