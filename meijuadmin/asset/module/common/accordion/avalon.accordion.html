@@ -8,7 +8,7 @@
 	</div>
 	<div class="panel-collapse collapse">
 		<div ms-if='el.children' class="list-group">
-			<a ms-repeat-ch='el.children' href="#" class="list-group-item" ms-class='selected:ch.selected' ms-click='selectItem(ch)'>
+			<a ms-repeat-ch='el.children' href="javascript:void(0)" class="list-group-item" ms-class='selected:ch.selected' ms-click='selectItem(ch)'>
 				<i style='visibility:hidden'>空</i>
 				<i ms-if='ch.iconCls' class='glyphicon' ms-class='{{ch.iconCls}}'></i>
 				{{ch.text}}

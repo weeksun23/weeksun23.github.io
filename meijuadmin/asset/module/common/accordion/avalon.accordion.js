@@ -116,7 +116,7 @@ define(["avalon.extend","text!./avalon.accordion.html","../mmAnimate","css!./ava
 			};
 			//根据text选取item
 			vm.selectItemByText = function(text){
-				findItem(function(jj,i){
+				return findItem(function(jj,i){
 					if(jj.text === text){
 						vmodel.curIndex = i;
 						vmodel.selectItem(jj);

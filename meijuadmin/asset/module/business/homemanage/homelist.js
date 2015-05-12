@@ -11,8 +11,6 @@ require(["common/table/avalon.table"],function(){
 	}
 	var vmodel = avalon.define({
 		$id : "page",
-		sDate : null,
-		eDate : null,
 		$homeListOpts : {
 			columns : [{
 				title : "序号",field : "number"
@@ -41,9 +39,26 @@ require(["common/table/avalon.table"],function(){
 			$edit : function(){
 				parent.avalon.showDialog("userInfo-editHomeInfo");
 			}
+		}
+	});
+	var searchModel = avalon.define({
+		$id : "search",
+		memberNumType : '',
+		membernum : 1,
+		sDate : null,
+		eDate : null,
+		$dealMembernum : function(f){
+			if(searchModel.memberNumType === '') return;
+			if(searchModel.membernum + f >= 1)
+				searchModel.membernum += f;
 		},
-		detailSex : 'man',
-		accountState : 'unactive'
+		elecNumType : '',
+		elecnum : 1,
+		$dealElecnum : function(f){
+			if(searchModel.elecNumType === '') return;
+			if(searchModel.elecnum + f >= 1)
+				searchModel.elecnum += f;
+		}
 	});
 	avalon.scan();
 	(function(){
@@ -59,10 +74,10 @@ require(["common/table/avalon.table"],function(){
 			};
 		}
 		$('#sDatePicker').datetimepicker(getOpts()).on("changeDate",function(ev){
-			vmodel.sDate = ev.date ? ev.date.getTime() : null;
+			searchModel.sDate = ev.date ? ev.date.getTime() : null;
 		});
 		$('#eDatePicker').datetimepicker(getOpts()).on("changeDate",function(ev){
-			vmodel.eDate = ev.date ? ev.date.getTime() : null;
+			searchModel.eDate = ev.date ? ev.date.getTime() : null;
 		});
 	})();
 });

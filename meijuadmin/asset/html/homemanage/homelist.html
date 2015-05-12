@@ -13,16 +13,20 @@
 <script src='../../module/fkie.js'></script>
 <![endif]-->
 <style>
-	.input-group.date{
-		float: left;padding-left: 15px;padding-right: 15px;
-	}
+	.plusminus{position: relative;}
+	.plusminus>span{position: absolute;left: 0;right: 0;cursor: pointer;}
+	.plusminus>span:hover{color: #337AB7}
+	.plusminus-up{top: 0;bottom: 50%;}
+	.plusminus-down{top: 50%;bottom: 0}
+	.disable .plusminus>span{cursor: not-allowed;}
+	.disable .plusminus>span:hover{color: inherit;}
 </style>
 </head>
 <body ms-controller='page'>
 <div class="container-fluid" ms-visible='!showDetail'>
 	<div class="row">
 		<div class="col-md-12">
-			<form class="form-horizontal mgt10">
+			<form class="form-horizontal mgt10" ms-controller='search'>
 				<fieldset>
 					<div class="form-group">
 						<label for='userId' class="col-sm-2 control-label">用户ID</label>
@@ -42,27 +46,58 @@
 							</div>
 						</div>
 						<div class='col-sm-6 pad0'>
-							<label for='membernum' class="col-sm-4 control-label">成员总数</label>
-							<div class="col-sm-8">
-								<select class="form-control col-sm-6" id='membernum'>
-									<option>不限</option>
-									<option>&gt;</option>
-									<option>&lt;</option>
-									<option>=</option>
-								</select>
+							<label for='membernumsel' class="col-sm-4 control-label">成员总数</label>
+							<div class='col-sm-8 pad0 clearfix'>
+								<div class="col-xs-6">
+									<select class="form-control" id='membernumsel' ms-duplex='memberNumType'>
+										<option value=''>不限</option>
+										<option value='>'>&gt;</option>
+										<option value='<'>&lt;</option>
+										<option value='='>=</option>
+									</select>
+								</div>
+								<div class="col-xs-6 padl0">
+									<div class='input-group' ms-class='disable:memberNumType === ""'>
+	  									<input type="text" class="form-control" ms-duplex-number='membernum' 
+	  										ms-attr-disabled='memberNumType === ""'>
+	  									<span class="input-group-addon plusminus">
+	  										<span class='plusminus-up' ms-click='$dealMembernum(1)'>
+	  											<i class='glyphicon glyphicon-triangle-top'></i>
+	  										</span>
+	  										<span class='plusminus-down' ms-click='$dealMembernum(-1)'>
+	  											<i class='glyphicon glyphicon-triangle-bottom'></i>
+	  										</span>
+	  									</span>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
 					<div class="form-group">
 						<div class='col-sm-6 pad0'>
-							<label for='elecnum' class="col-sm-4 control-label">家电总数</label>
-							<div class="col-sm-8">
-								<select class="form-control col-sm-6" id='elecnum'>
-									<option>不限</option>
-									<option>&gt;</option>
-									<option>&lt;</option>
-									<option>=</option>
-								</select>
+							<label for='elecnumsel' class="col-sm-4 control-label">家电总数</label>
+							<div class='col-sm-8 pad0 clearfix'>
+								<div class="col-xs-6">
+									<select class="form-control" id='elecnumsel' ms-duplex='elecNumType'>
+										<option value=''>不限</option>
+										<option value='>'>&gt;</option>
+										<option value='<'>&lt;</option>
+										<option value='='>=</option>
+									</select>
+								</div>
+								<div class="col-xs-6 padl0">
+									<div class='input-group' ms-class='disable:elecNumType === ""'>
+	  									<input type="text" class="form-control" ms-duplex-number='elecnum' ms-attr-disabled='elecNumType === ""'>
+	  									<span class="input-group-addon plusminus">
+	  										<span class='plusminus-up' ms-click='$dealElecnum(1)'>
+	  											<i class='glyphicon glyphicon-triangle-top'></i>
+	  										</span>
+	  										<span class='plusminus-down' ms-click='$dealElecnum(-1)'>
+	  											<i class='glyphicon glyphicon-triangle-bottom'></i>
+	  										</span>
+	  									</span>
+									</div>
+								</div>
 							</div>
 						</div>
 						<div class='col-sm-6 pad0'>

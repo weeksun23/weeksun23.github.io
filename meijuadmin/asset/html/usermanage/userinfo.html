@@ -12,11 +12,6 @@
 <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
 <script src='../../module/fkie.js'></script>
 <![endif]-->
-<style>
-	.input-group.date{
-		float: left;padding-left: 15px;padding-right: 15px;
-	}
-</style>
 </head>
 <body ms-controller='page'>
 <div class="container-fluid" ms-visible='!showDetail'>
@@ -135,12 +130,14 @@
 						<div class='col-sm-6 pad0'>
 							<label class="col-sm-4 control-label">性别</label>
 							<div class="col-sm-8">
-								<label class="btn btn-primary" ms-class='active:detailSex === "man"'>
-									<input class='hide' type="radio" name="sex" value='man' checked ms-duplex-string='detailSex'> 男
-								</label>
-								<label class="btn btn-primary" ms-class='active:detailSex === "woman"'>
-									<input class='hide' type="radio" name="sex" value='woman' ms-duplex-string='detailSex'> 女
-								</label>
+								<button type='button' class="btn btn-primary" ms-class='active:detailSex === "man"' 
+									ms-click='$toggleChoose("detailSex","man")'>
+									男
+								</button>
+								<button type='button' class="btn btn-primary" ms-class='active:detailSex === "woman"' 
+									ms-click='$toggleChoose("detailSex","woman")'>
+									女
+								</button>
 							</div>
 						</div>
 						<div class='col-sm-6 pad0'>
@@ -174,22 +171,25 @@
 						<div class='col-sm-6 pad0'>
 							<label for='detail-accountState' class="col-sm-4 control-label">账号状态</label>
 							<div class="col-sm-8">
-								<label class="btn btn-primary" ms-class='active:accountState === "unactive"'>
-									<input class='hide' type="radio" name="sex" value='unactive' checked ms-duplex-string='accountState'> 未激活
-								</label>
-								<label class="btn btn-primary" ms-class='active:accountState === "actived"'>
-									<input class='hide' type="radio" name="sex" value='actived' ms-duplex-string='accountState'> 已激活
-								</label>
-								<label class="btn btn-primary" ms-class='active:accountState === "notactive"'>
-									<input class='hide' type="radio" name="sex" value='notactive' ms-duplex-string='accountState'> 禁用
-								</label>
+								<button type='button' class="btn btn-primary" ms-click='$toggleChoose("accountState","unactive")'
+								ms-class='active:accountState === "unactive"'>
+									未激活
+								</button>
+								<button type='button' class="btn btn-primary" ms-click='$toggleChoose("accountState","actived")'
+								ms-class='active:accountState === "actived"'> 
+									已激活
+								</button>
+								<button type='button' class="btn btn-primary" ms-click='$toggleChoose("accountState","notactive")'
+								ms-class='active:accountState === "notactive"'>
+									禁用
+								</button>
 							</div>
 						</div>
 					</div>
 				</fieldset>
 			</form>
 			<div ms-widget='table,$homeList,$homeListOpts'>
-
+				
 			</div>
 		</div>
 	</div>

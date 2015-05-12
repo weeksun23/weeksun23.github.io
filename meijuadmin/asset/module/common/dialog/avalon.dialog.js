@@ -51,7 +51,8 @@ define(["avalon.extend","text!./avalon.dialog.html"],function(avalon,templete){
 						if(!avalon(this).hasClass("in")){
 							this.style.display = 'none';
 						}else{
-							vmodel.afterShow(isInit = false);
+							vmodel.afterShow(isInit);
+							isInit = false;
 						}
 					});
 				}
@@ -86,8 +87,10 @@ define(["avalon.extend","text!./avalon.dialog.html"],function(avalon,templete){
 					element.offsetWidth;
 					modalBackDrop.offsetWidth;
 					avalon(element).addClass('in');
-					$modalBack.addClass('in');
+				}else{
+					vmodel.afterShow(isInit);
 				}
+				$modalBack.addClass('in');
 			};
 		});
 		return vmodel;

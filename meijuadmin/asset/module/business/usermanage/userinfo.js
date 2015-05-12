@@ -85,38 +85,28 @@ require(["common/table/avalon.table"],function(){
 			}
 		},
 		detailSex : 'man',
-		accountState : 'unactive'
-	});
-	avalon.bindingHandlers.parentwin = function(data, vmodels){
-		var re = parent.avalon.initDialog(data.value,{
-			beforeInit : function(options){
-				avalon.mix(options,{
-					obj : {
-						isDefault : '1',
-						homeId : '2344',
-						number : '3455',
-						name : 'r23r3rr',
-						otherName : "3r23r23r",
-						role : '0'
-					},
-					title : '修改家庭',
-					content : data.element.innerHTML,
-					buttons : [{
-						text : '确定',theme : 'primary',handler : function(){
-							avalon.log(this.obj.$model);
-						}
-					},{
-						text : '关闭',close : true
-					}]
-				});
-				data.element.parentNode.removeChild(data.element);
-				data.element = null;
-			}
-		});
-		if(re === false){
-			data.element.parentNode.removeChild(data.element);
-			data.element = null;
+		accountState : 'unactive',
+		$toggleChoose : function(type,val){
+			vmodel[type] = val;
 		}
+	});
+	avalon.bindingHandlers.parentwin["userInfo-editHomeInfo"] = {
+		obj : {
+			isDefault : '1',
+			homeId : '2344',
+			number : '3455',
+			name : 'r23r3rr',
+			otherName : "3r23r23r",
+			role : '0'
+		},
+		title : '修改家庭',
+		buttons : [{
+			text : '确定',theme : 'primary',handler : function(vmodel){
+				
+			}
+		},{
+			text : '关闭',close : true
+		}]
 	};
 	avalon.scan();
 	(function(){

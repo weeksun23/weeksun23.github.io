@@ -52,6 +52,20 @@ define(["avalon"], function (avalon) {
 			return false;
 		})()
 	};
-	
+	//父页面窗口dom绑定
+	avalon.bindingHandlers.parentwin = function(data,vmodel){
+		var re = parent.avalon.initDialog(data.value,{
+			beforeInit : function(options){
+				avalon.mix(options,avalon.bindingHandlers.parentwin[data.value]);
+				options.content = data.element.innerHTML;
+				data.element.parentNode.removeChild(data.element);
+				data.element = null;
+			}
+		});
+		if(re === false){
+			data.element.parentNode.removeChild(data.element);
+			data.element = null;
+		}
+	};
 	return avalon;
 });
