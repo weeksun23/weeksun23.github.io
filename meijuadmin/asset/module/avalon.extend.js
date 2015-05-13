@@ -1,4 +1,4 @@
-define(["avalon"], function (avalon) {
+define(function () {
 	"use strict";
 	/*dom*/
 	//获取所有子元素，非文本节点

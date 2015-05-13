@@ -1,4 +1,14 @@
-require(["common/table/avalon.table"],function(){
+require.config({
+    baseUrl: "../../module/",
+    paths: {
+    	avalon : "avalon",
+        text: "../combo/text",
+        css: "../combo/css",
+        domReady: "../combo/domReady",
+        jquery : "lib/jquery/jquery-1.11.3"
+    }
+});
+require(["lib/datetimepicker/bootstrap-datetimepicker-module","common/table/avalon.table"],function(){
 	function getTestData(){
 		var testData = [];
 		for(var i=0;i<58;i++){

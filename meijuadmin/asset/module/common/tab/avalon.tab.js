@@ -116,6 +116,7 @@ define(["avalon.extend","text!./avalon.tab.html"],function(avalon,templete){
 		/*
 		html : 内容html,$init : 若为false则是第一次打开
 		*/
-		contentData : []
+		contentData : [],
+		noContentTip : "暂无数据"
 	};
 });

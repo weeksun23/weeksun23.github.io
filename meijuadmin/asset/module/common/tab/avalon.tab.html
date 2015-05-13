@@ -11,4 +11,7 @@
 	<div class='tab-pane' ms-repeat='contentData' ms-class='active : $index === curIndex'>
 		{{el.html | html}}
 	</div>
+	<div ms-if="!contentData || contentData.length === 0" class='tab-pane active'>
+		<h1 class='text-center'>{{noContentTip}}</h1>
+	</div>
 </div>

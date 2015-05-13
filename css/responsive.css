@@ -100,7 +100,7 @@
 	}
 	.bar-nav{
 		position: absolute;right: 0;top: 50%;background-color:#454545;margin-top: 19px;
-		width: 200px;border : 1px solid #999;padding-top: 5px;display: none;
+		width: 200px;border : 1px solid #999;padding-top: 5px;display: none;z-index: 100;
 		box-shadow:5px 5px 5px #999;
 		-webkit-box-shadow:5px 5px 5px #999;
 		-moz-box-shadow:5px 5px 5px #999;

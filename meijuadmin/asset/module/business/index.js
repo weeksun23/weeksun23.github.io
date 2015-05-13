@@ -1,65 +1,105 @@
 require(['common/accordion/avalon.accordion','common/tab/avalon.tab','common/dialog/avalon.dialog'],function(){
+	//左侧菜单栏数据
+	var menuData = [{
+		title : "用户管理",iconCls : "glyphicon-user",
+		children : [{
+			text : "用户信息",iconCls : "glyphicon-list-alt",url : "usermanage/userinfo.html"
+		}]
+	},{
+		title : "家庭管理",iconCls : "glyphicon-home",
+		children : [{
+			text : "家庭列表",iconCls : "glyphicon-list-alt",url : "homemanage/homelist.html"
+		}]
+	},{
+		title : "家电管理",iconCls : "glyphicon-blackboard",
+		children : [{
+			text : "家电列表",iconCls : "glyphicon-list-alt",url : "elecmanage/eleclist.html"
+		},{
+			text : "家电类型",iconCls : "glyphicon-link",url : "elecmanage/electype.html"
+		},{
+			text : "家电型号",iconCls : "glyphicon-phone",url : 'elecmanage/elecmodel.html'
+		}]
+	},{
+		title : "升级包管理",iconCls : "glyphicon-cloud-upload",
+		children : [{
+			text : "app升级包",iconCls : "glyphicon-level-up"
+		},{
+			text : "wifi模块升级包",iconCls : "glyphicon-open-file"
+		}]
+	},{
+		title : "系统日志",iconCls : "glyphicon-calendar",
+		children : [{
+			text : "app日志列表",iconCls : "glyphicon-calendar"
+		},{
+			text : "家电通信日志列表",iconCls : "glyphicon-calendar"
+		},{
+			text : "流程日志查询",iconCls : "glyphicon-calendar"
+		},{
+			text : "应用服务器日志",iconCls : "glyphicon-calendar"
+		},{
+			text : "第三方平台日志",iconCls : "glyphicon-calendar"
+		},{
+			text : "调用平台日志",iconCls : "glyphicon-calendar"
+		},{
+			text : "推送日志",iconCls : "glyphicon-calendar"
+		}]
+	},{
+		title : "应用服务器",iconCls : "glyphicon-hdd",
+		children : [{
+			text : "应用服务器管理",iconCls : "glyphicon-tasks"
+		},{
+			text : "管家系统管理",iconCls : "glyphicon-tasks"
+		}]
+	}];
+	//将url转换成hash字符串
+	function url2Hash(url){
+		return "#" + url.replace(/\..*$/g,'');
+	}
 	//路由管理
 	var Route = (function(){
-		var obj = {
-			"#usermanage/userinfo" : 1,
-			"#homemanage/homelist" : 1,
-			"#elecmanage/eleclist" : 1,
-			"#elecmanage/electype" : 1,
-			"#elecmanage/elecmodel" : 1
-		};
-		function callback(hash){
-			if(obj[hash]){
-				var path = hash.substring(1) + ".html";
-				var ch;
-				avalon.each(avalon.vmodels.$leftmenu.data,function(i,v){
-					var children = v.children;
-					if(children && children.length){
-						for(var i=0,item;item=children[i++];){
-							if(item.url === path){
-								ch = item;
-								return false;
-							}
-						}
+		var urlObj = (function(){
+			var re = {};
+			avalon.each(menuData,function(i,v){
+				avalon.each(v.children,function(j,ch){
+					if(ch.url){
+						re[url2Hash(ch.url)] = ch;
 					}
 				});
-				if(ch){
-					var $tab = avalon.vmodels.$contenttab;
-					var panel = $tab.getTab(ch.text);
-					if(panel){
-						$tab.curIndex = panel.index;
-						return;
-					}
-					avalon.vmodels.$contenttab.add({
-						selected : true,
-						header : {
-							title : ch.text,
-							iconCls : ch.iconCls,
-							closeable : true
-						},
-						content : {
-							html : '<iframe class="w100" src="'+path+'" name="'+path.replace(/[\/\.]/g,'-')
-								+'" scrolling="no" frameborder="0"></iframe>'
-						}
-					});
+			});
+			return re;
+		})();
+		function callback(hash){
+			var ch = urlObj[hash];
+			if(ch){
+				var $tab = avalon.vmodels.$contenttab;
+				var panel = $tab.getTab(ch.text);
+				if(panel){
+					//如果panel已存在 则选中它
+					$tab.curIndex = panel.index;
+					return;
 				}
-			}else{
-
+				//不存在 则生成
+				avalon.vmodels.$contenttab.add({
+					selected : true,
+					header : {
+						title : ch.text,
+						iconCls : ch.iconCls,
+						closeable : true
+					},
+					content : {
+						html : '<iframe class="w100" src="' + ch.url + '" name="' + ch.url.replace(/[\/\.]/g,'-')
+							+ '" scrolling="no" frameborder="0"></iframe>'
+					}
+				});
 			}
 		}
 		window.onhashchange = function(){
 			callback(location.hash);
 		};
 		return {
-			changeHashByUrl : function(url){
-				this.changeHash(url.replace(/\..*$/g,''));
-			},
 			changeHash : function(hash){
-				if(hash.charAt(0) === "#"){
-					hash = hash.substring(1);
-				}
 				var oldHash = location.hash;
-				if("#" + hash === oldHash){
+				if(hash === oldHash){
 					callback(oldHash);
 				}else{
 					location.hash = hash;
@@ -68,6 +108,7 @@ require(['common/accordion/avalon.accordion','common/tab/avalon.tab','common/dia
 			firstPage : "#usermanage/userinfo"
 		};
 	})();
+	//顶部vmodel
 	var top = avalon.define({
 		$id : "top",
 		navCollapse : true,
@@ -75,60 +116,11 @@ require(['common/accordion/avalon.accordion','common/tab/avalon.tab','common/dia
 			top.navCollapse = !top.navCollapse;
 		}
 	});
+	//内容vmodel
 	var content = avalon.define({
 		$id : 'content',
 		$leftmenuOpts : {
-			data : [{
-				title : "用户管理",iconCls : "glyphicon-user",
-				children : [{
-					text : "用户信息",iconCls : "glyphicon-list-alt",url : "usermanage/userinfo.html"
-				}]
-			},{
-				title : "家庭管理",iconCls : "glyphicon-home",
-				children : [{
-					text : "家庭列表",iconCls : "glyphicon-list-alt",url : "homemanage/homelist.html"
-				}]
-			},{
-				title : "家电管理",iconCls : "glyphicon-blackboard",
-				children : [{
-					text : "家电列表",iconCls : "glyphicon-list-alt",url : "elecmanage/eleclist.html"
-				},{
-					text : "家电类型",iconCls : "glyphicon-link",url : "elecmanage/electype.html"
-				},{
-					text : "家电型号",iconCls : "glyphicon-phone",url : 'elecmanage/elecmodel.html'
-				}]
-			},{
-				title : "升级包管理",iconCls : "glyphicon-cloud-upload",
-				children : [{
-					text : "app升级包",iconCls : "glyphicon-level-up"
-				},{
-					text : "wifi模块升级包",iconCls : "glyphicon-open-file"
-				}]
-			},{
-				title : "系统日志",iconCls : "glyphicon-calendar",
-				children : [{
-					text : "app日志列表",iconCls : "glyphicon-calendar"
-				},{
-					text : "家电通信日志列表",iconCls : "glyphicon-calendar"
-				},{
-					text : "流程日志查询",iconCls : "glyphicon-calendar"
-				},{
-					text : "应用服务器日志",iconCls : "glyphicon-calendar"
-				},{
-					text : "第三方平台日志",iconCls : "glyphicon-calendar"
-				},{
-					text : "调用平台日志",iconCls : "glyphicon-calendar"
-				},{
-					text : "推送日志",iconCls : "glyphicon-calendar"
-				}]
-			},{
-				title : "应用服务器",iconCls : "glyphicon-hdd",
-				children : [{
-					text : "应用服务器管理",iconCls : "glyphicon-tasks"
-				},{
-					text : "管家系统管理",iconCls : "glyphicon-tasks"
-				}]
-			}],
+			data : menuData,
 			onInit : function(){
 				initFirstPage();
 			},
@@ -139,24 +131,13 @@ require(['common/accordion/avalon.accordion','common/tab/avalon.tab','common/dia
 					$tab.curIndex = panel.index;
 				}else{
 					if(ch.url){
-						Route.changeHashByUrl(ch.url);
-					}else{
-						$tab.add({
-							selected : true,
-							header : {
-								title : ch.text,
-								iconCls : ch.iconCls,
-								closeable : true
-							},
-							content : {
-								html : '<h1>'+ch.text+'正在研发中...<input /></h1>'
-							}
-						});
+						Route.changeHash(url2Hash(ch.url));
 					}
 				}
 			}
 		},
 		$contenttabOpts : {
+			noContentTip : "请点击左边菜单",
 			onInit : function(){
 				initFirstPage();
 			},
@@ -164,7 +145,7 @@ require(['common/accordion/avalon.accordion','common/tab/avalon.tab','common/dia
 				if(avalon.vmodels.$leftmenu){
 					var item = avalon.vmodels.$leftmenu.selectItemByText(header.title);
 					if(!item.url) return;
-					Route.changeHashByUrl(item.url);
+					Route.changeHash(url2Hash(item.url));
 				}
 			},
 			onClose : function(vmodel){

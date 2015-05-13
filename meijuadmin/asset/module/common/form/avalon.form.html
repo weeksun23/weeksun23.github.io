@@ -1,68 +1,39 @@
+<!-- 
+text 
+select 
+date
+numberspinner
+[
+	[{
+		field : 字段名,
+		text : label text,
+		id : 控件id,
+		type : 控件类型
+	},{
+		
+	}]
+]
+-->
 <fieldset>
-
 	<div class="form-group" ms-repeat='data'>
-		<label for='userId' class="col-sm-2 control-label">用户ID</label>
-		<div class="col-sm-4">
-			<input type="text" class="form-control" id='userId'>
+		<!-- 一列 -->
+		<label ms-if='el.length === 1' class="col-sm-2 control-label">{{el[0].text}}</label>
+		<div ms-if='el.length === 1' class="col-sm-10">
+			<input type="text" class="form-control" ms-duplex="'test'">
 		</div>
-		<label for='email' class="col-sm-2 control-label">邮箱</label>
-		<div class="col-sm-4">
-			<input type="text" class="form-control" id='email'>
-		</div>
-	</div>
-	<div class="form-group">
-		<div class='col-sm-6 pad0'>
-			<label for='phoneNumber' class="col-sm-4 control-label">手机号码</label>
+		<!-- 两列 -->
+		<div ms-if='el.length === 2' class='col-sm-6 pad0'>
+			<label class="col-sm-4 control-label">{{el[0].text}}</label>
 			<div class="col-sm-8">
-				<input type="text" class="form-control" id='phoneNumber'>
+				<input type="text" class="form-control">
 			</div>
 		</div>
-		<div class='col-sm-6 pad0'>
-			<label for='onlineState' class="col-sm-4 control-label">在线状态</label>
+		<div ms-if='el.length === 2' class='col-sm-6 pad0'>
+			<label class="col-sm-4 control-label">{{el[1].text}}</label>
 			<div class="col-sm-8">
-				<select class="form-control col-sm-6" id='onlineState'>
-					<option>不限</option>
-					<option>在线</option>
-					<option>离线</option>
-				</select>
+				<input type="text" class="form-control">
 			</div>
 		</div>
-	</div>
-	<div class="form-group">
-		<div class='col-sm-6 pad0'>
-			<label class="col-sm-4 control-label">起始日期</label>
-            <div id='sDatePicker' class="input-group date col-sm-8">
-                <input class="form-control" type="text" value="" readonly>
-                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-				<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-            </div>
-		</div>
-		<div class='col-sm-6 pad0' ms-class='has-error:eDate && sDate && (eDate < sDate)'>
-			<label class="col-sm-4 control-label">结束日期</label>
-            <div id='eDatePicker' class="input-group date col-sm-8">
-                <input class="form-control" type="text" value="" readonly>
-                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-				<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-            </div>
-             <div class="text-danger col-sm-8 col-sm-offset-4" ms-visible='eDate && sDate && (eDate < sDate)'>
-				结束日期不能少于开始日期
-			</div>
-		</div>
-    </div>
-	<div class="form-group">
-		<label id='accountState' class="col-sm-2 control-label">账号状态</label>
-		<div class="col-sm-10">
-			<select class="form-control" id='accountState'>
-				<option>不限</option>
-				<option>未激活</option>
-				<option>已激活</option>
-				<option>禁用</option>
-			</select>
-		</div>
-	</div>
-	<div class="form-group">
-	    <div class="col-sm-offset-2 col-sm-10">
-	    	<button type="button" class="btn btn-primary"><i class='glyphicon glyphicon-search'></i> 搜索</button>
-	    </div>
 	</div>
 </fieldset>
+

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>form demo</title>
+<link href="../css/bootstrap/bootstrap.css" rel="stylesheet">
+<link href="../css/base.css" rel="stylesheet">
+<!--[if lt IE 9]>
+<script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<style>
+	body{
+		background-color: #fff;
+	}
+</style>
+</head>
+<body>
+<div class='container' ms-controller='demo'>
+	<form ms-widget="form,$form,$formOpts">
+	</form>
+</div>
+<script src='../module/avalon.js'></script>
+<script>
+	(function(){
+		require(['common/form/avalon.form'],function(){
+			avalon.define({
+				$id : 'demo',
+				$formOpts : {
+					data : [
+						[{text : "sdfe",field : "test"}],
+						[{text : "sdfe"}],
+						[{text : "sdfe"},{text : "asdfe"}]
+					],
+					test : ""
+				}
+			});
+			avalon.scan();
+		});
+	})();
+</script>
+</body>
+</html>

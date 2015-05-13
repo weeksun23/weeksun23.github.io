@@ -63,7 +63,7 @@ a:active{color: #428BCA;}
 .bar-nav a:hover,.bar-nav .selected a{background-color: #696969;color: #fff}
 
 .content{overflow: auto;}
-.content-outer{padding: 0 0 5px 5px;}
+.content-outer{padding: 0 5px 5px 5px;}
 .content h1{font-size: 30px;padding: 5px 0;color: #3F9EC3}
 .content h2{font-size: 20px;padding: 5px 0}
 .content-item{
