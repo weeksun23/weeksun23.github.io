@@ -1,39 +1,21 @@
-<!-- 
-text 
-select 
-date
-numberspinner
-[
-	[{
-		field : 字段名,
-		text : label text,
-		id : 控件id,
-		type : 控件类型
-	},{
-		
-	}]
-]
--->
-<fieldset>
-	<div class="form-group" ms-repeat='data'>
-		<!-- 一列 -->
-		<label ms-if='el.length === 1' class="col-sm-2 control-label">{{el[0].text}}</label>
-		<div ms-if='el.length === 1' class="col-sm-10">
-			<input type="text" class="form-control" ms-duplex="'test'">
-		</div>
-		<!-- 两列 -->
-		<div ms-if='el.length === 2' class='col-sm-6 pad0'>
-			<label class="col-sm-4 control-label">{{el[0].text}}</label>
-			<div class="col-sm-8">
-				<input type="text" class="form-control">
-			</div>
-		</div>
-		<div ms-if='el.length === 2' class='col-sm-6 pad0'>
-			<label class="col-sm-4 control-label">{{el[1].text}}</label>
-			<div class="col-sm-8">
-				<input type="text" class="form-control">
-			</div>
-		</div>
+<!-- 一列 -->
+<label class="col-sm-2 control-label" ${forTxt}>${text}</label>
+<div class="col-sm-10">
+	${content}
+</div>
+${valid}
+MS_SPLIT
+<!-- 两列 -->
+<div class='col-sm-6 pad0'>
+	<label class="col-sm-4 control-label" ${forTxt}>${text}</label>
+	<div class="col-sm-8">
+		${content}
 	</div>
-</fieldset>
-
+	${valid}
+</div>
+MS_SPLIT
+<input type="text" class="form-control" ms-duplex="model.${field}" ${id}>
+MS_SPLIT
+<select class="form-control" ms-duplex="model.${field}" ${id}>${options}</select>
+MS_SPLIT
+<div class="text-danger col-sm-${sm} col-sm-offset-${offset}" ms-visible='${field}'>{{ ${messageField} }}</div>

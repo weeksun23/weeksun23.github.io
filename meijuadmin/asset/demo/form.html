@@ -20,6 +20,7 @@
 <div class='container' ms-controller='demo'>
 	<form ms-widget="form,$form,$formOpts">
 	</form>
+	<button class='btn btn-default' type='button' ms-click='showModel'>showModel</button>
 </div>
 <script src='../module/avalon.js'></script>
 <script>
@@ -29,11 +30,30 @@
 				$id : 'demo',
 				$formOpts : {
 					data : [
-						[{text : "sdfe",field : "test"}],
-						[{text : "sdfe"}],
-						[{text : "sdfe"},{text : "asdfe"}]
+						[{
+							text : "sdfe",field : "a1"
+						}],
+						[{
+							text : "sdfe",field : "a2",type : 'select',
+							selectOptions : [{value : '1',text : 'werer'}]
+						}],
+						[{
+							text : "sdfe",field : "a3"
+						},{
+							text : "asdfe",field : "a4",valid : {field : "aaa",messageField : "bbbb"}
+						}]
 					],
-					test : ""
+					model : {
+						a1 : "",
+						a2 : "",
+						a3 : "",
+						a4 : ""
+					},
+					aaa : true,
+					bbbb : "sdfsdgwegwegweg"
+				},
+				showModel : function(){
+					avalon.log(avalon.vmodels.$form.model.$model);
 				}
 			});
 			avalon.scan();
