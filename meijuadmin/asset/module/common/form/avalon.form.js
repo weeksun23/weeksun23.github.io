@@ -1,6 +1,7 @@
 define(["avalon","text!./avalon.form.html"],function(avalon,templete){
 	var tpls = templete.split("MS_SPLIT");
 	function replace(tpl,obj){
+		if(!obj) return tpl;
 		for(var i in obj){
 			var reg = new RegExp("\\$\\{" + i + "\\}","g");
 			var val = obj[i];
@@ -19,6 +20,9 @@ define(["avalon","text!./avalon.form.html"],function(avalon,templete){
 		}
 		return html.join("");
 	}
+	function getAttrStr(attr,val){
+		return val ? (attr + "='"+val+"'") : "";
+	}
 	function getItemHtml(tpl,obj,colsnum){
 		var type = obj.type || 'text';
 		var valid = obj.valid;
@@ -31,25 +35,35 @@ define(["avalon","text!./avalon.form.html"],function(avalon,templete){
 				valid.offset = 4;
 			}
 			var validStr = replace(tpls[4],valid);
+			var validCls = "ms-class='has-error:"+valid.condition+"'";
 		}
 		if(type === "text"){
 			var content = replace(tpls[2],{
-				id : obj.id ? ("id='"+obj.id+"'") : "",
-				field : obj.field,
-				valid : validStr
+				id : getAttrStr("id",obj.id),
+				field : obj.field
 			});
 		}else if(type === "select"){
+			var selectOptions = obj.options.selectOptions;
 			content = replace(tpls[3],{
-				id : obj.id ? ("id='"+obj.id+"'") : "",
+				id : getAttrStr("id",obj.id),
 				field : obj.field,
-				options : typeof obj.selectOptions == 'string' ? obj.selectOptions : getSelectOptions(obj.selectOptions),
-				valid : validStr
+				options : typeof selectOptions == 'string' ? selectOptions : getSelectOptions(selectOptions)
 			});
+		}else if(type === 'date'){
+			content = replace(tpls[5],{
+				id : getAttrStr("id",obj.id),
+				field : obj.field,
+				datePickerId : getAttrStr("id",obj.options.datePickerId)
+			});
+		}else if(type === "dom"){
+			content = replace(document.getElementById(obj.domId).innerHTML,obj.options);
 		}
 		return replace(tpl,{
 			content : content,
 			text : obj.text,
-			forTxt : obj.id ? ("for='"+obj.id+"'") : ""
+			forTxt : getAttrStr("for",obj.id),
+			valid : validStr,
+			validCls : validCls
 		});
 	}
 	var widget = avalon.ui.form = function(element, data, vmodels){
@@ -88,11 +102,15 @@ define(["avalon","text!./avalon.form.html"],function(avalon,templete){
 		[[{
 			field : 字段名，对应model中的键值,
 			text : label文字,
-			type : 类型，目前支持 text select,
-			selectOptions : 用于select生成option的数据,
+			type : 类型，目前支持 text select date dom,
+			domId : dom类型的模板dom id,
+			options : {//其它配置
+				selectOptions : 用于select生成option的数据,
+				datePickerId : datePickerId
+			},
 			id : dom id用于label for属性,
 			valid : {
-				field : 字段名，对应vmodel中的键值,
+				condition : 验证条件,
 				messageField : 字段名，对应vmodel中的键值,
 			}
 		}],[{},{}]]

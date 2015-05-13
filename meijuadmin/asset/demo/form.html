@@ -14,6 +14,13 @@
 	body{
 		background-color: #fff;
 	}
+	.plusminus{position: relative;}
+	.plusminus>span{position: absolute;left: 0;right: 0;cursor: pointer;}
+	.plusminus>span:hover{color: #337AB7}
+	.plusminus-up{top: 0;bottom: 50%;}
+	.plusminus-down{top: 50%;bottom: 0}
+	.disable .plusminus>span{cursor: not-allowed;}
+	.disable .plusminus>span:hover{color: inherit;}
 </style>
 </head>
 <body>
@@ -21,6 +28,31 @@
 	<form ms-widget="form,$form,$formOpts">
 	</form>
 	<button class='btn btn-default' type='button' ms-click='showModel'>showModel</button>
+</div>
+<div id='hiddenTpl1' class='hide' ms-skip>
+	<div class='row'>
+		<div class="col-xs-6">
+			<select class="form-control" id='elecnumsel' ms-duplex='elecNumType'>
+				<option value=''>不限</option>
+				<option value='>'>&gt;</option>
+				<option value='<'>&lt;</option>
+				<option value='='>=</option>
+			</select>
+		</div>
+		<div class="col-xs-6 padl0">
+			<div class='input-group' ms-class='disable:elecNumType === ""'>
+				<input type="text" class="form-control" ms-duplex-number='elecnum' ms-attr-disabled='elecNumType === ""'>
+				<span class="input-group-addon plusminus">
+					<span class='plusminus-up' ms-click='dealElecnum(1)'>
+						<i class='glyphicon glyphicon-triangle-top'></i>
+					</span>
+					<span class='plusminus-down' ms-click='dealElecnum(-1)'>
+						<i class='glyphicon glyphicon-triangle-bottom'></i>
+					</span>
+				</span>
+			</div>
+		</div>
+	</div>
 </div>
 <script src='../module/avalon.js'></script>
 <script>
@@ -31,26 +63,48 @@
 				$formOpts : {
 					data : [
 						[{
-							text : "sdfe",field : "a1"
+							text : "sdfe",field : "a1",id : "a1"
 						}],
 						[{
 							text : "sdfe",field : "a2",type : 'select',
-							selectOptions : [{value : '1',text : 'werer'}]
+							options : {
+								selectOptions : [{value : '1',text : 'werer'}]
+							}
 						}],
 						[{
 							text : "sdfe",field : "a3"
 						},{
-							text : "asdfe",field : "a4",valid : {field : "aaa",messageField : "bbbb"}
+							text : "asdfe",field : "a4",valid : {condition : "aaa && bbb",messageField : "bbbb"}
+						}],
+						[{
+							text : 'date1',field : "a5",type : "date",
+							options : {
+								datePickerId : "myDatePicker"
+							}
+						},{
+							text : "testdom",type : "dom",domId : "hiddenTpl1",id : "elecnumsel",
+							options : {
+
+							}
 						}]
 					],
 					model : {
 						a1 : "",
-						a2 : "",
+						a2 : "1",
 						a3 : "",
 						a4 : ""
 					},
 					aaa : true,
-					bbbb : "sdfsdgwegwegweg"
+					bbb : true,
+					bbbb : "sdfsdgwegwegweg",
+					elecNumType : "",
+					dealElecnum : function(f){
+						var vmodel = avalon.vmodels.$form;
+						if(vmodel.elecNumType === '') return;
+						if(vmodel.elecnum + f >= 1)
+							vmodel.elecnum += f;
+					},
+					elecnum : 0
 				},
 				showModel : function(){
 					avalon.log(avalon.vmodels.$form.model.$model);
