@@ -16,7 +16,7 @@ MS_SPLIT
 	${valid}
 </div>
 MS_SPLIT
-<input type="text" data-field="${field}" class="form-control" ms-duplex${number}="model.${field}" ${id}>
+<input type="text" ${readonly} data-field="${field}" class="form-control" ms-duplex${number}="model.${field}" ${id}>
 MS_SPLIT
 <select class="form-control" data-field="${field}" ms-duplex${number}="model.${field}" ${id}>${options}</select>
 MS_SPLIT
@@ -35,4 +35,16 @@ MS_SPLIT
     		{{el.text}}
     	</button>
     </div>
+</div>
+MS_SPLIT
+<div class='col-sm-12 input-group'>
+	<input type="text" ${readonly} class="form-control" ms-duplex-number="model.${field}" ${id}>
+	<span class="input-group-addon plusminus">
+		<span class='plusminus-up' ms-click='formSpinner(1,"${field}",${min},${max})'>
+			<i class='glyphicon glyphicon-triangle-top'></i>
+		</span>
+		<span class='plusminus-down' ms-click='formSpinner(-1,"${field}",${min},${max})'>
+			<i class='glyphicon glyphicon-triangle-bottom'></i>
+		</span>
+	</span>
 </div>

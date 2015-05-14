@@ -1,4 +1,4 @@
-define(["avalon","text!./avalon.form.html"],function(avalon,templete){
+define(["avalon","text!./avalon.form.html","css!./avalon.form"],function(avalon,templete){
 	var tpls = templete.split("MS_SPLIT");
 	function replace(tpl,obj){
 		if(!obj) return tpl;
@@ -41,10 +41,11 @@ define(["avalon","text!./avalon.form.html"],function(avalon,templete){
 			var content = replace(tpls[2],{
 				id : getAttrStr("id",obj.id),
 				number : obj.number ? "-number" : "",
+				readonly : obj.readonly ? "readonly" : "",
 				field : obj.field
 			});
 		}else if(type === "select"){
-			var selectOptions = obj.options.selectOptions;
+			var selectOptions = obj.selectOptions;
 			content = replace(tpls[3],{
 				id : getAttrStr("id",obj.id),
 				number : obj.number ? "-number" : "",
@@ -55,10 +56,18 @@ define(["avalon","text!./avalon.form.html"],function(avalon,templete){
 			content = replace(tpls[5],{
 				id : getAttrStr("id",obj.id),
 				field : obj.field,
-				datePickerId : getAttrStr("id",obj.options.datePickerId)
+				datePickerId : getAttrStr("id",obj.datePickerId)
 			});
 		}else if(type === "dom"){
-			content = replace(document.getElementById(obj.domId).innerHTML,obj.options);
+			content = replace(document.getElementById(obj.domId).innerHTML,obj.domOptions || {});
+		}else if(type === 'spinner'){
+			content = replace(tpls[7],{
+				id : getAttrStr("id",obj.id),
+				field : obj.field,
+				readonly : obj.readonly ? "readonly" : "",
+				min : obj.min === undefined ? "null" : obj.min,
+				max : obj.max === undefined ? "null" : obj.max
+			});
 		}
 		return replace(tpl,{
 			content : content,
@@ -89,7 +98,7 @@ define(["avalon","text!./avalon.form.html"],function(avalon,templete){
 			avalon.mix(vm,options);
 			vm.$skipArray = ['data'];
 			vm.$init = function(){
-				avalon(element).addClass("form-horizontal");
+				avalon(element).addClass("form-horizontal mform");
 				avalon.scan(element, vmodel);
 				vmodel.onInit.call(element, vmodel, vmodels);
 			};
@@ -98,6 +107,21 @@ define(["avalon","text!./avalon.form.html"],function(avalon,templete){
 			};
 			vm.clickBtn = function(el){
 				el.handler.call(vmodel);
+			};
+			vm.formSpinner = function(d,field,min,max){
+				var target = vmodel.model[field];
+				if(d > 0 && max !== null){
+					if(target === max) return;
+					if(target + d > max){
+						return vmodel.model[field] = max;
+					}
+				}else if(d < 0 && min !== null){
+					if(target === min) return;
+					if(target + d < min){
+						return vmodel.model[field] = min;
+					}
+				}
+				vmodel.model[field] = target + d;
 			};
 		});
 		return vmodel;
@@ -110,13 +134,14 @@ define(["avalon","text!./avalon.form.html"],function(avalon,templete){
 		[[{
 			field : 字段名，对应model中的键值,
 			text : label文字,
-			type : 类型，目前支持 text select date dom,
+			type : 类型，目前支持 text select date dom spinner,
 			domId : dom类型的模板dom id,
 			number : 是否数字,
-			options : {//其它配置
-				selectOptions : 用于select生成option的数据,
-				datePickerId : datePickerId
-			},
+			selectOptions : 用于select生成option的数据,
+			datePickerId : date datePickerId,
+			min : spinner min,
+			max : spinner max,
+			readonly : text spinner,
 			id : dom id用于label for属性,
 			valid : {
 				condition : 验证条件,

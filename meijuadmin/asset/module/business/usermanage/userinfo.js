@@ -37,30 +37,23 @@ require(["lib/datetimepicker/bootstrap-datetimepicker-module","common/table/aval
 							messageField : "phoneNumberValidMes"
 						}
 					},
-					{field : "onlineState",text : "在线状态",id : "onlineState",type : "text",
-						options : {
-							selectOptions : [{value : "",text : "不限"},{value : "1",text : "在线"},{value : "0",text : "离线"}]
-						}
+					{	
+						field : "onlineState",text : "在线状态",id : "onlineState",type : "text",
+						selectOptions : [{value : "",text : "不限"},{value : "1",text : "在线"},{value : "0",text : "离线"}]
 					}
 				],
 				[
-					{field : "sDate",text : "起始日期",id : "sDate",type : "date",options : {
-						datePickerId : "sDatePicker"
-					}},
-					{field : "eDate",text : "结束日期",id : "eDate",type : "date",options : {
-						datePickerId : "eDatePicker"
-					},valid : {
+					{field : "sDate",text : "起始日期",id : "sDate",type : "date",datePickerId : "sDatePicker"},
+					{field : "eDate",text : "结束日期",id : "eDate",type : "date",datePickerId : "eDatePicker",valid : {
 						condition : "model.eDate && model.sDate && (model.eDate < model.sDate)",
 						messageField : "eDateMes"
 					}}
 				],
 				[
-					{field : "accountState",text : "账号状态",id : "accountState",type : "select",options:{
-						selectOptions : [
-							{value : "",text : "不限"},{value : "0",text : "未激活"},
-							{value : "1",text : "已激活"},{value : "2",text : "禁用"}
-						]
-					}}
+					{field : "accountState",text : "账号状态",id : "accountState",type : "select",selectOptions : [
+						{value : "",text : "不限"},{value : "0",text : "未激活"},
+						{value : "1",text : "已激活"},{value : "2",text : "禁用"}
+					]}
 				]
 			],
 			phoneNumberValidFlag : false,
@@ -194,7 +187,7 @@ require(["lib/datetimepicker/bootstrap-datetimepicker-module","common/table/aval
 				],
 				[
 					{text : "性别",type : "dom",domId : "tpl1"},
-					{field : "age",text : "年龄",id : "detail-age"}
+					{field : "age",text : "年龄",id : "detail-age",type : "spinner",readonly : true,min : 1,max : 200}
 				],
 				[
 					{field : "addr",text : "地址",id : "detail-addr"},
@@ -215,7 +208,7 @@ require(["lib/datetimepicker/bootstrap-datetimepicker-module","common/table/aval
 			model : {
 				userId : "",name : "",
 				email : "",phoneNumber : "",
-				age : "",addr : "",
+				age : 18,addr : "",
 				homePhone : "",registerDate : "",
 				accountState : "unactive",
 				detailSex : "man"
