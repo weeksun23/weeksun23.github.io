@@ -104,7 +104,11 @@
 						if(vmodel.elecnum + f >= 1)
 							vmodel.elecnum += f;
 					},
-					elecnum : 0
+					elecnum : 0,
+					buttons : [{
+						theme : "primary",
+						text : "搜索"
+					}]
 				},
 				showModel : function(){
 					avalon.log(avalon.vmodels.$form.model.$model);

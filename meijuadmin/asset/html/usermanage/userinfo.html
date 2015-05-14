@@ -13,77 +13,11 @@
 <![endif]-->
 </head>
 <body ms-controller='page'>
-<div class="container-fluid" ms-visible='!showDetail'>
+<!-- main -->
+<div class="container-fluid" ms-visible='!showDetail' ms-controller="main">
 	<div class="row">
 		<div class="col-md-12">
-			<form class="form-horizontal mgt10">
-				<fieldset>
-					<div class="form-group">
-						<label for='userId' class="col-sm-2 control-label">用户ID</label>
-						<div class="col-sm-4">
-							<input type="text" class="form-control" id='userId' name='userId'>
-						</div>
-						<label for='email' class="col-sm-2 control-label">邮箱</label>
-						<div class="col-sm-4">
-							<input type="text" class="form-control" id='email'>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class='col-sm-6 pad0'>
-							<label for='phoneNumber' class="col-sm-4 control-label">手机号码</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control" id='phoneNumber'>
-							</div>
-						</div>
-						<div class='col-sm-6 pad0'>
-							<label for='onlineState' class="col-sm-4 control-label">在线状态</label>
-							<div class="col-sm-8">
-								<select class="form-control col-sm-6" id='onlineState'>
-									<option>不限</option>
-									<option>在线</option>
-									<option>离线</option>
-								</select>
-							</div>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class='col-sm-6 pad0'>
-							<label class="col-sm-4 control-label">起始日期</label>
-			                <div id='sDatePicker' class="input-group date col-sm-8">
-			                    <input class="form-control" type="text" value="" readonly>
-			                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-								<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-			                </div>
-						</div>
-						<div class='col-sm-6 pad0' ms-class='has-error:eDate && sDate && (eDate < sDate)'>
-							<label class="col-sm-4 control-label">结束日期</label>
-			                <div id='eDatePicker' class="input-group date col-sm-8">
-			                    <input class="form-control" type="text" value="" readonly>
-			                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-								<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-			                </div>
-			                 <div class="text-danger col-sm-8 col-sm-offset-4" ms-visible='eDate && sDate && (eDate < sDate)'>
-								结束日期不能少于开始日期
-							</div>
-						</div>
-		            </div>
-					<div class="form-group">
-						<label id='accountState' class="col-sm-2 control-label">账号状态</label>
-						<div class="col-sm-10">
-							<select class="form-control" id='accountState'>
-								<option>不限</option>
-								<option>未激活</option>
-								<option>已激活</option>
-								<option>禁用</option>
-							</select>
-						</div>
-					</div>
-					<div class="form-group">
-					    <div class="col-sm-offset-2 col-sm-10">
-					    	<button type="button" class="btn btn-primary"><i class='glyphicon glyphicon-search'></i> 搜索</button>
-					    </div>
-					</div>
-				</fieldset>
+			<form class="mgt10" ms-widget="form,$searchForm,$searchFormOpts">
 			</form>
 			<div ms-widget='table,$userList,$userListOpts'>
 			</div>
@@ -91,108 +25,43 @@
 	</div>
 </div>
 <!-- 基本详情 -->
-<div class="container-fluid" ms-visible='showDetail'>
+<div class="container-fluid" ms-visible='showDetail' ms-controller="detail">
 	<h2 class='text-center'>基本详情 <button class='btn btn-primary' ms-click='$closeDetail'>返回</button></h2>
 	<div class="row">
 		<div class="col-md-12">
-			<form class="form-horizontal mgt10">
-				<fieldset>
-					<div class="form-group">
-						<div class='col-sm-6 pad0'>
-							<label for='detail-userId' class="col-sm-4 control-label">用户ID</label>
-							<div class="col-sm-8">
-								<input type="text" readonly class="form-control" id='detail-userId'>
-							</div>
-						</div>
-						<div class='col-sm-6 pad0'>
-							<label for='detail-name' class="col-sm-4 control-label">昵称</label>
-							<div class="col-sm-8">
-								<input type='text' class="form-control" id='detail-name'>
-							</div>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class='col-sm-6 pad0'>
-							<label for='detail-email' class="col-sm-4 control-label">邮箱</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control" id='detail-email'>
-							</div>
-						</div>
-						<div class='col-sm-6 pad0'>
-							<label for='detail-phone' class="col-sm-4 control-label">手机号码</label>
-							<div class="col-sm-8">
-								<input type='text' class="form-control" id='detail-phone'>
-							</div>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class='col-sm-6 pad0'>
-							<label class="col-sm-4 control-label">性别</label>
-							<div class="col-sm-8">
-								<button type='button' class="btn btn-primary" ms-class='active:detailSex === "man"' 
-									ms-click='$toggleChoose("detailSex","man")'>
-									男
-								</button>
-								<button type='button' class="btn btn-primary" ms-class='active:detailSex === "woman"' 
-									ms-click='$toggleChoose("detailSex","woman")'>
-									女
-								</button>
-							</div>
-						</div>
-						<div class='col-sm-6 pad0'>
-							<label for='detail-age' class="col-sm-4 control-label">年龄</label>
-							<div class="col-sm-8">
-								<input type='text' class="form-control" id='detail-age'>
-							</div>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class='col-sm-6 pad0'>
-							<label for='detail-addr' class="col-sm-4 control-label">地址</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control" id='detail-addr'>
-							</div>
-						</div>
-						<div class='col-sm-6 pad0'>
-							<label for='detail-homephone' class="col-sm-4 control-label">固定电话</label>
-							<div class="col-sm-8">
-								<input type='text' class="form-control" id='detail-homephone'>
-							</div>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class='col-sm-6 pad0'>
-							<label for='detail-registerDate' class="col-sm-4 control-label">注册时间</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control" readonly id='detail-registerDate'>
-							</div>
-						</div>
-						<div class='col-sm-6 pad0'>
-							<label for='detail-accountState' class="col-sm-4 control-label">账号状态</label>
-							<div class="col-sm-8">
-								<button type='button' class="btn btn-primary" ms-click='$toggleChoose("accountState","unactive")'
-								ms-class='active:accountState === "unactive"'>
-									未激活
-								</button>
-								<button type='button' class="btn btn-primary" ms-click='$toggleChoose("accountState","actived")'
-								ms-class='active:accountState === "actived"'> 
-									已激活
-								</button>
-								<button type='button' class="btn btn-primary" ms-click='$toggleChoose("accountState","notactive")'
-								ms-class='active:accountState === "notactive"'>
-									禁用
-								</button>
-							</div>
-						</div>
-					</div>
-				</fieldset>
+			<form class="mgt10" ms-widget="form,$detailForm,$detailFormOpts">
 			</form>
 			<div ms-widget='table,$homeList,$homeListOpts'>
-				
 			</div>
 		</div>
 	</div>
 </div>
+<!-- 模板 -->
+<div class='hide' id='tpl1' ms-skip>
+	<button type='button' class="btn btn-primary" ms-class='active:model.detailSex === "man"' 
+		ms-click='toggleChoose("detailSex","man")'>
+		男
+	</button>
+	<button type='button' class="btn btn-primary" ms-class='active:model.detailSex === "woman"' 
+		ms-click='toggleChoose("detailSex","woman")'>
+		女
+	</button>
+</div>
+<div class='hide' id='tpl2' ms-skip>
+	<button type='button' class="btn btn-primary" ms-click='toggleChoose("accountState","unactive")'
+	ms-class='active:model.accountState === "unactive"'>
+		未激活
+	</button>
+	<button type='button' class="btn btn-primary" ms-click='toggleChoose("accountState","actived")'
+	ms-class='active:model.accountState === "actived"'> 
+		已激活
+	</button>
+	<button type='button' class="btn btn-primary" ms-click='toggleChoose("accountState","notactive")'
+	ms-class='active:model.accountState === "notactive"'>
+		禁用
+	</button>
+</div>
+<!-- 修改窗口 -->
 <div class='hide' ms-parentwin='userInfo-editHomeInfo'>
 	<div class="container-fluid">
 		<div class="row">

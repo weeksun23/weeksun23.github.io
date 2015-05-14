@@ -16,9 +16,9 @@ MS_SPLIT
 	${valid}
 </div>
 MS_SPLIT
-<input type="text" data-field="${field}" class="form-control" ms-duplex="model.${field}" ${id}>
+<input type="text" data-field="${field}" class="form-control" ms-duplex${number}="model.${field}" ${id}>
 MS_SPLIT
-<select class="form-control" data-field="${field}" ms-duplex="model.${field}" ${id}>${options}</select>
+<select class="form-control" data-field="${field}" ms-duplex${number}="model.${field}" ${id}>${options}</select>
 MS_SPLIT
 <div class="text-danger col-sm-${sm} col-sm-offset-${offset}" ms-visible='${condition}'>{{ ${messageField} }}</div>
 MS_SPLIT
@@ -26,4 +26,13 @@ MS_SPLIT
 	<input class="form-control" type="text" readonly ${id}>
     <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
 	<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+</div>
+MS_SPLIT
+<div class='form-group' ms-if="buttons && buttons.length">
+	<div class="col-sm-offset-2 col-sm-10">
+    	<button ms-repeat="buttons" type="button" class="btn" ms-class="btn-{{el.theme}}" ms-click='clickBtn(el)'>
+    		<i ms-if="el.iconCls" class='glyphicon' ms-class="{{el.iconCls}}"></i>
+    		{{el.text}}
+    	</button>
+    </div>
 </div>

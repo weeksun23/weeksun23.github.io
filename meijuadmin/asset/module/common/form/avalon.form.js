@@ -35,17 +35,19 @@ define(["avalon","text!./avalon.form.html"],function(avalon,templete){
 				valid.offset = 4;
 			}
 			var validStr = replace(tpls[4],valid);
-			var validCls = "ms-class='has-error:"+valid.condition+"'";
+			var validCls = "ms-class='has-error:${cls}'".replace("${cls}",valid.condition);
 		}
 		if(type === "text"){
 			var content = replace(tpls[2],{
 				id : getAttrStr("id",obj.id),
+				number : obj.number ? "-number" : "",
 				field : obj.field
 			});
 		}else if(type === "select"){
 			var selectOptions = obj.options.selectOptions;
 			content = replace(tpls[3],{
 				id : getAttrStr("id",obj.id),
+				number : obj.number ? "-number" : "",
 				field : obj.field,
 				options : typeof selectOptions == 'string' ? selectOptions : getSelectOptions(selectOptions)
 			});
@@ -80,6 +82,7 @@ define(["avalon","text!./avalon.form.html"],function(avalon,templete){
 			}
 			html.push("</div>");
 		});
+		html.push(tpls[6]);
 		html.push("</fieldset>");
 		element.innerHTML = html.join("");
 		var vmodel = avalon.define(data.formId,function(vm){
@@ -88,22 +91,28 @@ define(["avalon","text!./avalon.form.html"],function(avalon,templete){
 			vm.$init = function(){
 				avalon(element).addClass("form-horizontal");
 				avalon.scan(element, vmodel);
-				vmodel.onInit && vmodel.onInit.call(element, vmodel, vmodels);
+				vmodel.onInit.call(element, vmodel, vmodels);
 			};
 			vm.$remove = function(){
 				element.innerHTML = element.textContent = "";
+			};
+			vm.clickBtn = function(el){
+				el.handler.call(vmodel);
 			};
 		});
 		return vmodel;
 	};
 	widget.version = 1.0;
 	widget.defaults = {
+		buttons : [],
+		onInit : avalon.noop,
 		/*
 		[[{
 			field : 字段名，对应model中的键值,
 			text : label文字,
 			type : 类型，目前支持 text select date dom,
 			domId : dom类型的模板dom id,
+			number : 是否数字,
 			options : {//其它配置
 				selectOptions : 用于select生成option的数据,
 				datePickerId : datePickerId
