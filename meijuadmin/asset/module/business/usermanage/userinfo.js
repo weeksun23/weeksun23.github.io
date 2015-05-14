@@ -231,7 +231,7 @@ require(["lib/datetimepicker/bootstrap-datetimepicker-module","common/table/aval
 		title : '修改家庭',
 		buttons : [{
 			text : '确定',theme : 'primary',handler : function(vmodel){
-				
+				avalon.log(vmodel.obj);
 			}
 		},{
 			text : '关闭',close : true
