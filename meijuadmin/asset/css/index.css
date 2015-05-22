@@ -1,13 +1,45 @@
 @media (min-width: 768px){
-  .main {
-    margin-left: 230px;
-  }
-  .sidebar{
-    position: absolute;top: 0;left: 0;width: 230px;
-  }
+	.main {
+		margin-left: 230px;
+	}
+	.sidebar{
+		position: absolute;top: 0;left: 0;width: 230px;
+	}
 }
 body,html{width: 100%;height: 100%;}
-.mnavbar{margin-bottom: 0}
+.mnavbar-arrow{
+	position: absolute;bottom: 0;left: 50%;margin-left: -10px;
+	border-style: solid;
+	border-color: transparent transparent #fff transparent;
+	border-width: 0 10px 10px 10px;
+	display:none;
+}
+
+.mnavbar{margin-bottom: 0;background-color: #54C3F1;border: 0}
+.mnavbar .navbar-header{height: 83px;}
+.mnavbar .navbar-brand{height: auto;}
+.mnavbar .navbar-nav>li>a{color: #fff;}
+.mnavbar .navbar-nav>li>a:hover,
+.mnavbar .navbar-nav>li>a.selected,
+.mnavbar .navbar-nav>li>a:focus{color:#0068B6;}
+.mnavbar .navbar-nav>li>a>i{font-size: 2em;vertical-align: middle;}
+.mnavbar .navbar-nav>li>a>span{vertical-align: middle;}
+.mnavbar .navbar-text{color:#fff;}
+.mnavbar .navbar-text a{color: #f2f2f2}
+.mnavbar .navbar-toggle{border-color: #fff}
+.mnavbar .navbar-toggle:hover{}
+.mnavbar .navbar-toggle>span.icon-bar{background-color: #fff}
+.mnavbar .navbar-header .navbar-toggle:hover,.mnavbar .navbar-header .navbar-toggle:focus{
+	background-color: #0068B6
+}
+
+@media (min-width: 768px){
+	.mnavbar .navbar-nav>li{position: relative;height: 83px;margin-right: 20px}
+	.mnavbar .navbar-nav>li>a{display: block;padding: 0;text-align: center;margin-top: 15px;}
+	.mnavbar .navbar-nav>li>a>i{vertical-align: baseline;}
+	.mnavbar .navbar-nav>li>a>span{display: block;vertical-align: baseline;}
+	.mnavbar-arrow{display: block;}
+}
 .mcontent{position: relative;}
 .main{
 	padding-top: 15px;

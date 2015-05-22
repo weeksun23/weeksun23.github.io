@@ -67,9 +67,7 @@
 						}],
 						[{
 							text : "sdfe",field : "a2",type : 'select',
-							options : {
-								selectOptions : [{value : '1',text : 'werer'}]
-							}
+							selectOptions : [{value : '1',text : 'werer'}]
 						}],
 						[{
 							text : "sdfe",field : "a3"
@@ -78,14 +76,9 @@
 						}],
 						[{
 							text : 'date1',field : "a5",type : "date",
-							options : {
-								datePickerId : "myDatePicker"
-							}
+							datePickerId : "myDatePicker"
 						},{
-							text : "testdom",type : "dom",domId : "hiddenTpl1",id : "elecnumsel",
-							options : {
-
-							}
+							text : "testdom",type : "dom",domId : "hiddenTpl1",id : "elecnumsel"
 						}]
 					],
 					model : {
@@ -107,7 +100,10 @@
 					elecnum : 0,
 					buttons : [{
 						theme : "primary",
-						text : "搜索"
+						text : "搜索",
+						handler : function(){
+							avalon.log(this.model.$model);
+						}
 					}]
 				},
 				showModel : function(){

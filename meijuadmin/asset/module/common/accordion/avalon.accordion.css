@@ -1,8 +1,15 @@
-.maccordion .panel{margin-top: -1px!important;border-radius: 0!important}
-.maccordion .panel-heading{cursor: pointer;border-radius: 0}
+.maccordion{border-bottom: 1px solid #ddd}
+.maccordion .panel{
+	border: 0;
+	margin-top: 0!important;border-radius: 0!important;
+}
+.maccordion .panel-heading{cursor: pointer;border-radius: 0;border:1px solid #ddd;}
 .maccordion .panel-heading:hover,
-.maccordion .panel-heading.selected{background-color: #337AB7;color: #fff;}
-.maccordion .list-group{border-top: 0!important;}
+.maccordion .panel.selected .panel-heading{background-color: #337AB7;color: #fff;border-color:#337AB7;}
+.maccordion .panel.selected .panel-body{border-bottom:0;}
+.maccordion .panel-body{border:1px solid #ddd;}
+
+.maccordion .list-group{border-top: 0!important;border-left:1px solid #ddd;border-right: 1px solid #ddd}
 .maccordion .list-group-item{font-size: 16px;border-radius: 0!important;position: relative;}
 .maccordion .list-group-item.selected{background-color: #3E98EA;color: #fff}
 .maccordion .list-group-item .marrow{

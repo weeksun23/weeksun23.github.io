@@ -1,5 +1,5 @@
 //mmAnimate util
-define(["avalon.extend","text!./avalon.accordion.html","../mmAnimate","css!./avalon.accordion.css"],function(avalon,templete){
+define(["avalon.extend","text!./avalon.accordion.html","css!./avalon.accordion.css"],function(avalon,templete){
 	var widget = avalon.ui.accordion = function(element, data, vmodels){
 		var options = data.accordionOptions;
 		var children = avalon(element).children();
@@ -51,25 +51,28 @@ define(["avalon.extend","text!./avalon.accordion.html","../mmAnimate","css!./ava
 		function togglePanel(i,action){
 			var panel = avalon(element).children()[i];
 			var target = avalon(panel).children()[1];
-			target.style.display = 'block';
-			var inner = avalon(target).children()[0];
-			var h = avalon(inner).height();
+			var $target = avalon(target);
 			if(action === 'slideDown'){
-				inner.style.height = 0;
-				avalon(inner).animate({
-					height : h
-				},200,function(){
-					this.style.height = 'auto';
-				});
+				$target.addClass("in");
+				if(avalon.support.transitionend){
+					var inner = $target.children()[0];
+					var h = avalon(inner).outerHeight(true);
+					$target.addClass("collapsing");
+					target.offsetWidth;
+					$target.height(h);
+				}
 			}else{
-				inner.style.height = h;
-				avalon(inner).animate({
-					height : 0
-				},200,function(){
-					this.style.height = 'auto';
-					target.style.display = 'none';
-				});
+				if(avalon.support.transitionend){
+					var inner = $target.children()[0];
+					var h = avalon(inner).outerHeight(true);
+					$target.height(h).addClass("collapsing");
+					target.offsetWidth;
+					$target.height(0);
+				}else{
+					$target.removeClass("in");
+				}
 			}
+			target._state = action;
 		}
 		function findItem(func){
 			for(var i=0,ii;ii=vmodel.data[i++];){
@@ -88,6 +91,19 @@ define(["avalon.extend","text!./avalon.accordion.html","../mmAnimate","css!./ava
 				avalon(element).addClass("panel-group maccordion");
 				element.innerHTML = templete;
 				avalon.scan(element, vmodel);
+				avalon.support.transitionend && avalon.each(element.getElementsByTagName("div"),function(i,div){
+					if(avalon(div).hasClass("panel-collapse")){
+						avalon.bind(div,avalon.support.transitionend,function(){
+							var $this = avalon(this);
+							if(this._state === "slideDown"){
+								this.style.height = 'auto';
+							}else{
+								$this.removeClass("in");
+							}
+							$this.removeClass("collapsing");
+						});
+					}
+				});
 				vmodel.onInit && vmodel.onInit.call(element, vmodel, vmodels);
 			};
 			vm.$remove = function(){

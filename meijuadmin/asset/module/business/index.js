@@ -169,21 +169,20 @@ require(['common/accordion/avalon.accordion','common/tab/avalon.tab','common/dia
 	avalon.scan();
 	(function(){
 		//定时轮询 resize 选中的iframe 
-		var $leftmenu = avalon.vmodels.$leftmenu;
-		var el = avalon.vmodels.$contenttab.widgetElement;
+		var content = avalon.vmodels.$contenttab.widgetElement;
 		setInterval(function(){
-			var item = $leftmenu.getSelectedItem();
-			if(item && item.url){
-				var name = item.url.replace(/[\/\.]/g,'-');
-				avalon.each(el.getElementsByTagName("iframe"),function(i,iframe){
-					if(iframe.name === name){
+			avalon.each(content.getElementsByTagName("div"),function(i,div){
+				if(div.className === "tab-pane active"){
+					var iframes = div.getElementsByTagName("iframe");
+					if(iframes && iframes.length === 1){
+						var iframe = iframes[0];
 						try{
-							iframe.height = avalon(iframe.contentWindow.document.body).height();
+							iframe.height = avalon(iframe.contentWindow.document.body).outerHeight(true);
 						}catch(ex){}
-						return false;
 					}
-				});
-			}
+					return false;
+				}
+			});
 		},200);
 	})();
 });

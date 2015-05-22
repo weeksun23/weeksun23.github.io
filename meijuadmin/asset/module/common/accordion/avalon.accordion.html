@@ -1,7 +1,7 @@
-<div class="panel panel-default" ms-repeat='data'>
-	<div class="panel-heading" ms-class='selected:curIndex === $index' ms-click='$clickHeader($index)'>
+<div class="panel panel-default" ms-repeat='data' ms-class='selected:curIndex === $index' ms-class-1='last:$last'>
+	<div class="panel-heading" ms-click='$clickHeader($index)'>
 		<h4 class="panel-title">
-			<span ms-if='el.iconCls' class="glyphicon" ms-class='{{el.iconCls}}'></span>
+			<i ms-if='el.iconCls' class="glyphicon" ms-class='{{el.iconCls}}'></i> 
 			{{el.title}}
 			<span class='pull-right glyphicon' ms-class='{{curIndex === $index ? "glyphicon-menu-down" : "glyphicon-menu-right"}}'></span>
 		</h4>
