@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>岗亭收费管理系统</title>
+<link href="css/bootstrap/bootstrap.css" rel="stylesheet">
+<link href="css/base.css" rel="stylesheet">
+<link href="css/index.css" rel="stylesheet">
+<!--[if lt IE 10]>
+<script>alert("抱歉，请使用IE10+,Google Chrome,firefox等其他高级浏览器登录本系统!");</script>
+<![endif]-->
+</head>
+<body>
+<div class='navbar navbar-default mnavbar'>
+	<div class="container-fluid" ms-controller='top'>
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" ms-click='toggleNav'>
+				<span class="sr-only">展开导航栏</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="javascript:void(0)">岗亭收费管理系统</a>
+        </div>
+		<div class="navbar-collapse" ms-class='collapse:navCollapse'>
+			<ul class="nav navbar-nav">
+				<li>
+					<a href="javascript:void(0)" class='text-center'>
+						<i class='glyphicon glyphicon-resize-horizontal'></i><br>
+						进出
+					</a>
+				</li>
+				<li>
+					<a href="javascript:void(0)" class='text-center'>
+						<i class='glyphicon glyphicon-bed'></i><br>
+						车辆
+					</a>
+				</li>
+				<li>
+					<a href="javascript:void(0)" class='text-center'>
+						<i class='glyphicon glyphicon-cog'></i><br>
+						设置
+					</a>
+				</li>
+			</ul>
+			<div class="navbar-right">
+				<ul class="nav navbar-nav">
+					<li>
+						<a href="javascript:void(0)" class='text-center'>
+							<i class='glyphicon glyphicon-user'></i><br>
+							admin
+						</a>
+					</li>
+					<li>
+						<a href="javascript:void(0)" class='text-center'>
+							<i class='glyphicon glyphicon-off'></i><br>
+							退出
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="mcontent" ms-controller='content'>
+	
+</div>
+<script src='module/avalon.modern.min.js'></script>
+<script src='module/business/index.js'></script>
+</body>
+</html>
