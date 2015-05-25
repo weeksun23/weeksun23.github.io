@@ -2,9 +2,11 @@
   
 }
 body,html{width: 100%;height: 100%;}
+body{background-color: #eee}
 .mnavbar{margin-bottom: 0}
 .mnavbar .navbar-brand{line-height: 46px;height: auto;}
 .mnavbar .navbar-nav .glyphicon{font-size: 1.5em;}
+.mnavbar .navbar-toggle{margin-top: 22px}
 .mcontent{position: relative;}
 .main{
 	padding-top: 15px;
