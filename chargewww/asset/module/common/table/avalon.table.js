@@ -1,11 +1,11 @@
-define(["avalon.extend","text!./avalon.table.html","css!./avalon.table.css"],function(avalon,templete){
+define(["avalon","text!./avalon.table.html","css!./avalon.table.css"],function(avalon,templete){
 	var widget = avalon.ui.table = function(element, data, vmodels){
 		var options = data.tableOptions;
 		initFrontPageData(options);
 		var vmodel = avalon.define(data.tableId,function(vm){
 			avalon.mix(vm,options);
 			vm.widgetElement = element;
-			vm.$skipArray = ['widgetElement','pageSizeArr','totalKey','rowsKey','loadData','frontPageData'];
+			vm.$skipArray = ['widgetElement','totalKey','rowsKey','loadData','frontPageData'];
 			vm.$init = function(){
 				avalon(element).addClass("panel panel-default panel-table");
 				element.innerHTML = templete;
@@ -101,11 +101,6 @@ define(["avalon.extend","text!./avalon.table.html","css!./avalon.table.css"],fun
 		}
 		return vmodel;
 	};
-	function setEmptyData(opts){
-		var data = opts.data = {};
-		data[opts.totalKey] = 0;
-		data[opts.rowsKey] = 0;
-	}
 	widget.version = 1.0;
 	//url frontPageData
 	widget.defaults = {

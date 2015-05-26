@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>岗亭收费管理系统-进出管理</title>
+<link href="css/bootstrap/bootstrap.css" rel="stylesheet">
+<link href="css/base.css" rel="stylesheet">
+<link href="css/index.css" rel="stylesheet">
+<!--[if lt IE 10]>
+<script>alert("抱歉，请使用IE10+,Google Chrome,firefox等其他高级浏览器登录本系统!");</script>
+<![endif]-->
+</head>
+<body id='inout' ms-controller='body'>
+<div ms-include-src="'tpl/top.html'" data-include-replace="true"></div>
+<div class="mcontent container-fluid" ms-controller='content'>
+	<div class='row'>
+		<div class='col-md-6'>
+			<h2>入场通道名称</h2>
+			<div class="panel panel-default mpanel">
+	  			<div class="panel-heading clearfix">
+				    <h3 class="panel-title pull-left">识别图像</h3>
+				    <button class='btn btn-primary pull-right'>监控录像</button>
+				</div>
+				<div class="panel-body"><!-- 1360/1024 -->
+			   		<img src="image/full.jpg" alt='识别图像' class='img-responsive img-rounded'>
+				</div>
+			</div>
+			<form class="form-horizontal">
+				<div class="form-group form-group-lg">
+				    <label class="col-sm-2 control-label carnum-label">入场车牌</label>
+				    <div class="col-sm-10 db dbac">
+				    	<input type="text" class="form-control dbf1" readonly value='--'>
+				    	<div class='padl5'>
+				    		<img src="image/plate.jpg" class='img-rounded' alt='车牌识别图片' height='50'>
+				    	</div>
+				    </div>
+				</div>
+				<div class="form-group">
+				    <label class="col-sm-2 control-label">入场时间</label>
+				    <div class="col-sm-10">
+				      	<input type="text" class="form-control" readonly value='--'>
+				    </div>
+				</div>
+				<div class="form-group">
+				    <label class="col-sm-2 control-label">车辆类型</label>
+				    <div class="col-sm-10">
+				      	<input type="text" class="form-control" readonly value='--'>
+				    </div>
+				</div>
+				<div class="form-group">
+				    <div class="col-sm-offset-2 col-sm-10">
+				    	<div class='row'>
+				    		<div class='col-xs-6'>
+				    			<button type="button" class="btn btn-primary btn-lg btn-block">入场补景</button>
+				    		</div>
+				    		<div class='col-xs-6'>
+				    			<button type="button" class="btn btn-success btn-lg btn-block">确认放行</button>
+				    		</div>
+				    	</div>
+				    </div>
+				</div>
+			</form>
+		</div>
+		<div class='col-md-6'>
+			<h2>出场通道名称</h2>
+			<div class="panel panel-default mpanel">
+	  			<div class="panel-heading clearfix">
+				    <h3 class="panel-title pull-left">识别图像</h3>
+				    <button class='btn btn-primary pull-right'>监控录像</button>
+				</div>
+				<div class="panel-body">
+			   		<img src="image/full.jpg" alt='识别图像' class='img-responsive img-rounded'>
+				</div>
+			</div>
+			<form class="form-horizontal">
+				<div class="form-group form-group-lg">
+				    <label class="col-sm-2 control-label carnum-label">入场车牌</label>
+				    <div class="col-sm-10 db dbac">
+				    	<input type="text" class="form-control dbf1" readonly value='--'>
+				    	<div class='padl5'>
+				    		<img src="image/plate.jpg" class='img-rounded' alt='车牌识别图片' height='50'>
+				    	</div>
+				    </div>
+				</div>
+				<div class="form-group form-group-lg">
+				    <label class="col-sm-2 control-label carnum-label">离场车牌</label>
+				    <div class="col-sm-10 db dbac">
+				    	<input type="text" class="form-control dbf1" readonly value='--'>
+				    	<div class='padl5'>
+				    		<img src="image/plate.jpg" class='img-rounded' alt='车牌识别图片' height='50'>
+				    	</div>
+				    </div>
+				</div>
+				<div class="form-group">
+				    <label class="col-sm-2 control-label">入场时间</label>
+				    <div class="col-sm-10">
+				      	<input type="text" class="form-control" readonly value='--'>
+				    </div>
+				</div>
+				<div class="form-group">
+				    <label class="col-sm-2 control-label">离场时间</label>
+				    <div class="col-sm-10">
+				      	<input type="text" class="form-control" readonly value='--'>
+				    </div>
+				</div>
+				<div class="form-group">
+				    <label class="col-sm-2 control-label">离场优惠</label>
+				    <div class="col-sm-10">
+				      	<select class='form-control'>
+				      		<option>优惠3小时</option>
+				      	</select>
+				    </div>
+				</div>
+				<div class="form-group">
+				    <label class="col-sm-2 control-label">车辆类型</label>
+				    <div class="col-sm-10">
+				      	<input type="text" class="form-control" readonly value='--'>
+				    </div>
+				</div>
+				<div class="form-group">
+				    <label class="col-sm-2 control-label">需交金额</label>
+				    <div class="col-sm-10">
+				      	<input type="text" class="form-control" readonly value='--'>
+				    </div>
+				</div>
+				<div class="form-group">
+				    <div class="col-sm-offset-2 col-sm-10">
+				    	<div class='row'>
+				    		<div class='col-xs-6'>
+				    			<button type="button" class="btn btn-danger btn-lg btn-block">付停车费</button>
+				    		</div>
+				    		<div class='col-xs-6'>
+				    			<button type="button" class="btn btn-success btn-lg btn-block">确认放行</button>
+				    		</div>
+				    	</div>
+				    </div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<script src='module/avalon.modern.min.js'></script>
+<script src='module/business/inout.js'></script>
+</body>
+</html>

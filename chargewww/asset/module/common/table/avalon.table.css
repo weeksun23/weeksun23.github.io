@@ -4,6 +4,8 @@
 .mtable .table-responsive table{margin-bottom: 5px}
 .mtable .table-responsive th{padding: 0;}
 .mtable .table-responsive th>div{padding: 8px;position: relative;}
+.mtable h2{margin: 0;padding: 20px 0;border-bottom: 1px solid #ddd}
+.mpagination{padding: 3px;}
 .mpagination>div>span{display: inline-block;}
 .mpagination .form-control{display: inline-block;width: auto;}
 .mpagination input.form-control{vertical-align: middle;}
