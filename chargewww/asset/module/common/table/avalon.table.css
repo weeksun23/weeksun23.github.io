@@ -1,11 +1,15 @@
-.panel-table.panel{border: 0;position: relative;}
+.panel-table.panel{
+	border: 0;position: relative;box-shadow:none;
+	background-color: transparent;
+	-moz-box-shadow: none;
+	-webkit-box-shadow:none;
+}
 .panel-table.panel .panel-heading{border-width:1px 1px 0 1px;border-style: solid;}
 .mtable.panel-body{padding:0;}
-.mtable .table-responsive table{margin-bottom: 5px}
+.mtable .table{margin-bottom:0}
+.mtable .table-responsive{margin-bottom:5px;}
 .mtable .table-responsive th{padding: 0;}
 .mtable .table-responsive th>div{padding: 8px;position: relative;}
-.mtable h2{margin: 0;padding: 20px 0;border-bottom: 1px solid #ddd}
-.mpagination{padding: 3px;}
 .mpagination>div>span{display: inline-block;}
 .mpagination .form-control{display: inline-block;width: auto;}
 .mpagination input.form-control{vertical-align: middle;}
