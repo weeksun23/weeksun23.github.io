@@ -15,31 +15,35 @@
 					<a href="inout.html" class='text-center' ms-class='selected:curIndex === 0'>
 						<i class='glyphicon glyphicon-resize-horizontal'></i><br>
 						进出
+						<span class='arrow' ms-class='active:curIndex === 0'></span>
 					</a>
 				</li>
 				<li>
 					<a href="car.html" class='text-center' ms-class='selected:curIndex === 1'>
 						<i class='glyphicon glyphicon-bed'></i><br>
 						车辆
+						<span class='arrow' ms-class='active:curIndex === 1'></span>
 					</a>
 				</li>
 				<li>
-					<a href="javascript:void(0)" class='text-center' ms-class='selected:curIndex === 2'>
+					<a href="money.html" class='text-center' ms-class='selected:curIndex === 2'>
 						<i class='glyphicon glyphicon-th'></i><br>
 						财务
+						<span class='arrow' ms-class='active:curIndex === 2'></span>
 					</a>
 				</li>
 				<li>
-					<a href="javascript:void(0)" class='text-center' ms-class='selected:curIndex === 3'>
+					<a href="setting.html" class='text-center' ms-class='selected:curIndex === 3'>
 						<i class='glyphicon glyphicon-cog'></i><br>
 						设置
+						<span class='arrow' ms-class='active:curIndex === 3'></span>
 					</a>
 				</li>
 			</ul>
 			<div class="navbar-right">
 				<ul class="nav navbar-nav">
 					<li>
-						<a href="javascript:void(0)" class='text-center'>
+						<a href="javascript:void(0)" class='text-center' ms-click='showPersonalWin'>
 							<i class='glyphicon glyphicon-user'></i><br>
 							admin
 						</a>
@@ -54,4 +58,65 @@
 			</div>
 		</div>
 	</div>
+</div>
+<div ms-widget='dialog,$personalWin,$personalWinOpts'>
+	<p class='text-center personal-title'>
+		<i class='glyphicon glyphicon-user'></i>
+	</p>
+	<form class="form-horizontal mgt10">
+		<fieldset>
+			<div class="form-group">
+				<label for='personal-name' class="col-sm-2 control-label">姓名</label>
+				<div class="col-sm-4">
+					<input type="text" class="form-control" id='personal-name' name='personal-name' readonly>
+				</div>
+				<label for='personal-money' class="col-sm-2 control-label">总金额</label>
+				<div class="col-sm-4">
+					<input type="text" class="form-control" id='personal-money' name='personal-money' readonly>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for='personal-phone' class="col-sm-2 control-label">电话</label>
+				<div class="col-sm-4">
+					<input type="text" class="form-control" id='personal-phone' name='personal-phone' readonly>
+				</div>
+				<label for='personal-acual-money' class="col-sm-2 control-label">实收金额</label>
+				<div class="col-sm-4">
+					<input type="text" class="form-control" id='personal-acual-money' name='personal-acual-money' readonly>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for='personal-role' class="col-sm-2 control-label">角色权限</label>
+				<div class="col-sm-4">
+					<input type="text" class="form-control" id='personal-role' name='personal-role' readonly>
+				</div>
+				<label for='personal-time' class="col-sm-2 control-label">优惠时间</label>
+				<div class="col-sm-4">
+					<input type="text" class="form-control" id='personal-time' name='personal-time' readonly>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for='personal-date' class="col-sm-2 control-label">登录时间</label>
+				<div class="col-sm-4">
+					<input type="text" class="form-control" id='personal-date' name='personal-date' readonly>
+				</div>
+				<label for='personal-cheap-money' class="col-sm-2 control-label">优惠金额</label>
+				<div class="col-sm-4">
+					<input type="text" class="form-control" id='personal-cheap-money' name='personal-cheap-money' readonly>
+				</div>
+			</div>
+			<div class="form-group">
+			    <div class="col-sm-offset-2 col-sm-10">
+			    	<div class='row'>
+			    		<div class='col-xs-6'>
+			    			<button type="button" class="btn btn-danger btn-lg btn-block"><i class='glyphicon glyphicon-pencil'></i> 密码修改</button>
+			    		</div>
+			    		<div class='col-xs-6'>
+			    			<button type="button" class="btn btn-success btn-lg btn-block"><i class='glyphicon glyphicon-refresh'></i> 交接班</button>
+			    		</div>
+			    	</div>
+			    </div>
+			</div>
+		</fieldset>
+	</form>
 </div>

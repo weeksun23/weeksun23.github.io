@@ -97,6 +97,21 @@
 			</div>
 		</div>
 	</div>
+	<div ms-widget="dialog,$picWin,$picWinOpts">
+		<div class="carousel slide">
+		  	<div class="carousel-inner" id='carousel'>
+			    <div class="item" ms-repeat="imgs" ms-class='active:$index === 0'>
+			      	<img ms-attr-src="el.src" alt='大图'>
+			    </div>
+		  	</div>
+			<a class="left carousel-control" href="javascript:void(0)" ms-click="prev">
+			    <span class="glyphicon glyphicon-chevron-left"></span>
+			</a>
+			<a class="right carousel-control" href="javascript:void(0)" ms-click="next">
+				<span class="glyphicon glyphicon-chevron-right"></span>
+		  	</a>
+		</div>
+	</div>
 </div>
 <script src='module/avalon.modern.min.js'></script>
 <script src='module/business/car.js'></script>

@@ -13,7 +13,7 @@ define(["avalon"],function(avalon){
 						tip.innerHTML = "<div class='tooltip-arrow'></div><div class='tooltip-inner'>"+vmodel.content+"</div>";
 						document.body.appendChild(tip);
 						tip.addEventListener(avalon.support.transitionend,function(){
-							if(!avalon(this).hasClass("in")){
+							if(!avalon(this).hasClass("in") && tip){
 								document.body.removeChild(tip);
 								tip = null;
 							}
@@ -29,7 +29,7 @@ define(["avalon"],function(avalon){
 							var left = offset.left + ($target.outerWidth() - $tip.outerWidth()) / 2;
 							break;
 						case "left":
-							top = offset.top - ($target.outerHeight() - $tip.outerHeight()) / 2;
+							top = offset.top + ($target.outerHeight() - $tip.outerHeight()) / 2;
 							left = offset.left - $tip.outerWidth();
 							break;
 						case "right":
@@ -48,6 +48,12 @@ define(["avalon"],function(avalon){
 					avalon(tip).removeClass("in");
 				});
 				avalon.scan(element,[vmodel].concat(vmodels));
+				element._tooltipVM = vmodel;
+			};
+			vm.remove = function(){
+				if(!tip) return;
+				document.body.removeChild(tip);
+				tip = null;
 			};
 		});
 		return vmodel;

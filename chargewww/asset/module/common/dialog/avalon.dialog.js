@@ -50,12 +50,18 @@ define(["avalon","text!./avalon.dialog.html"],function(avalon,templete){
 					avalon.bind(element,avalon.support.transitionend,function(){
 						if(!avalon(this).hasClass("in")){
 							this.style.display = 'none';
+							avalon(document.body).removeClass("modal-open");
 						}else{
 							vmodel.afterShow(isInit);
 							isInit = false;
 						}
 					});
 				}
+				avalon.bind(element,"click",function(e){
+					if(e.target === this){
+						vmodel.close();
+					}
+				});
 				if(vmodel.show){
 					vmodel.open(true);
 				}
@@ -91,6 +97,7 @@ define(["avalon","text!./avalon.dialog.html"],function(avalon,templete){
 					vmodel.afterShow(isInit);
 				}
 				$modalBack.addClass('in');
+				avalon(document.body).addClass("modal-open");
 			};
 		});
 		return vmodel;

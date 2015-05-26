@@ -8,6 +8,7 @@ body{background-color: #eee}
 /*margin*/
 .mgt10{margin-top: 10px;}
 .mgb0{margin-bottom: 0}
+.mgb1-reverse{margin-bottom: -1px;}
 .mgb5{margin-bottom: 5px;}
 /*padding*/
 .pad0{padding: 0!important}

@@ -3,7 +3,7 @@ require.config({
 		jquery : "lib/jquery/jquery-2.1.4"
 	}
 });
-define(function(){
+define(["common/dialog/avalon.dialog"],function(){
 	avalon.support = {
 		transitionend : (function(){
 			var el = document.createElement('div');
@@ -22,7 +22,11 @@ define(function(){
 		})()
 	};
 	var body = avalon.define({
-		$id : "body"
+		$id : "body",
+		curPage : null,
+		$personalWinOpts : {
+			title : "个人信息"
+		}
 	});
 	var top = avalon.define({
 		$id : "top",
@@ -30,9 +34,13 @@ define(function(){
 		curIndex : -1,
 		toggleNav : function(){
 			top.navCollapse = !top.navCollapse;
+		},
+		showPersonalWin : function(){
+			avalon.vmodels.$personalWin.open();
 		}
 	});
 	return {
-		top : top
+		top : top,
+		body : body
 	};
 });

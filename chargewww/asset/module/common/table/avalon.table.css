@@ -15,3 +15,8 @@
 .mpagination input.form-control{vertical-align: middle;}
 .mpagination .glyphicon:hover{background-color: #e2e2e2}
 .mpagination .page{width: 80px}
+@media (max-width: 364px){
+	.mpagination .page,
+	.mpagination .pull-right,
+	.mpagination .sumpage{display: none}
+}

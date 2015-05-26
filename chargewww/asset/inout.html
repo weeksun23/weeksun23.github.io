@@ -8,13 +8,35 @@
 <link href="css/bootstrap/bootstrap.css" rel="stylesheet">
 <link href="css/base.css" rel="stylesheet">
 <link href="css/index.css" rel="stylesheet">
+<style>
+	.carlist-title{
+		border-top-left-radius: 5px;border-top-right-radius: 5px;
+		border: 1px solid rgba(51,122,183,.2);border-bottom: 0
+	}
+	.carlist-title h3{
+		margin:0;padding: 10px 5px;background-color: #F5F5F5
+	}
+	.carlist-item{border: 1px solid rgba(51,122,183,.2);padding: 5px;border-bottom: 0}
+	.carlist-item .form-control{background-color: transparent;border-color: transparent;box-shadow: none;}
+	.carlist-item:hover{background-color: rgba(51,122,183,.2);}
+	.carlist-item:last-child{
+		border-bottom-left-radius: 5px;border-bottom-right-radius: 5px;
+		border-bottom: 1px solid rgba(51,122,183,.2);
+	}
+	.carlist-item .img-thumbnail{height: 60px}
+	.carlist-item .dbf1{margin:0 10px;}
+	@media (max-width: 364px){
+		.carlist-item .img-thumbnail{height: 50px}
+	}
+	.img-container{max-width: 350px;margin: 0 auto;}
+</style>
 <!--[if lt IE 10]>
 <script>alert("抱歉，请使用IE10+,Google Chrome,firefox等其他高级浏览器登录本系统!");</script>
 <![endif]-->
 </head>
 <body id='inout' ms-controller='body'>
 <div ms-include-src="'tpl/top.html'" data-include-replace="true"></div>
-<div class="mcontent container-fluid" ms-controller='content'>
+<div class="mcontent container-fluid" ms-controller='content' ms-visible="curPage === 'content'">
 	<div class='row'>
 		<div class='col-md-6'>
 			<h2>入场通道名称</h2>
@@ -23,8 +45,10 @@
 				    <h3 class="panel-title pull-left">识别图像</h3>
 				    <button class='btn btn-primary pull-right'>监控录像</button>
 				</div>
-				<div class="panel-body"><!-- 1360/1024 -->
-			   		<img src="image/full.jpg" alt='识别图像' class='img-responsive img-rounded'>
+				<div class="panel-body text-center"><!-- 1360/1024 -->
+					<div class='img-container'>
+						<img src="image/full.jpg" alt='识别图像' class='img-responsive img-rounded'>
+					</div>
 				</div>
 			</div>
 			<form class="form-horizontal">
@@ -71,7 +95,9 @@
 				    <button class='btn btn-primary pull-right'>监控录像</button>
 				</div>
 				<div class="panel-body">
-			   		<img src="image/full.jpg" alt='识别图像' class='img-responsive img-rounded'>
+					<div class='img-container'>
+						<img src="image/full.jpg" alt='识别图像' class='img-responsive img-rounded'>
+					</div>
 				</div>
 			</div>
 			<form class="form-horizontal">
@@ -80,7 +106,7 @@
 				    <div class="col-sm-10 db dbac">
 				    	<input type="text" class="form-control dbf1" readonly value='--'>
 				    	<div class='padl5'>
-				    		<img src="image/plate.jpg" class='img-rounded' alt='车牌识别图片' height='50'>
+				    		<img ms-widget="tooltip" ms-click='showCarlist' data-tooltip-content="匹配入场车牌" data-tooltip-position='left' src="image/plate.jpg" class='img-rounded cpointer' alt='车牌识别图片' height='50'>
 				    	</div>
 				    </div>
 				</div>
@@ -140,6 +166,76 @@
 			</form>
 		</div>
 	</div>
+</div>
+<div class="container" ms-controller='carlist' ms-visible="curPage === 'carlist'">
+	<h2 class='text-center'>
+		在场车辆匹配列表 <button class='btn btn-primary btn-lg' ms-click='back'>返回</button>
+	</h2>
+	<form class="form-horizontal">
+		<fieldset>
+			<div class="form-group">
+				<label for='carNumber' class="col-sm-2 control-label">车牌号码</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" id='carNumber' name='carNumber' placeholder='请输入车牌关键字'>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for='sDate' class="col-sm-2 control-label">起始时间</label>
+				<div class='col-sm-4 padlr1'>
+					<div id='sDatePicker' class="input-group date">
+	                    <input id='sDate' class="form-control" type="text" readonly>
+	                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+						<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+	                </div>
+				</div>
+				<label for='eDate' class="col-sm-2 control-label">结束时间</label>
+				<div class='col-sm-4 padlr1'>
+					<div id='eDatePicker' class="input-group date">
+	                    <input id='eDate' class="form-control" type="text" readonly>
+	                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+						<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+	                </div>
+				</div>
+			</div>
+			<div class="form-group">
+			    <div class="col-sm-offset-2 col-sm-10">
+			    	<button type="button" class="btn btn-primary">
+			    		<i class='glyphicon glyphicon-search'></i> 无牌车搜索
+			    	</button>
+			    	<button type="button" class="btn btn-primary">
+			    		<i class='glyphicon glyphicon-search'></i> 搜索
+			    	</button>
+			    </div>
+			</div>
+		</fieldset>
+	</form>
+	<div class='carlist-title'>
+		<h3>车辆列表</h3>
+	</div>
+	<form class="form-horizontal">
+		<div class='db dbac carlist-item' ms-repeat="list">
+			<div>
+				<img ms-attr-src="el.src" class='img-thumbnail'>
+			</div>
+			<div class='dbf1'>
+				<div class="form-group">
+				    <label class="col-sm-2 control-label">入场车牌</label>
+				    <div class="col-sm-10">
+				      	<span class='form-control'>334344</span>
+				    </div>
+				</div>
+				<div class="form-group mgb0">
+				    <label class="col-sm-2 control-label">入场时间</label>
+				    <div class="col-sm-10">
+				      	<span class='form-control'>2012-09-09 21:33:22</span>
+				    </div>
+				</div>
+			</div>
+			<div>
+				<button class='btn btn-primary btn-lg' type='button'>匹配</button>
+			</div>
+		</div>
+	</form>
 </div>
 <script src='module/avalon.modern.min.js'></script>
 <script src='module/business/inout.js'></script>
