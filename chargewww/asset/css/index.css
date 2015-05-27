@@ -1,28 +1,45 @@
-@media (max-width: 767px){
-	.mnavbar .navbar-collapse>.navbar-nav{border-bottom:1px solid rgba(255, 255, 255, .1)}
-	.mnavbar .navbar-nav li{float: left;width: 50%;}
-	.mnavbar .arrow.active{display: none}
-}
 @media (max-width: 364px){
 	.mnavbar .navbar-header .navbar-brand{font-size: 1.5em}
 }
+@media (max-width: 767px){
+	.mnavbar .navbar-collapse>.navbar-nav{border-bottom:1px solid rgba(255, 255, 255, .1)}
+	.mnavbar .navbar-nav li{float: left;width: 50%;}
+	.mnavbar .navbar-collapse>.navbar-nav .glyphicon{font-size: 2em;}
+	.mnavbar .navbar-collapse>.navbar-nav a{height: 70px;padding: 10px 20px;position: relative;}
+	.mnavbar .navbar-collapse>.navbar-nav a.selected{color: #fff}
+}
 @media (min-width: 768px){
 	.carnum-label{padding-top: 16px!important}
+	.mnavbar{border-radius: 0;}
+	.mnavbar .navbar-collapse>.navbar-nav{
+		float: none;position: fixed;
+		top: 71px;left: 0;width: 90px;
+		z-index: 10;bottom: 0;
+		background-color: #173C69
+	}
+	.mnavbar .navbar-collapse>.navbar-nav>li{
+		float: none;
+	}
+	.mnavbar .navbar-collapse>.navbar-nav .glyphicon{
+		font-size: 3.8em;
+	}
+	.mnavbar .navbar-collapse>.navbar-nav a{
+		padding: 10px;color: #C6DCF4;text-align: center;
+		border-bottom: 1px solid #446085;
+	}
+	.mnavbar .navbar-collapse>.navbar-nav a.selected{
+		background-color: #0F254E;
+		color: #fff;
+	}
+	.mcontent{margin-left: 100px;}
 }
 .mnavbar{margin-bottom: 0}
-.mnavbar .navbar-brand{line-height: 46px;height: auto;font-size: 2em}
+.mnavbar .navbar-brand{line-height: 36px;height: auto;font-size: 2em}
 .mnavbar .navbar-brand em{font-size: 0.5em;display: inline-block;margin-left: 3px}
-.mnavbar .navbar-nav .glyphicon{font-size: 2.4em;}
-.mnavbar .navbar-nav a{height: 80px;padding: 10px 20px;position: relative;}
-.mnavbar .navbar-nav a.selected{color: #fff}
-.mnavbar .navbar-toggle{margin-top: 22px}
-.mnavbar .arrow{
-	display: none;position: absolute;
-	bottom: -2px;left: 50%;margin-left: -12px;
-	border-style: solid;
-	border-width: 0 12px 10px 12px;
-	border-color: transparent transparent #eee transparent;
-}
-.arrow.active{display: block;}
+.mnavbar .navbar-right .navbar-nav .glyphicon{font-size: 2em;}
+.mnavbar .navbar-right .navbar-nav a{height: 70px;padding: 10px 20px;position: relative;}
+.mnavbar .navbar-right .navbar-nav a.selected{color: #fff}
+.mnavbar .navbar-toggle{margin-top: 19px}
 .mpanel .panel-title{font-size: 1.5em;padding: 5px 0}
 .personal-title{font-size: 5em;margin-bottom:-10px;}
+.mcontent{margin-top: 71px}
