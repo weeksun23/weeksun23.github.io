@@ -41,6 +41,25 @@ define(["common/dialog/avalon.dialog"],function(){
 	});
 	return {
 		top : top,
-		body : body
+		body : body,
+		getDateTimePickerOpts : function(){
+			return {
+				language:  'zh-CN',
+			    format : "yyyy-mm-dd hh:ii:ss",
+			    weekStart: 1,
+			    todayBtn:  1,
+				autoclose: 1,
+				todayHighlight: 1,
+				startView: 2
+			};
+		},
+		initDatePickerToVM : function($picker,vmodel,key){
+			if(!$picker.data("datetimepicker")){
+				$picker.datetimepicker(this.getDateTimePickerOpts());
+			}
+			$picker.on("changeDate",function(ev){
+				vmodel[key] = ev.date ? ev.date.getTime() : null;
+			});
+		}
 	};
 });

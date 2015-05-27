@@ -36,7 +36,7 @@
 </head>
 <body id='inout' ms-controller='body'>
 <div ms-include-src="'tpl/top.html'" data-include-replace="true"></div>
-<div class="mcontent container-fluid" ms-controller='content' ms-visible="curPage === 'content'">
+<div class="mcontent container-fluid" ms-controller='content'>
 	<div class='row'>
 		<div class='col-md-6'>
 			<h2>入场通道名称</h2>
@@ -166,76 +166,80 @@
 			</form>
 		</div>
 	</div>
-</div>
-<div class="container" ms-controller='carlist' ms-visible="curPage === 'carlist'">
-	<h2 class='text-center'>
-		在场车辆匹配列表 <button class='btn btn-primary btn-lg' ms-click='back'>返回</button>
-	</h2>
-	<form class="form-horizontal">
-		<fieldset>
-			<div class="form-group">
-				<label for='carNumber' class="col-sm-2 control-label">车牌号码</label>
-				<div class="col-sm-10">
-					<input type="text" class="form-control" id='carNumber' name='carNumber' placeholder='请输入车牌关键字'>
-				</div>
-			</div>
-			<div class="form-group">
-				<label for='sDate' class="col-sm-2 control-label">起始时间</label>
-				<div class='col-sm-4 padlr1'>
-					<div id='sDatePicker' class="input-group date">
-	                    <input id='sDate' class="form-control" type="text" readonly>
-	                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-						<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-	                </div>
-				</div>
-				<label for='eDate' class="col-sm-2 control-label">结束时间</label>
-				<div class='col-sm-4 padlr1'>
-					<div id='eDatePicker' class="input-group date">
-	                    <input id='eDate' class="form-control" type="text" readonly>
-	                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-						<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-	                </div>
-				</div>
-			</div>
-			<div class="form-group">
-			    <div class="col-sm-offset-2 col-sm-10">
-			    	<button type="button" class="btn btn-primary">
-			    		<i class='glyphicon glyphicon-search'></i> 无牌车搜索
-			    	</button>
-			    	<button type="button" class="btn btn-primary">
-			    		<i class='glyphicon glyphicon-search'></i> 搜索
-			    	</button>
-			    </div>
-			</div>
-		</fieldset>
-	</form>
-	<div class='carlist-title'>
-		<h3>车辆列表</h3>
-	</div>
-	<form class="form-horizontal">
-		<div class='db dbac carlist-item' ms-repeat="list">
-			<div>
-				<img ms-attr-src="el.src" class='img-thumbnail'>
-			</div>
-			<div class='dbf1'>
+	<!-- 在场车辆列表窗口 -->
+	<div ms-widget="dialog,$carListDialog,$carListDialogOpts">
+		<form class="form-horizontal">
+			<fieldset>
 				<div class="form-group">
-				    <label class="col-sm-2 control-label">入场车牌</label>
-				    <div class="col-sm-10">
-				      	<span class='form-control'>334344</span>
+					<label for='carNumber' class="col-sm-2 control-label">车牌号码</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id='carNumber' name='carNumber' placeholder='请输入车牌关键字'>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for='sDate' class="col-sm-2 control-label">起始时间</label>
+					<div class='col-sm-10 padlr1'>
+						<div id='sDatePicker' class="input-group date">
+		                    <input id='sDate' class="form-control" type="text" readonly>
+		                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+							<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+		                </div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for='eDate' class="col-sm-2 control-label">结束时间</label>
+					<div class='col-sm-10 padlr1'>
+						<div id='eDatePicker' class="input-group date">
+		                    <input id='eDate' class="form-control" type="text" readonly>
+		                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+							<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+		                </div>
+					</div>
+				</div>
+				<div class="form-group">
+				    <div class="col-sm-offset-2 col-sm-10">
+				    	<button type="button" class="btn btn-primary">
+				    		<i class='glyphicon glyphicon-search'></i> 无牌车搜索
+				    	</button>
+				    	<button type="button" class="btn btn-primary">
+				    		<i class='glyphicon glyphicon-search'></i> 搜索
+				    	</button>
 				    </div>
 				</div>
-				<div class="form-group mgb0">
-				    <label class="col-sm-2 control-label">入场时间</label>
-				    <div class="col-sm-10">
-				      	<span class='form-control'>2012-09-09 21:33:22</span>
-				    </div>
-				</div>
-			</div>
-			<div>
-				<button class='btn btn-primary btn-lg' type='button'>匹配</button>
-			</div>
+			</fieldset>
+		</form>
+		<div class='carlist-title'>
+			<h3>车辆列表</h3>
 		</div>
-	</form>
+		<form class="form-horizontal">
+			<div class='db dbac carlist-item' ms-repeat="list">
+				<div>
+					<img ms-click='showPic' ms-attr-src="el.src" class='img-thumbnail cpointer'>
+				</div>
+				<div class='dbf1'>
+					<div class="form-group mgb0">
+					    <label class="col-sm-4 control-label">入场车牌</label>
+					    <div class="col-sm-8">
+					      	<span class='form-control'>334344</span>
+					    </div>
+					</div>
+					<div class="form-group mgb0">
+					    <label class="col-sm-4 control-label">入场时间</label>
+					    <div class="col-sm-8">
+					      	<span class='form-control'>2012-09-09 21:33:22</span>
+					    </div>
+					</div>
+				</div>
+				<div>
+					<button class='btn btn-primary btn-lg' type='button'>匹配</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<!-- 大图 -->
+	<div ms-widget="dialog,$picDialog,$picDialogOpts">
+
+	</div>
 </div>
 <script src='module/avalon.modern.min.js'></script>
 <script src='module/business/inout.js'></script>

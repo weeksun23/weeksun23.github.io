@@ -1,29 +1,43 @@
-require(["common/index","common/tooltip/avalon.tooltip"],function(Index){
+require([
+	"common/index","common/tooltip/avalon.tooltip",
+	"lib/datetimepicker/bootstrap-datetimepicker-module"
+],function(Index){
 	Index.top.curIndex = 0;
-	Index.body.curPage = "content";
 	var content = avalon.define({
 		$id : "content",
 		showCarlist : function(){
-			Index.body.curPage = "carlist";
-			this._tooltipVM.remove();
-		}
-	});
-	var carlist = avalon.define({
-		$id : "carlist",
-		back : function(){
-			Index.body.curPage = 'content';
+			avalon.vmodels.$carListDialog.open();
 		},
-		list : [{
-			src : "image/plate.jpg"
-		},{
-			src : "image/plate.jpg"
-		},{
-			src : "image/plate.jpg"
-		},{
-			src : "image/plate.jpg"
-		},{
-			src : "image/plate.jpg"
-		}]
+		$carListDialogOpts : {
+			title : "在场车辆匹配列表",
+			list : [{
+				src : "image/plate.jpg"
+			},{
+				src : "image/plate.jpg"
+			},{
+				src : "image/plate.jpg"
+			},{
+				src : "image/plate.jpg"
+			},{
+				src : "image/plate.jpg"
+			}],
+			showPic : function(){
+				avalon.vmodels.$picDialog.open();
+			},
+			sDate : null,
+			eDate : null,
+			mes : "结束日期不能少于开始日期",
+			afterShow : function(isInit){
+				if(isInit){
+					Index.initDatePickerToVM($("#sDatePicker"),avalon.vmodels.$carListDialog,"sDate");
+					Index.initDatePickerToVM($("#eDatePicker"),avalon.vmodels.$carListDialog,"eDate");
+				}
+			}
+		},
+		$picDialogOpts : {
+			title : "查看大图",
+			content : "<img src='image/full.jpg' alt='车辆大图' class='img-responsive img-rounded'/>"
+		}
 	});
 	avalon.scan();
 });

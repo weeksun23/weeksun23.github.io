@@ -35,23 +35,7 @@ require([
 	});
 	avalon.scan();
 	avalon.each(['in','out'],function(i,v){
-		$("#" + v + "-sDatePicker").datetimepicker({
-			language:  'zh-CN',
-		    format : "yyyy-mm-dd hh:ii:ss",
-		    weekStart: 1,
-		    todayBtn:  1,
-			autoclose: 1,
-			todayHighlight: 1,
-			startView: 2
-		});
-		$("#" + v + "-eDatePicker").datetimepicker({
-			language:  'zh-CN',
-		    format : "yyyy-mm-dd hh:ii:ss",
-		    weekStart: 1,
-		    todayBtn:  1,
-			autoclose: 1,
-			todayHighlight: 1,
-			startView: 2
-		});
+		$("#" + v + "-sDatePicker").datetimepicker(Index.getDateTimePickerOpts());
+		$("#" + v + "-eDatePicker").datetimepicker(Index.getDateTimePickerOpts());
 	});
 });
