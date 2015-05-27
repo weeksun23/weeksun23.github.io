@@ -15,6 +15,16 @@ define(["avalon","text!./avalon.dialog.html"],function(avalon,templete){
 			}
 		});
 	}
+	function dealCloseDialog(){
+		var dgs = modalBackDrop.curDialogs;
+		dgs.pop();
+		var len = dgs.length;
+		if(len > 0){
+			dgs[len - 1].style.zIndex = '';
+		}else{
+			avalon(document.body).removeClass("modal-open");
+		}
+	}
 	var modalBackDrop;
 	var widget = avalon.ui.dialog = function(element, data, vmodels){
 		if(!modalBackDrop){
@@ -28,6 +38,7 @@ define(["avalon","text!./avalon.dialog.html"],function(avalon,templete){
 					}
 				});
 			}
+			modalBackDrop.curDialogs = [];
 		}
 		var options = data.dialogOptions;
 		initButtons(options.buttons);
@@ -50,7 +61,7 @@ define(["avalon","text!./avalon.dialog.html"],function(avalon,templete){
 					avalon.bind(element,avalon.support.transitionend,function(){
 						if(!avalon(this).hasClass("in")){
 							this.style.display = 'none';
-							avalon(document.body).removeClass("modal-open");
+							dealCloseDialog();
 						}else{
 							vmodel.afterShow(isInit);
 							isInit = false;
@@ -77,12 +88,14 @@ define(["avalon","text!./avalon.dialog.html"],function(avalon,templete){
 				}
 			};
 			vm.close = function(){
+				var len = modalBackDrop.curDialogs.length;
 				if(avalon.support.transitionend){
 					avalon(element).removeClass("in");
-					avalon(modalBackDrop).removeClass('in');
+					len === 1 && avalon(modalBackDrop).removeClass('in');
 				}else{
 					element.style.display = 'none';
-					avalon(modalBackDrop).addClass("hide");
+					len === 1 && avalon(modalBackDrop).addClass('in');
+					dealCloseDialog();
 				}
 			};
 			vm.open = function(isInit){
@@ -98,6 +111,14 @@ define(["avalon","text!./avalon.dialog.html"],function(avalon,templete){
 				}
 				$modalBack.addClass('in');
 				avalon(document.body).addClass("modal-open");
+				//处理重叠窗口
+				var dgs = modalBackDrop.curDialogs;
+				var len = dgs.length;
+				if(len > 0){
+					var last = dgs[len - 1];
+					last.style.zIndex = 500;
+				}
+				dgs.push(element);
 			};
 		});
 		return vmodel;
