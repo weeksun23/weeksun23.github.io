@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+	<title>websocket</title>
+	<style>
+        textarea{height: 100px;width: 500px;}
+	</style>
+</head>
+<body>
+    <p>
+        <textarea readonly id='update'></textarea>
+    </p>
+    <p>
+        <textarea readonly id='insert'></textarea>
+    </p>
+    <script>
+        var tableName = "t_ms_user";
+    	var fields = "id,nick_name,mobile,email,address,account_status,client_type,push_token,register_time";
+        function getUpdateSql(fields,tableName){
+            var str = fields.replace(/[^, ]+/g,function(field){
+                return field + "=#{" + field + "}";
+            });
+            document.getElementById("update").value = "update " + tableName + " set " + str;
+        }
+        function getInsertSql(fields,tableName){
+            var values = fields.replace(/[^, ]+/g,function(field){
+                return "#{" + field + "}";
+            });
+            document.getElementById("insert").value = "insert into " + tableName + "("+fields+") values("+values+")";
+        }
+        getInsertSql(fields,tableName);
+        getUpdateSql(fields,tableName);
+    </script>
+</body>
+</html>
