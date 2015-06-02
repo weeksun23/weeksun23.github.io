@@ -37,6 +37,11 @@ define(["avalon","text!./avalon.table.html","css!./avalon.table.css"],function(a
 				}
 				loadDataByPage(page);
 			};
+			vm.loadFrontPageData = function(data){
+				vmodel.frontPageData = data;
+				vmodel.data[vmodel.totalKey] = data.length;
+				loadDataByPage(1);
+			};
 		});
 		function loadDataByPage(page,func){
 			if(!vmodel.url){
@@ -59,8 +64,6 @@ define(["avalon","text!./avalon.table.html","css!./avalon.table.css"],function(a
 				}
 				vmodel.data[vmodel.rowsKey] = re;
 				func && func();
-			}else{
-				
 			}
 		}
 		//初始化前台分页数据
@@ -115,7 +118,7 @@ define(["avalon","text!./avalon.table.html","css!./avalon.table.css"],function(a
 		title:标题,field:字段名
 		*/
 		columns : [],
-		frontPageData : null,
+		frontPageData : [],
 		data : {
 			total : 0,
 			rows : []

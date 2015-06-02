@@ -32,7 +32,8 @@ define(["avalon","text!./avalon.dialog.html"],function(avalon,templete){
 			modalBackDrop.className = "modal-backdrop fade hide";
 			document.body.appendChild(modalBackDrop);
 			if(avalon.support.transitionend){
-				avalon.bind(modalBackDrop,avalon.support.transitionend,function(){
+				modalBackDrop.addEventListener(avalon.support.transitionend,function(e){
+					if(e.target !== this) return;
 					if(!avalon(this).hasClass("in")){
 						avalon(this).addClass("hide");
 					}
@@ -58,12 +59,13 @@ define(["avalon","text!./avalon.dialog.html"],function(avalon,templete){
 				avalon.scan(element, vmodel);
 				if(avalon.support.transitionend){
 					var isInit = true;
-					avalon.bind(element,avalon.support.transitionend,function(){
+					element.addEventListener(avalon.support.transitionend,function(e){
+						if(e.target !== this) return;
 						if(!avalon(this).hasClass("in")){
 							this.style.display = 'none';
 							dealCloseDialog();
 						}else{
-							vmodel.afterShow(isInit);
+							vmodel.afterShow.call(element,isInit);
 							isInit = false;
 						}
 					});
@@ -107,7 +109,7 @@ define(["avalon","text!./avalon.dialog.html"],function(avalon,templete){
 					modalBackDrop.offsetWidth;
 					avalon(element).addClass('in');
 				}else{
-					vmodel.afterShow(isInit);
+					vmodel.afterShow.call(element,isInit);
 				}
 				$modalBack.addClass('in');
 				avalon(document.body).addClass("modal-open");
