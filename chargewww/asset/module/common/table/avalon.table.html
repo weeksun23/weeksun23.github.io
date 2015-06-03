@@ -12,14 +12,14 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ms-repeat-item="data[rowsKey]">
+				<tr ms-repeat-item="data">
 					<td ms-repeat-el='columns' ms-css-width="el.width">
 						<div>{{el.formatter ? el.formatter(item[el.field],item) : item[el.field] | html}}</div>
 					</td>
 				</tr>
 			</tbody>
 		</table>
-		<h2 ms-visible='!data || data[totalKey] === 0' class="text-muted text-center">暂无数据</h2>
+		<h2 ms-visible='!data || data.length === 0' class="text-muted text-center">暂无数据</h2>
 	</div>
 </div>
 <div ms-if='pagination' class='mpagination clearfix'>
@@ -41,7 +41,7 @@
 		</button>
 	</div>
 	<div class='pull-right'>
-		<span>当前第{{curPage}}页,{{start}}~{{end}}条,共{{data[totalKey]}}条</span>
+		<span>第{{curPage}}页,{{start}}~{{end}}条,共{{total}}条</span>
 		<select class='form-control' ms-duplex-number='pageSize' ms-change='$changePageSize'>
 			<option ms-repeat='pageSizeArr' ms-attr-value='{{el}}'>{{el}}</option>
 		</select>

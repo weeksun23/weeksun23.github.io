@@ -33,6 +33,7 @@ define(["avalon","text!./avalon.dialog.html"],function(avalon,templete){
 			document.body.appendChild(modalBackDrop);
 			if(avalon.support.transitionend){
 				modalBackDrop.addEventListener(avalon.support.transitionend,function(e){
+					e.stopPropagation();
 					if(e.target !== this) return;
 					if(!avalon(this).hasClass("in")){
 						avalon(this).addClass("hide");
@@ -60,6 +61,7 @@ define(["avalon","text!./avalon.dialog.html"],function(avalon,templete){
 				if(avalon.support.transitionend){
 					var isInit = true;
 					element.addEventListener(avalon.support.transitionend,function(e){
+						e.stopPropagation();
 						if(e.target !== this) return;
 						if(!avalon(this).hasClass("in")){
 							this.style.display = 'none';

@@ -17,9 +17,6 @@ require([
 		},
 		$carListDialogOpts : {
 			title : "在场车辆匹配列表",
-			showPic : function(){
-				avalon.vmodels.$picDialog.open();
-			},
 			sDate : null,
 			eDate : null,
 			mes : "结束日期不能少于开始日期",
@@ -34,33 +31,36 @@ require([
 							avalon.vmodels.$carList.loadFrontPageData(data.real_time_list);
 						}
 					};
+					var el = document.querySelector("#realCarList");
+					el.setAttribute("ms-widget","table,$carList,$carListOpts");
+					avalon.scan(el,content);
 				}
 				Index.websocket.send({
 					command : "GET_REAL_TIME_CAR"
 				},element);
-			},
-			$carListOpts : {
-				title : "在场车辆列表",
-				columns : [
-					{title : "车牌图片",field : "enter_car_license_picture",width : 100,
-						formatter : function(v){
-							return "<img alt='车牌图片' src='"+
-							Index.websocket.plateImgUrl + v + "?" + (+new Date) +
-							"' title='点击查看大图' class='img-rounded img-responsive cpointer'>";
-						}
-					},
-					{title : "车牌号",field : "enter_car_license_number"},
-					{title : "入场时间",field : "enter_time"},
-					{title : "操作",field : "operate",
-						formatter : function(){
-							return "<button class='btn btn-primary btn-lg' type='button'>匹配</button>";
-						}
-					}
-				],
-				data : {
-					rows : []
-				}
 			}
+		},
+		$carListOpts : {
+			title : "在场车辆列表",
+			columns : [
+				{title : "车牌图片",field : "enter_car_license_picture",width : 100,
+					formatter : function(v){
+						return "<img ms-click='showPic' alt='车牌图片' src='"+
+						Index.websocket.plateImgUrl + v + "?" + (+new Date) +
+						"' title='点击查看大图' class='img-rounded img-responsive cpointer'>";
+					}
+				},
+				{title : "车牌号",field : "enter_car_license_number"},
+				{title : "入场时间",field : "enter_time"},
+				{title : "操作",field : "operate",
+					formatter : function(){
+						return "<button class='btn btn-primary btn-lg' type='button'>匹配</button>";
+					}
+				}
+			]
+		},
+		showPic : function(){
+			avalon.vmodels.$picDialog.open();
 		},
 		$picDialogOpts : {
 			title : "查看大图",

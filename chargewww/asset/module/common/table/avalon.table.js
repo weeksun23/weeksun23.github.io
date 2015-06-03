@@ -5,7 +5,7 @@ define(["avalon","text!./avalon.table.html","css!./avalon.table.css"],function(a
 		var vmodel = avalon.define(data.tableId,function(vm){
 			avalon.mix(vm,options);
 			vm.widgetElement = element;
-			vm.$skipArray = ['widgetElement','totalKey','rowsKey','loadData','frontPageData'];
+			vm.$skipArray = ['widgetElement','loadData','frontPageData'];
 			vm.$init = function(){
 				avalon(element).addClass("panel panel-default panel-table");
 				element.innerHTML = templete;
@@ -39,7 +39,7 @@ define(["avalon","text!./avalon.table.html","css!./avalon.table.css"],function(a
 			};
 			vm.loadFrontPageData = function(data){
 				vmodel.frontPageData = data;
-				vmodel.data[vmodel.totalKey] = data.length;
+				vmodel.total = data.length;
 				loadDataByPage(1);
 			};
 		});
@@ -51,7 +51,7 @@ define(["avalon","text!./avalon.table.html","css!./avalon.table.css"],function(a
 				vmodel.curPage = vmodel.changeCurPage = page;
 				updatePagination();
 				var start = (page - 1) * vmodel.pageSize;
-				var total = vmodel.data[vmodel.totalKey];
+				var total = vmodel.total;
 				if(start >= total){
 					start = (vmodel.sumPage - 1) * vmodel.pageSize;
 				}
@@ -62,7 +62,7 @@ define(["avalon","text!./avalon.table.html","css!./avalon.table.css"],function(a
 					if(!item) break;
 					re.push(item);
 				}
-				vmodel.data[vmodel.rowsKey] = re;
+				vmodel.data = re;
 				func && func();
 			}
 		}
@@ -70,19 +70,19 @@ define(["avalon","text!./avalon.table.html","css!./avalon.table.css"],function(a
 		function initFrontPageData(opts){
 			if(opts.url) return;
 			var frontPageData = opts.frontPageData;
-			if(!frontPageData) return;
+			if(!frontPageData || frontPageData.length === 0) return;
 			var re = [];
 			for(var i=0;i<opts.pageSize;i++){
 				var item = frontPageData[i];
 				if(!item) break;
 				re.push(item);
 			}
-			opts.data[opts.totalKey] = frontPageData.length;
-			opts.data[opts.rowsKey] = re;
+			opts.total = frontPageData.length;
+			opts.data = re;
 		}
 		//更新分页信息
 		function updatePagination(){
-			var total = vmodel.data[vmodel.totalKey];
+			var total = vmodel.total;
 			if(total === 0){
 				avalon.each(['sumPage','total','curPage','start','end'],function(i,v){
 					vmodel[v] = 0;
@@ -112,17 +112,13 @@ define(["avalon","text!./avalon.table.html","css!./avalon.table.css"],function(a
 		striped : true,
 		border : true,
 		url : null,
-		totalKey : 'total',
-		rowsKey : 'rows',
 		/*
 		title:标题,field:字段名
 		*/
 		columns : [],
 		frontPageData : [],
-		data : {
-			total : 0,
-			rows : []
-		},
+		total : 0,
+		data : [],
 		//pagination options
 		pagination : true,
 		sumPage : 0,
