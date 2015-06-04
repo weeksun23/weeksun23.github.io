@@ -1,3 +1,8 @@
+require.config({
+	paths: {
+		jquery : "lib/jquery/jquery-2.1.4"
+	}
+});
 require([
 	"common/index",
 	"common/table/avalon.table"

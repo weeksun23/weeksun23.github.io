@@ -16,8 +16,8 @@
         <textarea readonly id='insert'></textarea>
     </p>
     <script>
-        var tableName = "t_ms_user";
-    	var fields = "id,nick_name,mobile,email,address,account_status,client_type,push_token,register_time";
+        var tableName = "terminal";
+    	var fields = "terminalId,addrZoneId,terminalGroupId,name,cardType,cardCode,telPhone,Email,addr";
         function getUpdateSql(fields,tableName){
             var str = fields.replace(/[^, ]+/g,function(field){
                 return field + "=#{" + field + "}";

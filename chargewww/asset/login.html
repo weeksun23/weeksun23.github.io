@@ -84,8 +84,9 @@
 			}else if(data.msg === "ok"){
 				vmodel.errorMsg = "";
 				vmodel.successMsg = "登录成功,跳转中...";
+				localStorage.setItem("curAccount",vmodel.name);
 				localStorage.setItem("wwwcharge-login-" + vmodel.name,new Date().getTime());
-				location.href = 'inout.html?' + vmodel.name;
+				location.href = 'inout.html';
 			}
 		};
 		var vmodel = avalon.define({

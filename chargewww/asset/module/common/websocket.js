@@ -25,12 +25,11 @@ define(function(){
 		send : function(order,area){
 			if(!socketHelper.login){
 				//非登录页发的请求都必须进行登录验证
-				var href = location.href;
-				if(href.indexOf("?") === -1){
+				var account = localStorage.getItem("curAccount");
+				if(!account){
 					location.href = "login.html";
 					return;
 				}
-				var account = href.split("?")[1];
 				var key = "wwwcharge-login-" + account;
 				var cache = localStorage.getItem(key);
 				if(!cache || !+cache){
@@ -64,6 +63,8 @@ define(function(){
 			},order);
 			area && avalon(area).loading();
 			//countTime(func,area);
+			var orderStr = JSON.stringify(order);
+			avalon.log("======发送指令======",orderStr);
 			if(!socket){
 				try{
 					socket = new WebSocket(url);
@@ -78,10 +79,10 @@ define(function(){
 					callback && callback.call(e,data.biz_content);
 				};
 				socket.onopen = function(){
-					socket.send(JSON.stringify(order));
+					socket.send(orderStr);
 				};
 			}else{
-				socket.send(JSON.stringify(order));
+				socket.send(orderStr);
 			}
 		}
 	};

@@ -9,26 +9,6 @@
 <link href="css/base.css" rel="stylesheet">
 <link href="css/index.css" rel="stylesheet">
 <style>
-	/*
-	.carlist-title{
-		border-top-left-radius: 5px;border-top-right-radius: 5px;
-		border: 1px solid rgba(51,122,183,.2);border-bottom: 0
-	}
-	.carlist-title h3{
-		margin:0;padding: 10px 5px;background-color: #F5F5F5
-	}
-	.carlist-item{border: 1px solid rgba(51,122,183,.2);padding: 5px;border-bottom: 0}
-	.carlist-item .form-control{background-color: transparent;border-color: transparent;box-shadow: none;}
-	.carlist-item:hover{background-color: rgba(51,122,183,.2);}
-	.carlist-item:last-child{
-		border-bottom-left-radius: 5px;border-bottom-right-radius: 5px;
-		border-bottom: 1px solid rgba(51,122,183,.2);
-	}
-	.carlist-item .img-thumbnail{height: 60px}
-	.carlist-item .dbf1{margin:0 10px;}
-	@media (max-width: 364px){
-		.carlist-item .img-thumbnail{height: 50px}
-	}*/
 	.img-container{max-width: 350px;margin: 0 auto;}
 	#inout .form-control.text-danger{color:#a94442;}
 </style>
@@ -89,10 +69,10 @@
 				    <div class="col-sm-offset-2 col-sm-10">
 				    	<div class='row'>
 				    		<div class='col-xs-6'>
-				    			<button type="button" class="btn btn-primary btn-lg btn-block">入场补景</button>
+				    			<button type="button" class="btn btn-primary btn-lg btn-block">入场补录</button>
 				    		</div>
 				    		<div class='col-xs-6'>
-				    			<button type="button" class="btn btn-success btn-lg btn-block">确认放行</button>
+				    			<button ms-click='inSureOpen' type="button" class="btn btn-success btn-lg btn-block">确认放行</button>
 				    		</div>
 				    	</div>
 				    </div>
@@ -132,6 +112,12 @@
 				    	</div>
 				    </div>
 				</div>
+				<div class="form-group">
+				    <label class="col-sm-2 control-label padr0">入场时间</label>
+				    <div class="col-sm-10">
+				      	<input type="text" class="form-control" readonly ms-duplex="outInCarTime">
+				    </div>
+				</div>
 				<div class="form-group form-group-lg">
 				    <label class="col-sm-2 control-label carnum-label padr0">离场车牌</label>
 				    <div class="col-sm-10 db dbac">
@@ -139,12 +125,6 @@
 				    	<div class='padl5'>
 				    		<img ms-attr-src="outCarImg" class='img-rounded' alt='车牌识别图片' height='50'>
 				    	</div>
-				    </div>
-				</div>
-				<div class="form-group">
-				    <label class="col-sm-2 control-label padr0">入场时间</label>
-				    <div class="col-sm-10">
-				      	<input type="text" class="form-control" readonly ms-duplex="outInCarTime">
 				    </div>
 				</div>
 				<div class="form-group">
@@ -156,8 +136,8 @@
 				<div class="form-group">
 				    <label class="col-sm-2 control-label padr0">离场优惠</label>
 				    <div class="col-sm-10">
-				      	<select class='form-control'>
-				      		<option>优惠3小时</option>
+				      	<select class='form-control' ms-duplex='outDiscount'>
+				      		<option value='优惠3小时'>优惠3小时</option>
 				      	</select>
 				    </div>
 				</div>
@@ -177,10 +157,10 @@
 				    <div class="col-sm-offset-2 col-sm-10">
 				    	<div class='row'>
 				    		<div class='col-xs-6'>
-				    			<button type="button" class="btn btn-danger btn-lg btn-block">付停车费</button>
+				    			<button ms-click='payMoney' type="button" class="btn btn-danger btn-lg btn-block">付停车费</button>
 				    		</div>
 				    		<div class='col-xs-6'>
-				    			<button type="button" class="btn btn-success btn-lg btn-block">确认放行</button>
+				    			<button ms-click="outSureOpen" type="button" class="btn btn-success btn-lg btn-block">确认放行</button>
 				    		</div>
 				    	</div>
 				    </div>
@@ -195,14 +175,14 @@
 				<div class="form-group">
 					<label for='carNumber' class="col-sm-2 control-label">车牌号码</label>
 					<div class="col-sm-10">
-						<input type="text" class="form-control" id='carNumber' name='carNumber' placeholder='请输入车牌关键字'>
+						<input type="text" class="form-control" ms-duplex='carNum' id='carNumber' name='carNumber' placeholder='请输入车牌关键字'>
 					</div>
 				</div>
 				<div class="form-group">
 					<label for='sDate' class="col-sm-2 control-label">起始时间</label>
 					<div class='col-sm-10 padlr1'>
 						<div id='sDatePicker' class="input-group date">
-		                    <input id='sDate' class="form-control" type="text" readonly>
+		                    <input id='sDate' class="form-control" type="text" readonly ms-duplex='sDateStr'>
 		                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
 							<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
 		                </div>
@@ -212,7 +192,7 @@
 					<label for='eDate' class="col-sm-2 control-label">结束时间</label>
 					<div class='col-sm-10 padlr1'>
 						<div id='eDatePicker' class="input-group date">
-		                    <input id='eDate' class="form-control" type="text" readonly>
+		                    <input id='eDate' class="form-control" type="text" readonly ms-duplex='eDateStr'>
 		                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
 							<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
 		                </div>
@@ -220,10 +200,10 @@
 				</div>
 				<div class="form-group">
 				    <div class="col-sm-offset-2 col-sm-10">
-				    	<button type="button" class="btn btn-primary">
+				    	<button type="button" class="btn btn-primary" ms-click="noCarNumFind">
 				    		<i class='glyphicon glyphicon-search'></i> 无牌车搜索
 				    	</button>
-				    	<button type="button" class="btn btn-primary">
+				    	<button type="button" class="btn btn-primary" ms-click="searchCar">
 				    		<i class='glyphicon glyphicon-search'></i> 搜索
 				    	</button>
 				    </div>
@@ -259,10 +239,10 @@
 	</div>
 	<!-- 大图 -->
 	<div ms-widget="dialog,$picDialog,$picDialogOpts">
-
+		<img ms-attr-src='picSrc' alt='车辆大图' class='img-responsive img-rounded'/>
 	</div>
 </div>
-<script src='module/avalon.js'></script>
+<script src='module/avalon.modern.min.js'></script>
 <script src='module/business/inout.js'></script>
 </body>
 </html>

@@ -60,6 +60,15 @@ define(["common/websocket","common/dialog/avalon.dialog"],function(websocket){
 		curPage : null,
 		$personalWinOpts : {
 			title : "个人信息"
+		},
+		$alertOpts : {
+			title : "提示信息",
+			mes : "",
+			buttons : [{
+				theme : "primary",
+				close : true,
+				text : "确定"
+			}]
 		}
 	});
 	var top = avalon.define({
@@ -71,6 +80,10 @@ define(["common/websocket","common/dialog/avalon.dialog"],function(websocket){
 		},
 		showPersonalWin : function(){
 			avalon.vmodels.$personalWin.open();
+		},
+		logout : function(){
+			localStorage.removeItem("curAccount");
+			location.href = "login.html";
 		}
 	});
 	return {
@@ -85,6 +98,7 @@ define(["common/websocket","common/dialog/avalon.dialog"],function(websocket){
 			    todayBtn:  1,
 				autoclose: 1,
 				todayHighlight: 1,
+				minuteStep : 2,
 				startView: 2
 			};
 		},
@@ -105,6 +119,17 @@ define(["common/websocket","common/dialog/avalon.dialog"],function(websocket){
 			}else if(type === "2"){
 				return "本地VIP";
 			}
+		},
+		alert : function(mes){
+			var $alert = avalon.vmodels.$alert;
+			$alert.mes = mes;
+			$alert.open();
+		},
+		show : function(){
+
+		},
+		isCarNum : function(num){
+			return num && num !== '--' && num.indexOf("未") === -1;
 		}
 	};
 });
