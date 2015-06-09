@@ -47,7 +47,7 @@
 				<div class="form-group form-group-lg">
 				    <label class="col-sm-2 control-label carnum-label padr0">入场车牌</label>
 				    <div class="col-sm-10 db dbac">
-				    	<input type="text" class="form-control dbf1" readonly ms-duplex="inCarNum">
+				    	<input type="text" class="form-control dbf1 cpointer" readonly ms-duplex="inCarNum" ms-click='doCorrect'>
 				    	<div class='padl5'>
 				    		<img ms-attr-src="inCarImg" class='img-rounded' alt='车牌识别图片' height='50'>
 				    	</div>
@@ -211,35 +211,45 @@
 			</fieldset>
 		</form>
 		<div id='realCarList'></div>
-		<!-- ms-widget="table,$carList,$carListOpts"
-		<form class="form-horizontal">
-			<div class='db dbac carlist-item' ms-repeat="list">
-				<div>
-					<img ms-click='showPic' ms-attr-src="el.src" class='img-thumbnail cpointer'>
-				</div>
-				<div class='dbf1'>
-					<div class="form-group mgb0">
-					    <label class="col-sm-4 control-label">入场车牌</label>
-					    <div class="col-sm-8">
-					      	<span class='form-control'>334344</span>
-					    </div>
-					</div>
-					<div class="form-group mgb0">
-					    <label class="col-sm-4 control-label">入场时间</label>
-					    <div class="col-sm-8">
-					      	<span class='form-control'>2012-09-09 21:33:22</span>
-					    </div>
-					</div>
-				</div>
-				<div>
-					<button class='btn btn-primary btn-lg' type='button'>匹配</button>
-				</div>
-			</div>
-		</form>-->
 	</div>
 	<!-- 大图 -->
 	<div ms-widget="dialog,$picDialog,$picDialogOpts">
 		<img ms-attr-src='picSrc' alt='车辆大图' class='img-responsive img-rounded'/>
+	</div>
+	<!-- 纠正车牌 -->
+	<div ms-widget="dialog,$correctWin,$correctWinOpts">
+		<form class="form-horizontal mgt10">
+			<fieldset>
+				<div class="form-group form-group-lg">
+				    <label class="col-sm-2 control-label carnum-label">入场车牌</label>
+				    <div class="col-sm-10 db dbac">
+				    	<input type="text" class="form-control dbf1" readonly ms-duplex='inCarNum'>
+				    	<div class='padl5'>
+				    		<img ms-attr-src="carNumImg" class='img-rounded' alt='车牌识别图片' height='50'>
+				    	</div>
+				    </div>
+				</div>
+				<div class="form-group form-group-lg">
+				    <label class="col-sm-2 control-label">校正车牌</label>
+				    <div class="col-sm-10">
+				    	<div class="input-group">
+						  	<span class="input-group-addon cpointer" ms-widget="tooltip" data-tooltip-position="top" 
+				    			data-tooltip-content='请在下方选择'>{{curChoose}}</span>
+						  	<input type="text" class="form-control" placeholder="XX888" ms-duplex='correctNum'>
+						</div>
+				    </div>
+				</div>
+			</fieldset>
+		</form>
+		<div class='row mgb5' ms-repeat='provinceData'>
+			<div class='col-sm-6' ms-repeat-i='el'>
+				<div class='row'>
+					<div class='choose-province text-center' ms-repeat-j='i'>
+						<button class='btn btn-primary btn-lg' ms-click='doChoose(j)' ms-class='active:curChoose === j'>{{j}}</button>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 <script src='module/avalon.modern.min.js'></script>

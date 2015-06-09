@@ -39,15 +39,15 @@ require([
 			columns : [
 				{title : "最终车牌",field : "car_license_number",
 					formatter : function(v){
-						return "<a href='javascript:void(0)' ms-click='correctCarNum' ms-widget='tooltip' data-tooltip-content='点击纠正车牌'>" +
+						return "<a href='javascript:void(0)' ms-click='correctCarNum(item)' ms-widget='tooltip' data-tooltip-content='点击纠正车牌'>" +
 							v + "</a>";
 					}
 				},
 				{title : "入场识别车牌",field : "enter_car_license_number"},
 				{title : "车牌图片",field : "enter_car_license_picture",
-					formatter : function(v){
+					formatter : function(v,r,i){
 						if(!v) return '';
-						return "<img ms-click='showPic' class='cpointer' src='" +
+						return "<img data-index='"+i+"' ms-click='showPic(item)' class='cpointer' src='" +
 							Index.websocket.plateImgUrl + v + "?" + (+new Date) +
 							"' height='50' alt='车牌图片' ms-widget='tooltip' data-tooltip-content='点击查看大图'>";
 					}
@@ -59,11 +59,26 @@ require([
 				{title : "置信度",field : "enter_recognition_confidence"},
 				{title : "值班人员",field : "in_operate_name"}
 			],
-			correctCarNum : function(){
-				avalon.vmodels.$correctWin.open();
+			correctCarNum : function(item){
+				var $win = avalon.vmodels.$correctWin;
+				$win.carNumImg = Index.websocket.plateImgUrl + item.enter_car_license_picture + "?" + (+new Date);
+				$win.inCarNum = item.enter_car_license_number;
+				$win.curChoose = item.enter_car_license_number.charAt(0);
+				$win.correctNum = item.enter_car_license_number.substring(1);
+				$win.open();
 			},
-			showPic : function(){
-				avalon.vmodels.$picWin.open();
+			showPic : function(item){
+				var list = avalon.vmodels.$carList.data;
+				var imgs = [];
+				for(var i=0,ii;ii=list[i++];){
+					imgs.push({
+						src : Index.websocket.fullImgUrl + ii.enter_car_full_picture + "?" + (+new Date)
+					});
+				}
+				var $win = avalon.vmodels.$picWin;
+				$win.imgs = imgs;
+				$win.curIndex = +this.getAttribute("data-index");
+				$win.open();
 			}
 		},
 		$correctWinOpts : {
@@ -86,10 +101,14 @@ require([
 			curChoose : "粤",
 			doChoose : function(j){
 				avalon.vmodels.$correctWin.curChoose = j;
-			}
+			},
+			carNumImg : "image/no-car.png",
+			inCarNum : "--",
+			correctNum : ""
 		},
 		$picWinOpts : {
 			title : "浏览大图",
+			curIndex : 0,
 			next : function(){
 				var items = document.querySelectorAll("#carousel .item");
 				for(var i=0,ii=items.length;i<ii;i++){
@@ -128,39 +147,36 @@ require([
 					}
 				}
 			},
-			imgs : [{
-				src : "image/full.jpg"
-			},{
-				src : "image/plate.jpg"
-			},{
-				src : "image/full.jpg"
-			}],
+			imgs : [],
 			afterShow : function(isInit){
-				if(isInit){
-					avalon.each(document.querySelectorAll("#carousel .item"),function(i,el){
-						el.addEventListener(avalon.support.transitionend,function(){
-							var $this = avalon(this);
-							this.classList.remove('left');
-							this.classList.remove("right");
-							if($this.hasClass("active")){
-								this.classList.remove("active");
-							}else if($this.hasClass("next")){
-								this.classList.remove("next");
-								this.classList.add("active");
-							}else if($this.hasClass("prev")){
-								this.classList.remove("prev");
-								this.classList.add("active");
-							}
-						});
+				avalon.each(document.querySelectorAll("#carousel .item"),function(i,el){
+					el.addEventListener(avalon.support.transitionend,function(e){
+						e.stopPropagation();
+						e.preventDefault();
+						if(e.target !== this) return;
+						var $this = avalon(this);
+						this.classList.remove('left');
+						this.classList.remove("right");
+						if($this.hasClass("active")){
+							this.classList.remove("active");
+						}else if($this.hasClass("next")){
+							this.classList.remove("next");
+							this.classList.add("active");
+						}else if($this.hasClass("prev")){
+							this.classList.remove("prev");
+							this.classList.add("active");
+						}
 					});
-				}
+				});
 			}
 		},
 		sDate : "",
 		eDate : "",
+		channelData : [],
 		model : {
 			sDateStr : "",
 			eDateStr : "",
+			enter_channel : "",
 			enter_vip_type : "",
 			car_license_number : "",
 			in_operate_name : "",
@@ -174,6 +190,15 @@ require([
 	},document.body,function(data){
 		if(data.code === "0" && data.msg === "ok"){
 			avalon.vmodels.$carList.loadFrontPageData(REAL_TIME_CAR_LIST = data.real_time_list);
+			var channelObj = {};
+			for(var i=0,ii;ii=REAL_TIME_CAR_LIST[i++];){
+				channelObj[ii.enter_channel] = 1;
+			}
+			var arr = [];
+			for(var i in channelObj){
+				arr.push(i);
+			}
+			content.channelData = arr;
 		}
 	});
 	Index.initDatePickerToVM($("#inTimePicker"),content,"sDate");

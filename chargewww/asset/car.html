@@ -8,9 +8,6 @@
 <link href="css/bootstrap/bootstrap.css" rel="stylesheet">
 <link href="css/base.css" rel="stylesheet">
 <link href="css/index.css" rel="stylesheet">
-<style>
-	.choose-province{width: 25%;float: left;}
-</style>
 <!--[if lt IE 10]>
 <script>alert("抱歉，请使用IE10+,Google Chrome,firefox等其他高级浏览器登录本系统!");</script>
 <![endif]-->
@@ -48,6 +45,8 @@
 				<label for='inChannel' class="col-sm-2 control-label">通道</label>
 				<div class="col-sm-4">
 					<select class="form-control" id='inChannel' ms-duplex='model.enter_channel'>
+						<option value=''>请选择</option>
+						<option ms-repeat="channelData" ms-attr-value='el'>{{el}}</option>
 					</select>
 				</div>
 				<label for='carType' class="col-sm-2 control-label">车辆类型</label>
@@ -67,8 +66,7 @@
 				</div>
 				<label for='believe' class="col-sm-2 control-label">置信度</label>
 				<div class="col-sm-4">
-					<select class="form-control" id='believe' ms-duplex='mode.enter_recognition_confidence'>
-					</select>
+					<input type='text' class="form-control" id='believe' ms-duplex-number='mode.enter_recognition_confidence' placeholder="请输入1~100的数字">
 				</div>
 			</div>
 			<div class="form-group">
@@ -85,9 +83,9 @@
 				<div class="form-group form-group-lg">
 				    <label class="col-sm-2 control-label carnum-label">入场车牌</label>
 				    <div class="col-sm-10 db dbac">
-				    	<input type="text" class="form-control dbf1" readonly value='--'>
+				    	<input type="text" class="form-control dbf1" readonly ms-duplex='inCarNum'>
 				    	<div class='padl5'>
-				    		<img src="image/plate.jpg" class='img-rounded' alt='车牌识别图片' height='50'>
+				    		<img ms-attr-src="carNumImg" class='img-rounded' alt='车牌识别图片' height='50'>
 				    	</div>
 				    </div>
 				</div>
@@ -97,7 +95,7 @@
 				    	<div class="input-group">
 						  	<span class="input-group-addon cpointer" ms-widget="tooltip" data-tooltip-position="top" 
 				    			data-tooltip-content='请在下方选择'>{{curChoose}}</span>
-						  	<input type="text" class="form-control" placeholder="XX888">
+						  	<input type="text" class="form-control" placeholder="XX888" ms-duplex='correctNum'>
 						</div>
 				    </div>
 				</div>
@@ -116,7 +114,7 @@
 	<div ms-widget="dialog,$picWin,$picWinOpts">
 		<div class="carousel slide">
 		  	<div class="carousel-inner" id='carousel'>
-			    <div class="item" ms-repeat="imgs" ms-class='active:$index === 0'>
+			    <div class="item" ms-repeat="imgs" ms-class='active:$index === curIndex'>
 			      	<img ms-attr-src="el.src" alt='大图'>
 			    </div>
 		  	</div>

@@ -41,5 +41,11 @@
 .mnavbar .navbar-right .navbar-nav a.selected{color: #fff}
 .mnavbar .navbar-toggle{margin-top: 19px}
 .mpanel .panel-title{font-size: 1.5em;padding: 5px 0}
+.mnavbar-carnuminfo{color: #fff;text-align: center;padding: 10px 0;height: 70px;line-height: 25px;}
+.mnavbar-carnuminfo>span{display: inline-block;padding: 0 5px}
+.mnavbar-carnuminfo .empty{border-right: 1px solid #fff}
+
 .personal-title{font-size: 5em;margin-bottom:-10px;}
 .mcontent{padding-top: 71px}
+
+.choose-province{width: 25%;float: left;}
