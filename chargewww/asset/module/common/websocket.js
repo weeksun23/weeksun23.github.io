@@ -1,14 +1,16 @@
 define(function(){
 	//var host = "13531307642.xicp.net";
-	//var host = "127.0.0.1";
-	var host = "dwdtec.vicp.net";
+	var host = "127.0.0.1";
+	//var host = "dwdtec.vicp.net";
 	var url = "ws://" + host + ":51601";
 	var socket;
 	//20秒超时连接
 	var timeout = 20000;
 	var socketHelper = {
-		fullImgUrl : "http://" + host + ":8088/FullPic/",
-		plateImgUrl : "http://" + host + ":8088/PlateNumberPic/",
+		//fullImgUrl : "http://" + host + ":8088/FullPic/",
+		//plateImgUrl : "http://" + host + ":8088/PlateNumberPic/",
+		fullImgUrl : "image/test/FullPic/",
+		plateImgUrl : "image/test/PlateNumberPic/",
 		//是否登陆页发的请求
 		login : false,
 		callbacks : {},
@@ -50,8 +52,7 @@ define(function(){
 				sign_type : "MD5",
 				sign : "21234561231561615461123",
 				charset : "UTF-8",
-				timestamp : avalon.filters.date(new Date(),"yyyyMMddHHmmss"),
-				biz_content : {}
+				timestamp : avalon.filters.date(new Date(),"yyyyMMddHHmmss")
 			},order);
 			area && avalon(area).loading();
 			avalon.log("======发送指令======",order);

@@ -6,8 +6,7 @@ require.config({
 require([
 	"common/index",
 	"common/tooltip/avalon.tooltip",
-	"common/table/avalon.table",
-	"lib/datetimepicker/bootstrap-datetimepicker-module"
+	"common/table/avalon.table"
 ],function(Index){
 	Index.top.curIndex = 0;
 	var REAL_TIME_CAR_LIST;
@@ -86,6 +85,42 @@ require([
 				return Index.alert("暂无出场车辆");
 			}
 			avalon.vmodels.$carListDialog.open();
+		},
+		doCorrect : function(){
+			var $win = avalon.vmodels.$correctWin;
+			$win.carNumImg = content.inCarImg;
+			$win.inCarNum = content.inCarNum;
+			$win.curChoose = content.inCarNum.charAt(0);
+			$win.correctNum = content.inCarNum.substring(1);
+			$win.open();
+		},
+		$correctWinOpts : {
+			title : "纠正车牌",
+			buttons : [{
+				text : '非机动车',theme : "danger"
+			},{
+				text : '无牌车',theme : "primary"
+			},{
+				text : "确认纠正",theme : "success"
+			},{
+				text : "取消",close : true
+			}],
+			provinceData : [
+				[['京','津','粤','泸'],['浙','苏','湘','渝']],
+				[['云','豫','皖','陕'],['桂','新','青','琼']],
+				[['闽','蒙','辽','宁'],['鲁','晋','吉','冀']],
+				[['黑','甘','鄂','赣'],['贵','川','藏']]
+			],
+			curChoose : "粤",
+			inCarNum : '--',
+			correctNum : "",
+			doChoose : function(j){
+				avalon.vmodels.$correctWin.curChoose = j;
+			},
+			carNumImg : "image/no-car.png",
+			afterShow : function(){
+
+			}
 		},
 		$carListDialogOpts : {
 			title : "在场车辆匹配列表",
@@ -432,6 +467,7 @@ require([
 				request_time : avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss")
 			}
 		},document.body,function(data){
+			Index.init();
 			if(data.code === '0' && data.msg === "ok"){
 				var entranceList = data.entrance_channel_list;
 				if(!entranceList || entranceList.length === 0){

@@ -38,10 +38,20 @@
 			</ul>
 			<div class="navbar-right">
 				<ul class="nav navbar-nav">
+					<li class='mnavbar-carnuminfo'>
+						<span class='empty'>
+							<span>空车位</span><br>
+							<span>{{total_parking_space_remaining}}</span>
+						</span>
+						<span>
+							<span>总车位</span><br>
+							<span>{{total_parking_space}}</span>
+						</span>
+					</li>
 					<li>
 						<a href="javascript:void(0)" class='text-center' ms-click='showPersonalWin'>
 							<i class='glyphicon glyphicon-user'></i><br>
-							admin
+							{{accountName}}
 						</a>
 					</li>
 					<li>
@@ -64,41 +74,57 @@
 			<div class="form-group">
 				<label for='personal-name' class="col-sm-2 control-label">姓名</label>
 				<div class="col-sm-4">
-					<input type="text" class="form-control" id='personal-name' name='personal-name' readonly>
+					<input type="text" class="form-control" id='personal-name' ms-duplex='user_login_name' readonly>
 				</div>
-				<label for='personal-money' class="col-sm-2 control-label">总金额</label>
-				<div class="col-sm-4">
-					<input type="text" class="form-control" id='personal-money' name='personal-money' readonly>
-				</div>
-			</div>
-			<div class="form-group">
 				<label for='personal-phone' class="col-sm-2 control-label">电话</label>
 				<div class="col-sm-4">
-					<input type="text" class="form-control" id='personal-phone' name='personal-phone' readonly>
-				</div>
-				<label for='personal-acual-money' class="col-sm-2 control-label">实收金额</label>
-				<div class="col-sm-4">
-					<input type="text" class="form-control" id='personal-acual-money' name='personal-acual-money' readonly>
+					<input type="text" class="form-control" id='personal-phone' ms-duplex='telphone' readonly>
 				</div>
 			</div>
 			<div class="form-group">
 				<label for='personal-role' class="col-sm-2 control-label">角色权限</label>
 				<div class="col-sm-4">
-					<input type="text" class="form-control" id='personal-role' name='personal-role' readonly>
+					<input type="text" class="form-control" id='personal-role' ms-duplex='user_role' readonly>
 				</div>
-				<label for='personal-time' class="col-sm-2 control-label">优惠时间</label>
+				<label for='personal-date' class="col-sm-2 control-label">登录时间</label>
 				<div class="col-sm-4">
-					<input type="text" class="form-control" id='personal-time' name='personal-time' readonly>
+					<input type="text" class="form-control" id='personal-date' ms-duplex='loginTime' readonly>
 				</div>
 			</div>
 			<div class="form-group">
-				<label for='personal-date' class="col-sm-2 control-label">登录时间</label>
+				<label for='personal-sDate' class="col-sm-2 control-label">起始时间</label>
+				<div class='col-sm-10 padlr1'>
+					<div id='personal-eDatePicker' class="input-group date">
+	                    <input id='personal-sDate' class="form-control" type="text" readonly ms-duplex='sDateStr'>
+	                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+						<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+	                </div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for='personal-eDate' class="col-sm-2 control-label">结束时间</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" id='personal-eDate' ms-duplex='eDateStr' readonly>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for='personal-money' class="col-sm-2 control-label">总金额</label>
 				<div class="col-sm-4">
-					<input type="text" class="form-control" id='personal-date' name='personal-date' readonly>
+					<input type="text" class="form-control" id='personal-money' ms-duplex="total_amount" readonly>
+				</div>
+				<label for='personal-acual-money' class="col-sm-2 control-label">实收金额</label>
+				<div class="col-sm-4">
+					<input type="text" class="form-control" id='personal-acual-money' ms-duplex='total_received_amount' readonly>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for='personal-time' class="col-sm-2 control-label">优惠时间</label>
+				<div class="col-sm-4">
+					<input type="text" class="form-control" id='personal-time' ms-duplex='total_discount_time' readonly>
 				</div>
 				<label for='personal-cheap-money' class="col-sm-2 control-label">优惠金额</label>
 				<div class="col-sm-4">
-					<input type="text" class="form-control" id='personal-cheap-money' name='personal-cheap-money' readonly>
+					<input type="text" class="form-control" id='personal-cheap-money' ms-duplex='total_discount_amount' readonly>
 				</div>
 			</div>
 			<div class="form-group">
@@ -117,5 +143,8 @@
 	</form>
 </div>
 <div ms-widget="dialog,$alert,$alertOpts">
-	<h2 class='text-center'>{{mes}}</h2>
+	<h2 class='text-center'>{{mes | html}}</h2>
+</div>
+<div ms-widget='dialog,$confirm,$confirmOpts'>
+	<h2 class='text-center'>{{mes | html}}</h2>
 </div>
