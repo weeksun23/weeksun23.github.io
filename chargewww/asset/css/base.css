@@ -8,6 +8,7 @@ body{background-color: #eee}
 .iblock{display: inline-block !important}
 /*margin*/
 .mgt10{margin-top: 10px;}
+.mgt15{margin-top: 15px;}
 .mgb0{margin-bottom: 0}
 .mgb1-reverse{margin-bottom: -1px;}
 .mgb5{margin-bottom: 5px;}

@@ -7,7 +7,7 @@ define(["common/websocket","common/dialog/avalon.dialog"],function(websocket){
 		});
 		return children;
 	};
-	avalon.fn.loading = function(isEnd){
+	avalon.fn.loading = function(isLoading){
 		var children = this.children();
 		var target;
 		avalon.each(children,function(i,el){
@@ -17,15 +17,7 @@ define(["common/websocket","common/dialog/avalon.dialog"],function(websocket){
 			}
 		});
 		var key = "data-loading-num";
-		if(isEnd){
-			if(!target) return;
-			var num = +target.getAttribute(key);
-			if(--num === 0){
-				target.parentNode.removeChild(target);
-			}else{
-				target.setAttribute(key,num);
-			}
-		}else{
+		if(isLoading || isLoading === undefined){
 			if(target){
 				var num = +target.getAttribute(key);
 				target.setAttribute(key,++num);
@@ -35,6 +27,14 @@ define(["common/websocket","common/dialog/avalon.dialog"],function(websocket){
 				div.setAttribute(key,'1');
 				div.innerHTML = "<div><i class='glyphicon glyphicon-refresh spin'></i></div>";
 				this[0].appendChild(div);
+			}
+		}else{
+			if(!target) return;
+			var num = +target.getAttribute(key);
+			if(--num === 0){
+				target.parentNode.removeChild(target);
+			}else{
+				target.setAttribute(key,num);
 			}
 		}
 	};

@@ -10,12 +10,33 @@ require([
 	"lib/datetimepicker/bootstrap-datetimepicker-module"
 ],function(Index){
 	Index.top.curIndex = 1;
+	var REAL_TIME_CAR_LIST;
 	var content = avalon.define({
 		$id : "content",
+		search : function(){
+			if(REAL_TIME_CAR_LIST){
+				var model = content.model.$model;
+				var result = [];
+				for(var i=0,item;item=REAL_TIME_CAR_LIST[i++];){
+					if(
+						(model.car_license_number && item.enter_car_license_number.indexOf(model.car_license_number) === -1) ||
+						(model.sDateStr && item.enter_time < model.sDateStr) ||
+						(model.eDateStr && item.enter_time > model.eDateStr) ||
+						(model.enter_vip_type && model.enter_vip_type !== item.enter_vip_type) ||
+						(model.enter_channel && model.enter_channel !== item.enter_channel) ||
+						(model.in_operate_name && item.in_operate_name.indexOf(model.in_operate_name))
+					){
+						continue;
+					}
+					result.push(item);
+				}
+				avalon.vmodels.$carList.loadFrontPageData(result);
+			}
+		},
 		$carListOpts : {
 			title : "车辆列表",
+			pageSize : 10,
 			columns : [
-				{title : "序号",field : "n"},
 				{title : "最终车牌",field : "car_license_number",
 					formatter : function(v){
 						return "<a href='javascript:void(0)' ms-click='correctCarNum' ms-widget='tooltip' data-tooltip-content='点击纠正车牌'>" +
@@ -25,25 +46,18 @@ require([
 				{title : "入场识别车牌",field : "enter_car_license_number"},
 				{title : "车牌图片",field : "enter_car_license_picture",
 					formatter : function(v){
-						if(!v) return;
-						return "<img ms-click='showPic' class='cpointer' src='"+v+"' height='50' alt='车牌图片' ms-widget='tooltip' data-tooltip-content='点击查看大图'>";
+						if(!v) return '';
+						return "<img ms-click='showPic' class='cpointer' src='" +
+							Index.websocket.plateImgUrl + v + "?" + (+new Date) +
+							"' height='50' alt='车牌图片' ms-widget='tooltip' data-tooltip-content='点击查看大图'>";
 					}
 				},
 				{title : "入场时间",field : "enter_time"},
 				{title : "入场通道",field : "enter_channel"},
-				{title : "车辆类型",field : "enter_vip_type"},
+				{title : "车辆类型",field : "enter_vip_type",formatter : Index.getCarType},
 				{title : "放行模式",field : "pass_type"},
 				{title : "置信度",field : "enter_recognition_confidence"},
 				{title : "值班人员",field : "in_operate_name"}
-			],
-			frontPageData : [
-				{n : "234534",car_license_number : "粤XHN161",enter_car_license_picture : 'image/plate.jpg'},
-				{n : "234534",car_license_number : "粤XHN161"},
-				{n : "234534",car_license_number : "粤XHN161"},
-				{n : "234534",car_license_number : "粤XHN161"},
-				{n : "234534",car_license_number : "粤XHN161"},
-				{n : "234534",car_license_number : "粤XHN161"},
-				{n : "234534",car_license_number : "粤XHN161"}
 			],
 			correctCarNum : function(){
 				avalon.vmodels.$correctWin.open();
@@ -141,16 +155,27 @@ require([
 					});
 				}
 			}
+		},
+		sDate : "",
+		eDate : "",
+		model : {
+			sDateStr : "",
+			eDateStr : "",
+			enter_vip_type : "",
+			car_license_number : "",
+			in_operate_name : "",
+			enter_recognition_confidence : ""
 		}
 	});
 	avalon.scan();
-	$("#inTimePicker").datetimepicker({
-		language:  'zh-CN',
-	    format : "yyyy-mm-dd hh:ii:ss",
-	    weekStart: 1,
-	    todayBtn:  1,
-		autoclose: 1,
-		todayHighlight: 1,
-		startView: 2
+	//获取车辆列表
+	Index.websocket.send({
+		command : "GET_REAL_TIME_CAR"
+	},document.body,function(data){
+		if(data.code === "0" && data.msg === "ok"){
+			avalon.vmodels.$carList.loadFrontPageData(REAL_TIME_CAR_LIST = data.real_time_list);
+		}
 	});
+	Index.initDatePickerToVM($("#inTimePicker"),content,"sDate");
+	Index.initDatePickerToVM($("#outTimePicker"),content,"eDate");
 });

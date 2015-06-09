@@ -74,21 +74,6 @@
 <script>
 	require(["common/websocket"],function(socket){
 		socket.login = true;
-		socket.callbacks.USER_ACCESS_RETURN = function(data){
-			if(data.msg === "user name didnot exit"){
-				vmodel.errorMsg = "用户名不存在";
-				vmodel.loginDisabled = false;
-			}else if(data.msg === "user password err"){
-				vmodel.errorMsg = "密码错误";
-				vmodel.loginDisabled = false;
-			}else if(data.msg === "ok"){
-				vmodel.errorMsg = "";
-				vmodel.successMsg = "登录成功,跳转中...";
-				localStorage.setItem("curAccount",vmodel.name);
-				localStorage.setItem("wwwcharge-login-" + vmodel.name,new Date().getTime());
-				location.href = 'inout.html';
-			}
-		};
 		var vmodel = avalon.define({
 			$id : "login",
 			enterLogin : function(e){
@@ -117,6 +102,20 @@
 							ip : "127.0.0.1",
 							time : avalon.filters.date(new Date(),"yyyyMMddHHmmss"),
 							type : "LOGIN"
+						}
+					},null,function(data){
+						if(data.msg === "user name didnot exit"){
+							vmodel.errorMsg = "用户名不存在";
+							vmodel.loginDisabled = false;
+						}else if(data.msg === "user password err"){
+							vmodel.errorMsg = "密码错误";
+							vmodel.loginDisabled = false;
+						}else if(data.msg === "ok"){
+							vmodel.errorMsg = "";
+							vmodel.successMsg = "登录成功,跳转中...";
+							localStorage.setItem("curAccount",vmodel.name);
+							localStorage.setItem("wwwcharge-login-" + vmodel.name,new Date().getTime());
+							location.href = 'inout.html';
 						}
 					});
 				}

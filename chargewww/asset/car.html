@@ -18,46 +18,62 @@
 <body id='car' ms-controller='body'>
 <div ms-include-src="'tpl/top.html'" data-include-replace="true"></div>
 <div class="mcontent container-fluid" ms-controller='content'>
-	<form class="form-horizontal mgt10">
+	<form class="form-horizontal mgt15">
 		<fieldset>
 			<div class="form-group">
 				<label for='carNumber' class="col-sm-2 control-label">最终车牌</label>
 				<div class="col-sm-4">
-					<input type="text" class="form-control" id='carNumber' name='carNumber' placeholder='请输入车牌关键字'>
+					<input type="text" class="form-control" id='carNumber' placeholder='请输入车牌关键字' ms-duplex='model.car_license_number'>
 				</div>
+			</div>
+			<div class="form-group">
 				<label for='inTime' class="col-sm-2 control-label">入场时间</label>
-				<div id='inTimePicker' class="input-group date col-sm-4 padlr1" >
-                    <input id='inTime' class="form-control" type="text" readonly>
-                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-					<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-                </div>
+                <div class='col-sm-4'>
+					<div id='inTimePicker' class="input-group date">
+	                    <input id='inTime' class="form-control" type="text" readonly ms-duplex="model.sDateStr">
+	                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+						<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+	                </div>
+				</div>
+				<label for='outTime' class="col-sm-2 control-label">至</label>
+				<div class='col-sm-4'>
+					<div id='outTimePicker' class="input-group date">
+	                    <input id='outTime' class="form-control" type="text" readonly ms-duplex="model.eDateStr">
+	                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+						<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+	                </div>
+				</div>
 			</div>
 			<div class="form-group">
 				<label for='inChannel' class="col-sm-2 control-label">通道</label>
 				<div class="col-sm-4">
-					<select class="form-control" id='inChannel' name='inChannel'>
+					<select class="form-control" id='inChannel' ms-duplex='model.enter_channel'>
 					</select>
 				</div>
 				<label for='carType' class="col-sm-2 control-label">车辆类型</label>
 				<div class="col-sm-4">
-					<select class="form-control" id='carType' name='carType'>
+					<select class="form-control" id='carType' ms-duplex='model.enter_vip_type'>
+						<option value=''>请选择</option>
+						<option value='1'>临时车</option>
+						<option value='2'>本地VIP</option>
+						<option value='3'>会员车</option>
 					</select>
 				</div>
 			</div>
 			<div class="form-group">
 				<label for='workMan' class="col-sm-2 control-label">值班人员</label>
 				<div class="col-sm-4">
-					<input type="text" class="form-control" id='workMan' name='workMan' placeholder='请输入名称关键字'>
+					<input type="text" class="form-control" id='workMan' placeholder='请输入名称关键字' ms-duplex='model.in_operate_name'>
 				</div>
 				<label for='believe' class="col-sm-2 control-label">置信度</label>
 				<div class="col-sm-4">
-					<select class="form-control" id='believe' name='believe'>
+					<select class="form-control" id='believe' ms-duplex='mode.enter_recognition_confidence'>
 					</select>
 				</div>
 			</div>
 			<div class="form-group">
 			    <div class="col-sm-offset-2 col-sm-10">
-			    	<button type="button" class="btn btn-primary"><i class='glyphicon glyphicon-search'></i> 搜索</button>
+			    	<button type="button" class="btn btn-primary" ms-click='search'><i class='glyphicon glyphicon-search'></i> 搜索</button>
 			    </div>
 			</div>
 		</fieldset>
