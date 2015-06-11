@@ -78,6 +78,30 @@ require([
 			Index.alert("开闸成功");
 		});
 	}
+	//校正车牌
+	function doCorrectCarNum(oldNum,time,newNum,area){
+		Index.websocket.send({
+			command : "SYNCHRONIZATION_ADJUST",
+			biz_content : {
+				is_appoint : "1",
+				origin_car_license_number : oldNum,
+				origin_time : time,
+				adjust_list_car_license_number : newNum,
+				adjust_list_recognition_confidence : "100",
+				report_status : "1",
+				report_time : "",
+				modify_time : "",
+				modify_by : ""
+			}
+		},area,function(data){
+			if(data.code === "0" && data.msg === "ok"){
+				Index.alert("校正成功");
+				content.inTime = newNum;
+			}else{
+				Index.alert("校正失败，请重试。");
+			}
+		});
+	}
 	var content = avalon.define({
 		$id : "content",
 		showCarlist : function(){
@@ -95,13 +119,22 @@ require([
 			$win.open();
 		},
 		$correctWinOpts : {
-			title : "纠正车牌",
+			title : "校正车牌",
 			buttons : [{
-				text : '非机动车',theme : "danger"
+				text : '非机动车',theme : "danger",handler : function(vmodel){
+					doCorrectCarNum(content.inCarNum,content.inTime,
+						"非机动车" + avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss"),vmodel.widgetElement);
+				}
 			},{
-				text : '无牌车',theme : "primary"
+				text : '无牌车',theme : "primary",handler : function(vmodel){
+					doCorrectCarNum(content.inCarNum,content.inTime,
+						"无牌车" + avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss"),vmodel.widgetElement);
+				}
 			},{
-				text : "确认纠正",theme : "success"
+				text : "确认校正",theme : "success",handler : function(vmodel){
+					doCorrectCarNum(content.inCarNum,content.inTime,
+						vmodel.curChoose + vmodel.correctNum,vmodel.widgetElement);
+				}
 			},{
 				text : "取消",close : true
 			}],

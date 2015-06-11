@@ -211,7 +211,6 @@ define([
 			return num && num !== '--' && num.indexOf("未") === -1;
 		},
 		init : function(){
-			return;
 			websocket.send({
 				command : "CHECK_PARKING_SPACE"
 			},null,function(data){
