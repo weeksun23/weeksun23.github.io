@@ -11,6 +11,31 @@ require([
 ],function(Index){
 	Index.top.curIndex = 1;
 	var REAL_TIME_CAR_LIST;
+	//校正车牌
+	function doCorrectCarNum(oldNum,time,newNum,vmodel){
+		Index.websocket.send({
+			command : "SYNCHRONIZATION_ADJUST",
+			biz_content : {
+				is_appoint : "1",
+				origin_car_license_number : oldNum,
+				origin_time : time,
+				adjust_list_car_license_number : newNum,
+				adjust_list_recognition_confidence : "100",
+				report_status : "1",
+				report_time : "",
+				modify_time : "",
+				modify_by : ""
+			}
+		},vmodel.widgetElement,function(data){
+			if(data.code === "0" && data.msg === "ok"){
+				Index.alert("校正成功");
+				vmodel.close();
+				getCar(avalon.vmodels.$carList.curPage);
+			}else{
+				Index.alert("校正失败，请重试。");
+			}
+		});
+	}
 	var content = avalon.define({
 		$id : "content",
 		search : function(){
@@ -24,7 +49,9 @@ require([
 						(model.eDateStr && item.enter_time > model.eDateStr) ||
 						(model.enter_vip_type && model.enter_vip_type !== item.enter_vip_type) ||
 						(model.enter_channel && model.enter_channel !== item.enter_channel) ||
-						(model.in_operate_name && item.in_operate_name.indexOf(model.in_operate_name))
+						(model.in_operate_name && item.in_operate_name.indexOf(model.in_operate_name)) ||
+						(model.sBelieve && +item.enter_recognition_confidence < +model.sBelieve) ||
+						(model.eBelieve && +item.enter_recognition_confidence > +model.eBelieve)
 					){
 						continue;
 					}
@@ -47,9 +74,9 @@ require([
 				{title : "车牌图片",field : "enter_car_license_picture",
 					formatter : function(v,r,i){
 						if(!v) return '';
-						return "<img data-index='"+i+"' ms-click='showPic(item)' class='cpointer' src='" +
+						return "<img data-index='"+i+"' onerror='Index.onImgError(this)' ms-click='showPic(item)' class='cpointer' src='" +
 							Index.websocket.plateImgUrl + v + "?" + (+new Date) +
-							"' height='50' alt='车牌图片' ms-widget='tooltip' data-tooltip-content='点击查看大图'>";
+							"' height='30' alt='车牌图片' ms-widget='tooltip' data-tooltip-content='点击查看大图'>";
 					}
 				},
 				{title : "入场时间",field : "enter_time"},
@@ -65,6 +92,7 @@ require([
 				$win.inCarNum = item.enter_car_license_number;
 				$win.curChoose = item.enter_car_license_number.charAt(0);
 				$win.correctNum = item.enter_car_license_number.substring(1);
+				$win.$curRecord = item;
 				$win.open();
 			},
 			showPic : function(item){
@@ -82,13 +110,23 @@ require([
 			}
 		},
 		$correctWinOpts : {
-			title : "纠正车牌",
+			title : "校正车牌",
+			$curRecord : null,
 			buttons : [{
-				text : '非机动车',theme : "danger"
+				text : '非机动车',theme : "danger",handler : function(vmodel){
+					doCorrectCarNum(vmodel.$curRecord.car_license_number,vmodel.$curRecord.enter_time,
+						"非机动车" + avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss"),vmodel);
+				}
 			},{
-				text : '无牌车',theme : "primary"
+				text : '无牌车',theme : "primary",handler : function(vmodel){
+					doCorrectCarNum(vmodel.$curRecord.car_license_number,vmodel.$curRecord.enter_time,
+						"无牌车" + avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss"),vmodel);
+				}
 			},{
-				text : "确认纠正",theme : "success"
+				text : "确认校正",theme : "success",handler : function(vmodel){
+					doCorrectCarNum(vmodel.$curRecord.car_license_number,vmodel.$curRecord.enter_time,
+						vmodel.curChoose + vmodel.correctNum,vmodel);
+				}
 			},{
 				text : "取消",close : true
 			}],
@@ -170,37 +208,58 @@ require([
 				});
 			}
 		},
-		sDate : "",
-		eDate : "",
 		channelData : [],
 		model : {
-			sDateStr : "",
-			eDateStr : "",
+			sDateStr : '',
+			eDateStr : '',
 			enter_channel : "",
 			enter_vip_type : "",
 			car_license_number : "",
 			in_operate_name : "",
-			enter_recognition_confidence : ""
-		}
+			sBelieve : "",
+			eBelieve : ""
+		},
+		operUsers : []
 	});
 	avalon.scan();
 	//获取车辆列表
-	Index.websocket.send({
-		command : "GET_REAL_TIME_CAR"
-	},document.body,function(data){
-		if(data.code === "0" && data.msg === "ok"){
-			avalon.vmodels.$carList.loadFrontPageData(REAL_TIME_CAR_LIST = data.real_time_list);
-			var channelObj = {};
-			for(var i=0,ii;ii=REAL_TIME_CAR_LIST[i++];){
-				channelObj[ii.enter_channel] = 1;
+	function getCar(page,func){
+		Index.websocket.send({
+			command : "GET_REAL_TIME_CAR"
+		},document.body,function(data){
+			if(data.code === "0" && data.msg === "ok"){
+				avalon.vmodels.$carList.loadFrontPageData(REAL_TIME_CAR_LIST = data.real_time_list,page);
+				func && func();
 			}
-			var arr = [];
-			for(var i in channelObj){
-				arr.push(i);
-			}
-			content.channelData = arr;
+		});
+	}
+	getCar(1,function(){
+		var channelObj = {};
+		var users = {};
+		for(var i=0,ii;ii=REAL_TIME_CAR_LIST[i++];){
+			channelObj[ii.enter_channel] = 1;
+			users[ii.in_operate_name] = 1;
 		}
+		//通道号
+		var arr = [];
+		for(var i in channelObj){
+			arr.push(i);
+		}
+		content.channelData = arr;
+		arr = [];
+		//操作人
+		for(var i in users){
+			arr.push(i);
+		}
+		content.operUsers = arr;
+		//日期
+		var obj = Index.getRange(REAL_TIME_CAR_LIST,"enter_time");
+		content.model.sDateStr = obj.min;
+		content.model.eDateStr = obj.max;
+		$("#inTimePicker").datetimepicker("update");
+		$("#outTimePicker").datetimepicker("update");
+		Index.init();
 	});
-	Index.initDatePickerToVM($("#inTimePicker"),content,"sDate");
-	Index.initDatePickerToVM($("#outTimePicker"),content,"eDate");
+	$("#inTimePicker").datetimepicker(Index.getDateTimePickerOpts({startView : 2}));
+	$("#outTimePicker").datetimepicker(Index.getDateTimePickerOpts({startView : 2}));
 });

@@ -6,7 +6,8 @@ require.config({
 require([
 	"common/index",
 	"common/tooltip/avalon.tooltip",
-	"common/table/avalon.table"
+	"common/table/avalon.table",
+	"common/date/avalon.date"
 ],function(Index){
 	Index.top.curIndex = 0;
 	var REAL_TIME_CAR_LIST;
@@ -45,6 +46,17 @@ require([
 		});
 	}
 	function getCharge(car_license_number,enter_time,leave_time){
+		if(content.outDiscount){
+			for(var i=0,ii=content.discountList.length;i<ii;i++){
+				var item = content.discountList[i];
+				if(item.discount_name === content.outDiscount){
+					var time = new Date(enter_time).getTime();
+					var ms = +item.discount_time_min * 60 * 1000;
+					enter_time = avalon.filters.date(new Date(time + ms),"yyyy-MM-dd HH:mm:ss");
+					break;
+				}
+			}
+		}
 		Index.websocket.send({
 			command : "GET_CHARGE",
 			biz_content : {
@@ -54,32 +66,32 @@ require([
 				leave_time : leave_time,
 				request_origin : "web"
 			}
-		},null,function(data){
+		},document.body,function(data){
 			if(data.code === '0' && data.msg === "ok"){
 				content.outCarCost = data.supplementary;
 				content.total_amount = data.total_amount;
 			}
 		});
 	}
-	//开闸
-	function openDoor(seq,car_license_number,area){
+	//开关闸
+	function toggleDoor(seq,car_license_number,area,control_type){
 		var time = avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss");
 		Index.websocket.send({
 			command : "CONVERTOR_CONTROL",
 			biz_content : {
 				entrance_channel_seq : seq,
-				control_type : "1",
-				car_license_number : "",
+				control_type : control_type || "1",
+				car_license_number : car_license_number,
 				time : time,
 				opera_name : localStorage.getItem("curAccount"),
 				opera_time : time
 			}
 		},area,function(data){
-			Index.alert("开闸成功");
+			Index.alert("操作成功");
 		});
 	}
 	//校正车牌
-	function doCorrectCarNum(oldNum,time,newNum,area){
+	function doCorrectCarNum(oldNum,time,newNum,vmodel){
 		Index.websocket.send({
 			command : "SYNCHRONIZATION_ADJUST",
 			biz_content : {
@@ -93,10 +105,11 @@ require([
 				modify_time : "",
 				modify_by : ""
 			}
-		},area,function(data){
+		},vmodel.widgetElement,function(data){
 			if(data.code === "0" && data.msg === "ok"){
 				Index.alert("校正成功");
-				content.inTime = newNum;
+				content.inCarNum = newNum;
+				vmodel.close();
 			}else{
 				Index.alert("校正失败，请重试。");
 			}
@@ -123,17 +136,17 @@ require([
 			buttons : [{
 				text : '非机动车',theme : "danger",handler : function(vmodel){
 					doCorrectCarNum(content.inCarNum,content.inTime,
-						"非机动车" + avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss"),vmodel.widgetElement);
+						"非机动车" + avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss"),vmodel);
 				}
 			},{
 				text : '无牌车',theme : "primary",handler : function(vmodel){
 					doCorrectCarNum(content.inCarNum,content.inTime,
-						"无牌车" + avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss"),vmodel.widgetElement);
+						"无牌车" + avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss"),vmodel);
 				}
 			},{
 				text : "确认校正",theme : "success",handler : function(vmodel){
 					doCorrectCarNum(content.inCarNum,content.inTime,
-						vmodel.curChoose + vmodel.correctNum,vmodel.widgetElement);
+						vmodel.curChoose + vmodel.correctNum,vmodel);
 				}
 			},{
 				text : "取消",close : true
@@ -150,29 +163,21 @@ require([
 			doChoose : function(j){
 				avalon.vmodels.$correctWin.curChoose = j;
 			},
-			carNumImg : "image/no-car.png",
-			afterShow : function(){
-
-			}
+			carNumImg : "image/no-car.png"
 		},
 		$carListDialogOpts : {
 			title : "在场车辆匹配列表",
-			sDate : null,
-			eDate : null,
-			sDateStr : "",
-			eDateStr : "",
 			carNum : "",
 			mes : "结束日期不能少于开始日期",
 			searchCar : function(){
 				if(REAL_TIME_CAR_LIST){
 					var result = [];
 					var vmodel = avalon.vmodels.$carListDialog;
-					var sDate = vmodel.sDateStr;
-					var eDate = vmodel.eDateStr;
+					var sDate = avalon.vmodels.$startDate.value;
+					var eDate = avalon.vmodels.$endDate.value;
 					var carNum = vmodel.carNum;
-					avalon.log(sDate,eDate,carNum);
 					for(var i=0,item;item=REAL_TIME_CAR_LIST[i++];){
-						if(carNum && item.enter_car_license_number.indexOf(carNum) === -1){
+						if(carNum && item.car_license_number.indexOf(carNum) === -1){
 							continue;
 						}
 						if(sDate && item.enter_time < sDate){
@@ -183,7 +188,7 @@ require([
 						}
 						result.push(item);
 					}
-					avalon.log(result);
+					matchNum(content.outCarNum,result);
 					avalon.vmodels.$carList.loadFrontPageData(result);
 				}
 			},
@@ -191,11 +196,11 @@ require([
 				if(REAL_TIME_CAR_LIST){
 					var result = [];
 					var vmodel = avalon.vmodels.$carListDialog;
-					var sDate = vmodel.sDateStr;
-					var eDate = vmodel.eDateStr;
+					var sDate = avalon.vmodels.$startDate.value;
+					var eDate = avalon.vmodels.$endDate.value;
 					for(var i=0,item;item=REAL_TIME_CAR_LIST[i++];){
-						if(item.enter_car_license_number.indexOf('无牌车') === -1 &&
-							item.enter_car_license_number.indexOf("未识别") === -1){
+						if(item.car_license_number.indexOf('无牌车') === -1 &&
+							item.car_license_number.indexOf("未识别") === -1){
 							continue;
 						}
 						if(sDate && item.enter_time < sDate){
@@ -206,32 +211,39 @@ require([
 						}
 						result.push(item);
 					}
-					avalon.log(result);
 					avalon.vmodels.$carList.loadFrontPageData(result);
 				}
 			},
 			afterShow : function(isInit){
 				var element = this;
 				if(isInit){
-					Index.initDatePickerToVM($("#sDatePicker"),avalon.vmodels.$carListDialog,"sDate");
-					Index.initDatePickerToVM($("#eDatePicker"),avalon.vmodels.$carListDialog,"eDate");
-					var el = document.querySelector("#realCarList");
-					el.setAttribute("ms-widget","table,$carList,$carListOpts");
-					avalon.scan(el,content);
+					Index.initWidget('realCarList',"table,$carList,$carListOpts",content);
+					Index.initWidget('startDate',"date,$startDate,$",content);
+					Index.initWidget('endDate',"date,$endDate,$",content);
+				}else{
+					
 				}
 				Index.websocket.send({
 					command : "GET_REAL_TIME_CAR"
 				},element,function(data){
 					if(data.code === "0" && data.msg === "ok"){
 						REAL_TIME_CAR_LIST = data.real_time_list;
-						//avalon.log(REAL_TIME_CAR_LIST);
+						var obj = Index.getRange(REAL_TIME_CAR_LIST,'enter_time');
+						if(obj){
+							avalon.vmodels.$startDate.setValue(new Date(obj.min));
+							avalon.vmodels.$endDate.setValue(new Date(obj.max));
+						}else{
+							var now = new Date();
+							avalon.vmodels.$startDate.setValue(now);
+							avalon.vmodels.$endDate.setValue(now);
+						}
 						matchNum(content.outCarNum,REAL_TIME_CAR_LIST);
-						//avalon.log(REAL_TIME_CAR_LIST);
 						avalon.vmodels.$carList.loadFrontPageData(REAL_TIME_CAR_LIST);
 					}
 				});
 			}
 		},
+		$startDateOpts : {},
 		$carListOpts : {
 			title : "在场车辆列表",
 			columns : [
@@ -242,7 +254,7 @@ require([
 						"' title='点击查看大图' class='img-rounded img-responsive cpointer'>";
 					}
 				},
-				{title : "车牌号",field : "enter_car_license_number"},
+				{title : "车牌号",field : "car_license_number"},
 				{title : "入场时间",field : "enter_time"},
 				{title : "操作",field : "operate",
 					formatter : function(){
@@ -253,11 +265,11 @@ require([
 			//匹配车牌
 			doMatch : function(item){
 				avalon.vmodels.$carListDialog.close();
-				content.outInCarNum = item.enter_car_license_number;
+				content.outInCarNum = item.car_license_number;
 				content.outInCarImg = Index.websocket.plateImgUrl + 
 					item.enter_car_license_picture + "?" + (+new Date);
 				content.outInCarTime = item.enter_time;
-				getCharge(item.enter_car_license_number,item.enter_time,content.outCarTime);
+				getCharge(item.car_license_number,item.enter_time,content.outCarTime);
 			},
 			//查看大图
 			showPic : function(item){
@@ -296,7 +308,7 @@ require([
 						command : "SYNCHRONIZATION_PREPAYMENT",
 						biz_content : {
 							prepayment_list : [{
-								car_license_number : content.outCarNum,
+								car_license_number : content.outInCarNum,
 								enter_car_card_number : "",
 								enter_time : content.outInCarTime,
 								discount_name : content.outDiscount,
@@ -307,13 +319,15 @@ require([
 								received_amount : content.outCarCost,
 								payment_mode : "0",
 								pay_origin : "web",
-								last_prepayment_time : avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss")
+								last_prepayment_time : avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss"),
+								operator : Index.top.accountName
 							}]
 						}
 					},document.body,function(data){
 						if(data.code === '0' && data.msg === "ok"){
 							//第三步，下发开闸指令：P4.2
-							openDoor(content.outList[content.outIndex].entrance_channel_seq,content.outCarNum,document.body);
+							toggleDoor(content.outList[content.outIndex].entrance_channel_seq,
+								content.outCarNum,document.body);
 						}
 					});
 				}else{
@@ -325,12 +339,22 @@ require([
 		//出车确认放行
 		outSureOpen : function(){
 			//开闸指令
-			openDoor(content.outList[content.outIndex].entrance_channel_seq,"",document.body);
+			var outCar = content.outList[content.outIndex];
+			toggleDoor(outCar.entrance_channel_seq,content.outInCarNum,document.body);
 		},
 		//入车确认放行
 		inSureOpen : function(){
 			//开闸指令
-			openDoor(content.inList[content.inIndex].entrance_channel_seq,"",document.body);
+			var inCar = content.inList[content.inIndex];
+			toggleDoor(inCar.entrance_channel_seq,content.inCarNum,document.body);
+		},
+		outCloseDoor : function(){
+			var outCar = content.outList[content.outIndex];
+			toggleDoor(outCar.entrance_channel_seq,content.outInCarNum,document.body,'2');
+		},
+		inCloseDoor : function(){
+			var inCar = content.inList[content.inIndex];
+			toggleDoor(inCar.entrance_channel_seq,content.inCarNum,document.body,'2');
 		},
 		inList : [],
 		outList : [],
@@ -351,16 +375,23 @@ require([
 		outCarType : "--",
 		outCarCost : "--",
 		total_amount : '',
-		outDiscount : '优惠3小时'
+		outDiscount : '',
+		discountList : [{discount_seq : "",discount_name : "无优惠"}]
+	});
+	//切换优惠 重新下发获取金额指令
+	content.$watch("outDiscount",function(newVal){
+		if(content.outInCarNum && content.outInCarNum !== '--'){
+			getCharge(content.outInCarNum,content.outInCarTime,content.outCarTime);
+		}
 	});
 	avalon.scan();
 	//出入车推送处理
 	(function(){
 		//储存通道的最新数据 entrance_channel_seq
 		var obj = {};
-		var hasIn = false,hasOut = false;///////////////////////////////
+		//var hasIn = false,hasOut = false;///////////////////////////////
 		Index.websocket.callbacks.PUSH_CHANNEL_INFO = function(data){
-			if(hasIn && hasOut) return;///////////////////////////////////////
+			//if(hasIn && hasOut) return;///////////////////////////////////////
 			if(data.code === '0' && data.msg === "ok"){
 				var channelData = obj[data.channel] = {};
 				//该通道号是进还是出
@@ -376,8 +407,8 @@ require([
 					channelData.enterCar = enterCar[0];
 				}
 				if(!isIn){
-					if(hasOut) return;////////////////////////////////
-					hasOut = true;///////////////////////////////////////
+					//if(hasOut) return;////////////////////////////////
+					//hasOut = true;///////////////////////////////////////
 					//出场
 					var leaveCar = data.leave_car_list;
 					if(leaveCar && leaveCar.length > 0){
@@ -386,8 +417,8 @@ require([
 					content.$fire("outIndex",content.outIndex);
 					avalon.log("有车出场了:",channelData);
 				}else{
-					if(hasIn) return;///////////////////////////////
-					hasIn = true;///////////////////////////////////////
+					//if(hasIn) return;///////////////////////////////
+					//hasIn = true;///////////////////////////////////////
 					content.$fire("inIndex",content.inIndex);
 					avalon.log("有车入场了:",channelData);
 				}
@@ -401,7 +432,7 @@ require([
 				var enter = target.enterCar;
 				target = {
 					inTime : enter.enter_time,
-					inCarNum : enter.enter_car_license_number,
+					inCarNum : enter.car_license_number,
 					inCarType : Index.getCarType(enter.enter_vip_type),
 					inCarFullImg : Index.websocket.fullImgUrl + enter.enter_car_full_picture + "?" + (+new Date),
 					inCarImg : Index.websocket.plateImgUrl + enter.enter_car_license_picture + "?" + (+new Date)
@@ -502,39 +533,49 @@ require([
 		},document.body,function(data){
 			Index.init();
 			if(data.code === '0' && data.msg === "ok"){
-				var entranceList = data.entrance_channel_list;
-				if(!entranceList || entranceList.length === 0){
-					avalon.log("entrance_channel_list为空或没数据！");
-					return;
-				}
-				var inList = [];
-				var outList = [];
-				avalon.each(entranceList,function(i,d){
-					if(d.entrance_type === '1'){
-						inList.push(d);
-					}else if(d.entrance_type === '2'){
-						outList.push(d);
+				//获取优惠信息
+				Index.websocket.send({
+					command : "GET_DISCOUNT"
+				},document.body,function(discountData){
+					if(discountData.code === "0" && discountData.msg === "ok"){
+						var list = discountData.discount_list;
+						content.discountList.pushArray(list);
+						//获取最新的推送信息
+						var entranceList = data.entrance_channel_list;
+						if(!entranceList || entranceList.length === 0){
+							avalon.log("entrance_channel_list为空或没数据！");
+							return;
+						}
+						var inList = [];
+						var outList = [];
+						avalon.each(entranceList,function(i,d){
+							if(d.entrance_type === '1'){
+								inList.push(d);
+							}else if(d.entrance_type === '2'){
+								outList.push(d);
+							}
+						});
+						content.inList = inList;
+						content.outList = outList;
+						//获取完基本信息后 发送获取通道最新信息的指令
+						if(content.inList.length > 0){
+							Index.websocket.send({
+								command : "GET_LAST_REAL_TIME_CAR",
+								biz_content : {
+									channel : content.inList[0].entrance_channel_seq
+								}
+							},document.body,GET_LAST_REAL_TIME_CAR_RETURN);
+						}
+						if(content.outList.length > 0){
+							Index.websocket.send({
+								command : "GET_LAST_REAL_TIME_CAR",
+								biz_content : {
+									channel : content.outList[0].entrance_channel_seq
+								}
+							},document.body,GET_LAST_REAL_TIME_CAR_RETURN);
+						}
 					}
 				});
-				content.inList = inList;
-				content.outList = outList;
-				//获取完基本信息后 发送获取通道最新信息的指令
-				if(content.inList.length > 0){
-					Index.websocket.send({
-						command : "GET_LAST_REAL_TIME_CAR",
-						biz_content : {
-							channel : content.inList[0].entrance_channel_seq
-						}
-					},document.body,GET_LAST_REAL_TIME_CAR_RETURN);
-				}
-				if(content.outList.length > 0){
-					Index.websocket.send({
-						command : "GET_LAST_REAL_TIME_CAR",
-						biz_content : {
-							channel : content.outList[0].entrance_channel_seq
-						}
-					},document.body,GET_LAST_REAL_TIME_CAR_RETURN);
-				}
 			}
 		});
 	})();

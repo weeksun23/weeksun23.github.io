@@ -37,10 +37,10 @@ define(["avalon","text!./avalon.table.html","css!./avalon.table.css"],function(a
 				}
 				loadDataByPage(page);
 			};
-			vm.loadFrontPageData = function(data){
+			vm.loadFrontPageData = function(data,page){
 				vmodel.frontPageData = data;
 				vmodel.total = data.length;
-				loadDataByPage(1);
+				loadDataByPage(page || 1);
 			};
 		});
 		function loadDataByPage(page,func){

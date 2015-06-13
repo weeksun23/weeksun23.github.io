@@ -90,7 +90,7 @@ define([
 					vmodel.telphone = personalInfo.telphone;
 					vmodel.user_role = personalInfo.user_role === '1' ? "管理员" : "收费员";
 					vmodel.loginTime = personalInfo.loginTime;
-					$("#personal-eDatePicker").datetimepicker(Index.getDateTimePickerOpts())
+					$("#personal-eDatePicker").datetimepicker(Index.getDateTimePickerOpts({startView : 2}))
 						.on("changeDate",function(){
 							setTimeout(function(){
 								getCharge(vmodel.sDateStr,vmodel.eDateStr,vmodel);
@@ -151,23 +151,34 @@ define([
 		},
 		logout : function(){
 			Index.confirm("<i class='glyphicon glyphicon-log-out'></i> 确认登出吗?",function(vmodel,el){
-				localStorage.removeItem("curAccount");
-				location.href = "login.html";
-				el.disabled = true;
-				el.text = "登出中...";
-				return false;
+				websocket.send({
+					command : "USER_ACCESS",
+					biz_content : {
+						username : top.accountName,
+						ip : "127.0.0.1",
+						time : avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss"),
+						type : "LOGOUT"
+					}
+				},document.body,function(data){
+					if(data.code === '0' && data.msg === "ok"){
+						localStorage.removeItem("curAccount");
+						location.href = "login.html";
+						el.disabled = true;
+						el.text = "登出中...";
+					}
+				});
 			});
 		},
 		accountName : localStorage.getItem("curAccount") || '--',
 		total_parking_space_remaining : "--",
 		total_parking_space : "--"
 	});
-	var Index = {
+	var Index = window.Index = {
 		top : top,
 		body : body,
 		noCarImgSrc : "image/no-car.png",
-		getDateTimePickerOpts : function(){
-			return {
+		getDateTimePickerOpts : function(obj){
+			return avalon.mix({
 				language:  'zh-CN',
 			    format : "yyyy-mm-dd hh:ii:ss",
 			    weekStart: 1,
@@ -175,8 +186,8 @@ define([
 				autoclose: 1,
 				todayHighlight: 1,
 				minuteStep : 2,
-				startView: 2
-			};
+				startView: 1
+			},obj);
 		},
 		initDatePickerToVM : function($picker,vmodel,key){
 			if(!$picker.data("datetimepicker")){
@@ -194,6 +205,8 @@ define([
 				return "临时车";
 			}else if(type === "2"){
 				return "本地VIP";
+			}else if(type === "3"){
+				return "会员车";
 			}
 		},
 		alert : function(mes){
@@ -217,6 +230,39 @@ define([
 				top.total_parking_space_remaining = data.total_parking_space_remaining;
 				top.total_parking_space = data.total_parking_space;
 			});
+			//5秒刷新一次
+			setInterval(function(){
+				websocket.send({
+					command : "CHECK_PARKING_SPACE"
+				},null,function(data){
+					top.total_parking_space_remaining = data.total_parking_space_remaining;
+					top.total_parking_space = data.total_parking_space;
+				},true);
+			},5000);
+		},
+		initWidget : function(id,widgetAttr,vmodel){
+			var el = document.getElementById(id);
+			el.setAttribute("ms-widget",widgetAttr);
+			avalon.scan(el,vmodel);
+		},
+		onImgError : function(img){
+			img.src = Index.noCarImgSrc;
+		},
+		getRange : function(list,key){
+			if(list.length === 0) return;
+			var min = list[0].enter_time;
+			var max = min;
+			for(var i=1,ii;ii=list[i++];){
+				if(ii[key] < min){
+					min = ii[key];
+				}else if(ii[key] > max){
+					max = ii[key];
+				}
+			}
+			return {
+				min : min,
+				max : max
+			};
 		}
 	};
 	return Index;

@@ -39,7 +39,7 @@
 				</div>
 				<div class="panel-body text-center"><!-- 1360/1024 -->
 					<div class='img-container'>
-						<img ms-attr-src="inCarFullImg" alt='识别图像' class='img-responsive img-rounded'>
+						<img onerror="Index.onImgError(this);" ms-attr-src="inCarFullImg" alt='识别图像' class='img-responsive img-rounded'>
 					</div>
 				</div>
 			</div>
@@ -49,7 +49,7 @@
 				    <div class="col-sm-10 db dbac">
 				    	<input type="text" class="form-control dbf1 cpointer" readonly ms-duplex="inCarNum" ms-click='doCorrect'>
 				    	<div class='padl5'>
-				    		<img ms-attr-src="inCarImg" class='img-rounded' alt='车牌识别图片' height='50'>
+				    		<img onerror="Index.onImgError(this);" ms-attr-src="inCarImg" class='img-rounded' alt='车牌识别图片' height='50'>
 				    	</div>
 				    </div>
 				</div>
@@ -68,11 +68,14 @@
 				<div class="form-group">
 				    <div class="col-sm-offset-2 col-sm-10">
 				    	<div class='row'>
-				    		<div class='col-xs-6'>
-				    			<button type="button" class="btn btn-primary btn-lg btn-block">入场补录</button>
+				    		<div class='col-xs-4'>
+				    			<button type="button" class="btn btn-primary btn-block">入场补录</button>
 				    		</div>
-				    		<div class='col-xs-6'>
-				    			<button ms-click='inSureOpen' type="button" class="btn btn-success btn-lg btn-block">确认放行</button>
+				    		<div class='col-xs-4'>
+				    			<button ms-click='inSureOpen' type="button" class="btn btn-success btn-block">确认放行</button>
+				    		</div>
+				    		<div class='col-xs-4'>
+				    			<button ms-click='inCloseDoor' type="button" class="btn btn-success btn-block">关闸</button>
 				    		</div>
 				    	</div>
 				    </div>
@@ -98,7 +101,7 @@
 				</div>
 				<div class="panel-body">
 					<div class='img-container'>
-						<img ms-attr-src="outCarFullImg" alt='识别图像' class='img-responsive img-rounded'>
+						<img onerror="Index.onImgError(this);" ms-attr-src="outCarFullImg" alt='识别图像' class='img-responsive img-rounded'>
 					</div>
 				</div>
 			</div>
@@ -108,7 +111,7 @@
 				    <div class="col-sm-10 db dbac">
 				    	<input type="text" class="form-control dbf1" readonly ms-duplex="outInCarNum">
 				    	<div class='padl5'>
-				    		<img ms-widget="tooltip" ms-click='showCarlist' data-tooltip-content="匹配入场车牌" data-tooltip-position='left' ms-attr-src="outInCarImg" class='img-rounded cpointer' alt='车牌识别图片' height='50'>
+				    		<img onerror="Index.onImgError(this);" ms-widget="tooltip" ms-click='showCarlist' data-tooltip-content="匹配入场车牌" data-tooltip-position='left' ms-attr-src="outInCarImg" class='img-rounded cpointer' alt='车牌识别图片' height='50'>
 				    	</div>
 				    </div>
 				</div>
@@ -123,7 +126,7 @@
 				    <div class="col-sm-10 db dbac">
 				    	<input type="text" class="form-control dbf1" readonly ms-duplex="outCarNum">
 				    	<div class='padl5'>
-				    		<img ms-attr-src="outCarImg" class='img-rounded' alt='车牌识别图片' height='50'>
+				    		<img onerror="Index.onImgError(this);" ms-attr-src="outCarImg" class='img-rounded' alt='车牌识别图片' height='50'>
 				    	</div>
 				    </div>
 				</div>
@@ -137,7 +140,9 @@
 				    <label class="col-sm-2 control-label padr0">离场优惠</label>
 				    <div class="col-sm-10">
 				      	<select class='form-control' ms-duplex='outDiscount'>
-				      		<option value='优惠3小时'>优惠3小时</option>
+				      		<option ms-repeat="discountList" ms-attr-value='el.discount_name'>
+				      			{{el.discount_name}}
+				      		</option>
 				      	</select>
 				    </div>
 				</div>
@@ -156,11 +161,14 @@
 				<div class="form-group">
 				    <div class="col-sm-offset-2 col-sm-10">
 				    	<div class='row'>
-				    		<div class='col-xs-6'>
-				    			<button ms-click='payMoney' type="button" class="btn btn-danger btn-lg btn-block">付停车费</button>
+				    		<div class='col-xs-4'>
+				    			<button ms-click='payMoney' type="button" class="btn btn-danger btn-block">付停车费</button>
 				    		</div>
-				    		<div class='col-xs-6'>
-				    			<button ms-click="outSureOpen" type="button" class="btn btn-success btn-lg btn-block">确认放行</button>
+				    		<div class='col-xs-4'>
+				    			<button ms-click="outSureOpen" type="button" class="btn btn-success btn-block">确认放行</button>
+				    		</div>
+				    		<div class='col-xs-4'>
+				    			<button ms-click='outCloseDoor' type="button" class="btn btn-success btn-block">关闸</button>
 				    		</div>
 				    	</div>
 				    </div>
@@ -179,23 +187,15 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label for='sDate' class="col-sm-2 control-label">起始时间</label>
+					<label class="col-sm-2 control-label">起始时间</label>
 					<div class='col-sm-10 padlr1'>
-						<div id='sDatePicker' class="input-group date">
-		                    <input id='sDate' class="form-control" type="text" readonly ms-duplex='sDateStr'>
-		                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-							<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-		                </div>
+						<div id='startDate'></div>
 					</div>
 				</div>
 				<div class="form-group">
-					<label for='eDate' class="col-sm-2 control-label">结束时间</label>
+					<label class="col-sm-2 control-label">结束时间</label>
 					<div class='col-sm-10 padlr1'>
-						<div id='eDatePicker' class="input-group date">
-		                    <input id='eDate' class="form-control" type="text" readonly ms-duplex='eDateStr'>
-		                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-							<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-		                </div>
+						<div id='endDate'></div>
 					</div>
 				</div>
 				<div class="form-group">
@@ -214,7 +214,7 @@
 	</div>
 	<!-- 大图 -->
 	<div ms-widget="dialog,$picDialog,$picDialogOpts">
-		<img ms-attr-src='picSrc' alt='车辆大图' class='img-responsive img-rounded'/>
+		<img onerror="Index.onImgError(this);" ms-attr-src='picSrc' alt='车辆大图' class='img-responsive img-rounded'/>
 	</div>
 	<!-- 校正车牌 -->
 	<div ms-widget="dialog,$correctWin,$correctWinOpts">
@@ -225,7 +225,7 @@
 				    <div class="col-sm-10 db dbac">
 				    	<input type="text" class="form-control dbf1" readonly ms-duplex='inCarNum'>
 				    	<div class='padl5'>
-				    		<img ms-attr-src="carNumImg" class='img-rounded' alt='车牌识别图片' height='50'>
+				    		<img onerror="Index.onImgError(this);" ms-attr-src="carNumImg" class='img-rounded' alt='车牌识别图片' height='50'>
 				    	</div>
 				    </div>
 				</div>

@@ -13,7 +13,7 @@
 			</thead>
 			<tbody>
 				<tr ms-repeat-item="data">
-					<td ms-repeat-el='columns' ms-css-width="el.width">
+					<td ms-repeat-el='columns' ms-css-width="el.width" style='vertical-align:middle'>
 						<div>{{el.formatter ? el.formatter(item[el.field],item,$outer.$index) : item[el.field] | html}}</div>
 					</td>
 				</tr>

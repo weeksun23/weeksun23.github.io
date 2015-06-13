@@ -62,11 +62,24 @@
 			<div class="form-group">
 				<label for='workMan' class="col-sm-2 control-label">值班人员</label>
 				<div class="col-sm-4">
-					<input type="text" class="form-control" id='workMan' placeholder='请输入名称关键字' ms-duplex='model.in_operate_name'>
+					<select class='form-control' id='workMan' ms-duplex='model.in_operate_name'>
+						<option value=''>请选择</option>
+						<option ms-repeat="operUsers" ms-attr-value='el'>{{el}}</option>
+					</select>
 				</div>
 				<label for='believe' class="col-sm-2 control-label">置信度</label>
 				<div class="col-sm-4">
-					<input type='text' class="form-control" id='believe' ms-duplex-number='mode.enter_recognition_confidence' placeholder="请输入1~100的数字">
+					<div class='row'>
+						<div class='col-xs-5 padr0'>
+							<input id='believe' type="text" class="form-control" placeholder='' ms-duplex="model.sBelieve">
+						</div>
+						<div class='col-xs-1 pad0 text-center'>
+							~
+						</div>
+						<div class='col-xs-5 padl0'>
+							<input type="text" class="form-control" placeholder='' ms-duplex="model.eBelieve">
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class="form-group">
@@ -85,7 +98,7 @@
 				    <div class="col-sm-10 db dbac">
 				    	<input type="text" class="form-control dbf1" readonly ms-duplex='inCarNum'>
 				    	<div class='padl5'>
-				    		<img ms-attr-src="carNumImg" class='img-rounded' alt='车牌识别图片' height='50'>
+				    		<img ms-attr-src="carNumImg" onerror="Index.onImgError(this);" class='img-rounded' alt='车牌识别图片' height='50'>
 				    	</div>
 				    </div>
 				</div>
@@ -115,7 +128,7 @@
 		<div class="carousel slide">
 		  	<div class="carousel-inner" id='carousel'>
 			    <div class="item" ms-repeat="imgs" ms-class='active:$index === curIndex'>
-			      	<img ms-attr-src="el.src" alt='大图'>
+			      	<img ms-attr-src="el.src" alt='大图' onerror="Index.onImgError(this);">
 			    </div>
 		  	</div>
 			<a class="left carousel-control" href="javascript:void(0)" ms-click="prev">

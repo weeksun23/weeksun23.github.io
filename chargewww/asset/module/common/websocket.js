@@ -1,22 +1,25 @@
 define(function(){
 	//var host = "13531307642.xicp.net";
-	var host = "127.0.0.1";
+	//var host = "192.168.134.106";
 	//var host = "dwdtec.vicp.net";
+	var host = "127.0.0.1"
 	var url = "ws://" + host + ":51601";
 	var socket;
 	//20秒超时连接
 	var timeout = 20000;
+	//出错后重新连接时间
+	var errorReconectTime = 5000;
 	var socketHelper = {
-		//fullImgUrl : "http://" + host + ":8088/FullPic/",
-		//plateImgUrl : "http://" + host + ":8088/PlateNumberPic/",
-		fullImgUrl : "image/test/FullPic/",
-		plateImgUrl : "image/test/PlateNumberPic/",
+		fullImgUrl : "http://" + host + ":8088/FullPic/",
+		plateImgUrl : "http://" + host + ":8088/PlateNumberPic/",
+		//fullImgUrl : "image/test/FullPic/",
+		//plateImgUrl : "image/test/PlateNumberPic/",
 		//是否登陆页发的请求
 		login : false,
 		callbacks : {},
 		//不打印的指令
 		noPrintOrder : "PUSH_CHANNEL_INFO",
-		send : function(order,area,func){
+		send : function(order,area,func,unPrint){
 			if(!socketHelper.login){
 				//非登录页发的请求都必须进行登录验证
 				var account = localStorage.getItem("curAccount");
@@ -55,18 +58,19 @@ define(function(){
 				timestamp : avalon.filters.date(new Date(),"yyyyMMddHHmmss")
 			},order);
 			area && avalon(area).loading();
-			avalon.log("======发送指令======",order);
-			excutingOrder[uuid] = new OrderHelper(order,area,func);
+			!unPrint && avalon.log("======发送指令======",order);
+			excutingOrder[uuid] = new OrderHelper(order,area,func,unPrint);
 		}
 	};
 	var excutingOrder = {};
 	function generateID() {
 	    return String(Math.random() + Math.random()).replace(/\d\.\d{4}/, "");
 	}
-	function OrderHelper(order,area,func){
+	function OrderHelper(order,area,func,unPrint){
 		this.order = order;
 		this.area = area;
 		this.func = func;
+		this.unPrint = unPrint;
 		this.inter = null;
 		this.start();
 	}
@@ -90,28 +94,32 @@ define(function(){
 				avalon.log("======连接出错======",e);
 				avalon.each(excutingOrder,function(i,v){
 					clearTimeout(v.inter);
-					//3秒后重新发送
+					//重新发送
 					setTimeout(function(){
 						v.start();
-					},3000);
+					},errorReconectTime);
 				});
 				socket.close();
 				socket = null;
 			};
 			socket.onmessage = function(e){
 				var data = JSON.parse(e.data);
-				if(socketHelper.noPrintOrder.indexOf(data.command) === -1){
-					avalon.log("======收到回复======",data.command,data);
-				}
+				
 				var message_id = data.message_id;
 				var target = excutingOrder[message_id];
 				if(target){
+					if(socketHelper.noPrintOrder.indexOf(data.command) === -1 && !target.unPrint){
+						avalon.log("======收到回复======",data.command,data);
+					}
 					//发送指令后的回调
 					clearTimeout(target.inter);
 					target.area && avalon(target.area).loading(false);
 					target.func && target.func.call(e,data.biz_content);
 					delete excutingOrder[message_id];
 				}else{
+					if(socketHelper.noPrintOrder.indexOf(data.command) === -1){
+						avalon.log("======收到回复======",data.command,data);
+					}
 					//主动推送的指令
 					var callback = socketHelper.callbacks[data.command];
 					callback && callback.call(e,data.biz_content);

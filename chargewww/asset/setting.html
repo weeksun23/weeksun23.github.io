@@ -18,114 +18,10 @@
 <div ms-include-src="'tpl/top.html'" data-include-replace="true"></div>
 <div class="mcontent container-fluid" ms-controller='content'>
 	<h2>
-		停车场名称:XXXXX
+		停车场名称:{{parkingName}}
 	</h2>
-	<div class='row'>
-		<div class='col-sm-6'>
-			<div class="panel panel-default">
-				<div class="panel-heading">入口通道选择</div>
-				<div class="panel-body">
-					<div class='row'>
-						<div class='col-sm-4'>
-							<label>
-								<input type='radio' name='in'> 东门入口一
-							</label>
-						</div>
-						<div class='col-sm-4'>
-							<label>
-								<input type='radio' name='in'> 东门入口二
-							</label>
-						</div>
-						<div class='col-sm-4'>
-							<label>
-								<input type='radio' name='in'> 东门入口三
-							</label>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class='col-sm-6'>
-			<div class="panel panel-default">
-				<div class="panel-heading">出口通道选择</div>
-				<div class="panel-body">
-					<div class='row'>
-						<div class='col-sm-4'>
-							<label>
-								<input type='radio' name='in'> 东门出口一
-							</label>
-						</div>
-						<div class='col-sm-4'>
-							<label>
-								<input type='radio' name='in'> 东门出口二
-							</label>
-						</div>
-						<div class='col-sm-4'>
-							<label>
-								<input type='radio' name='in'> 东门出口三
-							</label>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="panel panel-default">
-		<div class="panel-heading">VIP用户匹配</div>
-		<div class="panel-body">
-			<form class="form-horizontal">
-				<fieldset>
-					<div class="form-group">
-						<label for='match-userName' class="col-sm-2 control-label">用户名称</label>
-						<div class="col-sm-4">
-							<input type="text" class="form-control" id='match-userName' name='match-userName'>
-						</div>
-						<label for='match-carNum' class="col-sm-2 control-label">车牌号码</label>
-						<div class="col-sm-4">
-							<input type="text" class="form-control" id='match-carNum' name='match-carNum'>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for='match-phoneNum' class="col-sm-2 control-label">电话号码</label>
-						<div class="col-sm-4">
-							<input type="text" class="form-control" id='match-phoneNum' name='match-phoneNum'>
-						</div>
-						<label for='match-type' class="col-sm-2 control-label">VIP类型</label>
-						<div class="col-sm-4">
-							<select class="form-control" id='match-type' name='match-type'>
-							</select>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for='match-sDate' class="col-sm-2 control-label">VIP有效时间</label>
-						<div class='col-sm-4 padlr1'>
-							<div id='match-sDatePicker' class="input-group date">
-			                    <input id='match-sDate' class="form-control" type="text" readonly>
-			                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-								<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-			                </div>
-						</div>
-						<label for='match-eDate' class="col-sm-2 control-label">结束时间</label>
-						<div class='col-sm-4 padlr1'>
-							<div id='match-eDatePicker' class="input-group date">
-			                    <input id='match-eDate' class="form-control" type="text" readonly>
-			                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-								<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-			                </div>
-						</div>
-					</div>
-					<div class="form-group mgb0">
-					    <div class="col-sm-offset-2 col-sm-10">
-					    	<button type="button" class="btn btn-primary"><i class='glyphicon glyphicon-plus'></i> 添加</button>
-					    	<button type="button" class="btn btn-primary"><i class='glyphicon glyphicon-minus'></i> 删除</button>
-					    </div>
-					</div>
-				</fieldset>
-			</form>
-		</div>
-	</div>
 	<div class="panel panel-default mgb1-reverse">
-		<div class="panel-heading">VIP用户读取</div>
+		<div class="panel-heading">操作</div>
 		<div class="panel-body">
 			<form class="form-horizontal">
 				<fieldset>
@@ -142,7 +38,7 @@
 					<div class="form-group mgb0">
 					    <div class="col-sm-offset-2 col-sm-10">
 					    	<button type="button" class="btn btn-primary"><i class='glyphicon glyphicon-search'></i> 搜索</button>
-					    	<button type="button" class="btn btn-primary"><i class='glyphicon glyphicon-open'></i> 读取</button>
+					    	<button ms-click="add" type="button" class="btn btn-primary"><i class='glyphicon glyphicon-plus'></i> 添加</button>
 					    </div>
 					</div>
 				</fieldset>
@@ -150,6 +46,32 @@
 		</div>
 	</div>
 	<div ms-widget="table,$userTb,$userTbOpts"></div>
+</div>
+<div ms-widget="dialog,$userWin,$userWinOpts">
+	<form class="form-horizontal">
+		<fieldset>
+			<div class="form-group">
+				<label for='userWin-userName' class="col-sm-2 control-label">姓名</label>
+				<div class="col-sm-4">
+					<input type="text" class="form-control" id='userWin-userName'>
+				</div>
+				<label for='userWin-cardNum' class="col-sm-2 control-label">车牌号码</label>
+				<div class="col-sm-4">
+					<input type="text" class="form-control" id='userWin-cardNum'>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for='userWin-type' class="col-sm-2 control-label">类型</label>
+				<div class="col-sm-4">
+					<input type="text" class="form-control" id='userWin-type'>
+				</div>
+				<label for='userWin-date' class="col-sm-2 control-label">有效期</label>
+				<div class="col-sm-4">
+					<input type="text" class="form-control" id='userWin-date'>
+				</div>
+			</div>
+		</fieldset>
+	</form>
 </div>
 <script src='module/avalon.modern.min.js'></script>
 <script src='module/business/setting.js'></script>
