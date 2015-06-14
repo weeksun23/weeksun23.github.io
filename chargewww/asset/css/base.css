@@ -21,10 +21,11 @@ body{background-color: #eee}
 .padtb1{padding-top:10px;padding-bottom: 10px;}
 /**/
 .w50{width: 50px}
+.wall{width: 100%}
 /*box*/
-.db{display: box;display:-webkit-box;}
-.dbf1{box-flex:1;-webkit-box-flex:1;}
-.dbac{box-align:center;-webkit-box-align:center;}
+.db{display: box;display:-webkit-box;display: -moz-box;}
+.dbf1{box-flex:1;-webkit-box-flex:1;-moz-box-flex:1;}
+.dbac{box-align:center;-webkit-box-align:center;-moz-box-align:center;}
 .mloading{
 	background-color: rgba(0,0,0,.3);position: fixed;
 	top: 0;left: 0;right: 0;bottom: 0;

@@ -13,24 +13,22 @@ require([
 		$userTbOpts : {
 			title : "VIP用户列表",
 			columns : [
-				{title : "姓名",field : "name"},
-				{title : "类型",field : "type"},
-				{title : "车牌号码",field : "carnum"},
-				{title : "有效期",field : "date"},
-				{title : "安保",field : "ser"},
+				{title : "姓名",field : "customer_name"},
+				{title : "类型",field : "customer_type"},
+				{title : "车牌号码",field : "car_license_number"},
+				{title : "有效期",field : "date",
+					formatter : function(v,r){
+						return r.vip_begin_time + "~" + r.vip_end_time;
+					}
+				},
+				{title : "安保",field : "is_open_safe_mode"},
 				{title : "操作",field : "oper",
 					formatter : function(){
 						return "<a href='javascript:void(0)'>编辑</a> <a href='javascript:void(0)'>删除</a>"
 					}
 				}
 			],
-			frontPageData : [
-				{name : "234534",carnum : "粤XHN161",date : '2013-44-33 34:44:44'},
-				{name : "234534",carnum : "粤XHN161",date : '2013-44-33 34:44:44'},
-				{name : "234534",carnum : "粤XHN161",date : '2013-44-33 34:44:44'},
-				{name : "234534",carnum : "粤XHN161",date : '2013-44-33 34:44:44'},
-				{name : "234534",carnum : "粤XHN161",date : '2013-44-33 34:44:44'}
-			]
+			frontPageData : []
 		},
 		parkingName : '--',
 		add : function(){
@@ -55,6 +53,22 @@ require([
 		}
 	});
 	avalon.scan();
+	function getList(){
+		Index.websocket.send({
+			command : "GET_CUSTOMER_INFOR"
+		},document.body,function(data){
+			var vip_customer_list = data.vip_customer_list;
+			var vip_car_lsit = data.vip_car_lsit;
+			for(var i=0,ii;ii=vip_customer_list[i++];){
+				for(var j=0,jj;jj=vip_car_lsit[j++];){
+					if(ii.customer_seq === jj.vip_customer_seq){
+						avalon.mix(ii,jj);
+					}
+				}
+			}
+			avalon.vmodels.$userTb.loadFrontPageData(vip_customer_list);
+		});
+	}
 	Index.websocket.send({
 		command : "GET_PARKING_LOT_BASE_DATE",
 		biz_content : {
@@ -64,6 +78,7 @@ require([
 		Index.init();
 		if(data.code === '0' && data.msg === "ok"){
 			content.parkingName = data.parking_lot_list[0].parking_lot_name;
+			getList();
 		}
 	});
 });

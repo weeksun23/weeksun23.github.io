@@ -46,7 +46,7 @@
 				<div class="col-sm-4">
 					<select class="form-control" id='inChannel' ms-duplex='model.enter_channel'>
 						<option value=''>请选择</option>
-						<option ms-repeat="channelData" ms-attr-value='el'>{{el}}</option>
+						<option ms-repeat="channelData" ms-attr-value='el.value'>{{el.text}}</option>
 					</select>
 				</div>
 				<label for='carType' class="col-sm-2 control-label">车辆类型</label>
@@ -95,10 +95,14 @@
 			<fieldset>
 				<div class="form-group form-group-lg">
 				    <label class="col-sm-2 control-label carnum-label">入场车牌</label>
-				    <div class="col-sm-10 db dbac">
-				    	<input type="text" class="form-control dbf1" readonly ms-duplex='inCarNum'>
-				    	<div class='padl5'>
-				    		<img ms-attr-src="carNumImg" onerror="Index.onImgError(this);" class='img-rounded' alt='车牌识别图片' height='50'>
+				    <div class="col-sm-10">
+				    	<div class='db dbac wall'>
+				    		<div class='dbf1'>
+				    			<input type="text" class="form-control dbf1" readonly ms-duplex='inCarNum'>
+				    		</div>
+				    		<div class='padl5'>
+					    		<img ms-attr-src="carNumImg" onerror="Index.onImgError(this);" class='img-rounded' alt='车牌识别图片' height='50'>
+					    	</div>
 				    	</div>
 				    </div>
 				</div>

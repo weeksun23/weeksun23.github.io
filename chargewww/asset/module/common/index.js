@@ -263,6 +263,13 @@ define([
 				min : min,
 				max : max
 			};
+		},
+		getPassType : function(v){
+			if(v === "1"){
+				return "严模式";
+			}else if(v === '2'){
+				return "宽模式";
+			}
 		}
 	};
 	return Index;

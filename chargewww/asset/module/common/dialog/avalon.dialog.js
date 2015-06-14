@@ -108,8 +108,8 @@ define(["avalon","text!./avalon.dialog.html"],function(avalon,templete){
 				var $modalBack = avalon(modalBackDrop).removeClass("hide");
 				if(avalon.support.transitionend){
 					//强制reflow
-					element.offsetWidth;
 					modalBackDrop.offsetWidth;
+					element.offsetWidth;
 					avalon(element).addClass('in');
 				}else{
 					vmodel.afterShow.call(element,isInit,vmodel);

@@ -74,14 +74,13 @@ require([
 		});
 	}
 	//开关闸
-	function toggleDoor(seq,car_license_number,area,control_type){
-		var time = avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss");
+	function toggleDoor(seq,carNum,time,area,control_type){
 		Index.websocket.send({
 			command : "CONVERTOR_CONTROL",
 			biz_content : {
 				entrance_channel_seq : seq,
 				control_type : control_type || "1",
-				car_license_number : car_license_number,
+				car_license_number : carNum,
 				time : time,
 				opera_name : localStorage.getItem("curAccount"),
 				opera_time : time
@@ -118,6 +117,9 @@ require([
 	var content = avalon.define({
 		$id : "content",
 		showCarlist : function(){
+			if(content.outCarCost.indexOf("已付费") !== -1 || content.outCarCost.indexOf("异常离场") !== -1){
+				return Index.alert("不能为离场车辆付费，请确认");
+			}
 			if(!content.outCarNum || content.outCarNum === '--'){
 				return Index.alert("暂无出场车辆");
 			}
@@ -249,7 +251,7 @@ require([
 			columns : [
 				{title : "车牌图片",field : "enter_car_license_picture",width : 100,
 					formatter : function(v){
-						return "<img ms-click='showPic(item)' alt='车牌图片' src='"+
+						return "<img onerror='Index.onImgError(this);' ms-click='showPic(item)' alt='车牌图片' src='"+
 						Index.websocket.plateImgUrl + v + "?" + (+new Date) +
 						"' title='点击查看大图' class='img-rounded img-responsive cpointer'>";
 					}
@@ -269,6 +271,7 @@ require([
 				content.outInCarImg = Index.websocket.plateImgUrl + 
 					item.enter_car_license_picture + "?" + (+new Date);
 				content.outInCarTime = item.enter_time;
+				content.outCarType = Index.getCarType(item.enter_type);
 				getCharge(item.car_license_number,item.enter_time,content.outCarTime);
 			},
 			//查看大图
@@ -284,12 +287,16 @@ require([
 		},
 		//付停车费
 		payMoney : function(){
+			if(content.outCarCost.indexOf("已付费") !== -1 || content.outCarCost.indexOf("异常离场") !== -1){
+				return Index.alert("不能为离场车辆付费，请确认");
+			}
 			if(!Index.isCarNum(content.outCarNum)){
 				return Index.alert("暂无出场车辆");
 			}
 			if(!Index.isCarNum(content.outInCarNum)){
 				return Index.alert("请先匹配入场车牌");
 			}
+			
 			//第一步：下发手动匹配接口P9.1
 			Index.websocket.send({
 				command : "CAR_IN_OUT_MATCH",
@@ -304,6 +311,14 @@ require([
 			},document.body,function(data){
 				if(data.code === '0' && data.msg === "ok"){
 					//第二步：下发收费接口P6.9 
+					var discount_time_min = "";
+					for(var i=0,ii=content.discountList.length;i<ii;i++){
+						var item = content.discountList[i];
+						if(item.discount_name === content.outDiscount){
+							discount_time_min = item.discount_time_min;
+							break;
+						}
+					}
 					Index.websocket.send({
 						command : "SYNCHRONIZATION_PREPAYMENT",
 						biz_content : {
@@ -313,7 +328,7 @@ require([
 								enter_time : content.outInCarTime,
 								discount_name : content.outDiscount,
 								discount_amount : "",
-								discount_time_min : "",
+								discount_time_min : discount_time_min,
 								prepayment_total_amount : content.total_amount,
 								actual_receivable : content.outCarCost,
 								received_amount : content.outCarCost,
@@ -327,7 +342,7 @@ require([
 						if(data.code === '0' && data.msg === "ok"){
 							//第三步，下发开闸指令：P4.2
 							toggleDoor(content.outList[content.outIndex].entrance_channel_seq,
-								content.outCarNum,document.body);
+								content.outInCarNum,content.outInCarTime,document.body);
 						}
 					});
 				}else{
@@ -340,21 +355,22 @@ require([
 		outSureOpen : function(){
 			//开闸指令
 			var outCar = content.outList[content.outIndex];
-			toggleDoor(outCar.entrance_channel_seq,content.outInCarNum,document.body);
+			toggleDoor(outCar.entrance_channel_seq,
+				content.outInCarNum,content.outInCarTime,document.body);
 		},
 		//入车确认放行
 		inSureOpen : function(){
 			//开闸指令
 			var inCar = content.inList[content.inIndex];
-			toggleDoor(inCar.entrance_channel_seq,content.inCarNum,document.body);
+			toggleDoor(inCar.entrance_channel_seq,content.inCarNum,content.outInCarTime,document.body);
 		},
 		outCloseDoor : function(){
 			var outCar = content.outList[content.outIndex];
-			toggleDoor(outCar.entrance_channel_seq,content.outInCarNum,document.body,'2');
+			toggleDoor(outCar.entrance_channel_seq,content.outInCarNum,content.outInCarTime,document.body,'2');
 		},
 		inCloseDoor : function(){
 			var inCar = content.inList[content.inIndex];
-			toggleDoor(inCar.entrance_channel_seq,content.inCarNum,document.body,'2');
+			toggleDoor(inCar.entrance_channel_seq,content.inCarNum,content.outInCarTime,document.body,'2');
 		},
 		inList : [],
 		outList : [],
@@ -376,10 +392,13 @@ require([
 		outCarCost : "--",
 		total_amount : '',
 		outDiscount : '',
-		discountList : [{discount_seq : "",discount_name : "无优惠"}]
+		discountList : [{discount_seq : "",discount_name : "无优惠",discount_time_min : "0"}]
 	});
 	//切换优惠 重新下发获取金额指令
 	content.$watch("outDiscount",function(newVal){
+		if(content.outCarCost.indexOf("已付费") !== -1 || content.outCarCost.indexOf("异常离场") !== -1){
+			return;
+		}
 		if(content.outInCarNum && content.outInCarNum !== '--'){
 			getCharge(content.outInCarNum,content.outInCarTime,content.outCarTime);
 		}
@@ -465,7 +484,7 @@ require([
 				var leave = target.leaveCar;
 				var model = {
 					outCarFullImg : Index.websocket.fullImgUrl + leave.leave_car_full_picture + "?" + (+new Date),
-					outInCarNum : enter.enter_car_license_number,
+					outInCarNum : enter.car_license_number,
 					outInCarImg : outInCarImg,
 					outInCarTime : enter.enter_time,
 					outCarNum : leave.leave_car_license_number,
@@ -474,12 +493,16 @@ require([
 					outCarType : Index.getCarType(leave.leave_vip_type),
 					outCarCost : "--"
 				};
-				if(target.enterCar){
-					model.outCarCost = "获取中......";
-					//匹配到入场记录 马上发送GET_CHARGE指令
-					getCharge(leave.leave_car_license_number,enter.enter_time,leave.leave_time);
+				if(leave.leave_type !== '0'){
+					model.outCarCost = leave.leave_type === '1' ? "已付费" : "异常离场";
 				}else{
-					model.outCarCost = "请先匹配入场车牌";
+					if(target.enterCar){
+						model.outCarCost = "获取中......";
+						//匹配到入场记录 马上发送GET_CHARGE指令
+						getCharge(leave.leave_car_license_number,enter.enter_time,leave.leave_time);
+					}else{
+						model.outCarCost = "请先匹配入场车牌";
+					}
 				}
 			}else{
 				model = {

@@ -46,10 +46,14 @@
 			<form class="form-horizontal">
 				<div class="form-group form-group-lg">
 				    <label class="col-sm-2 control-label carnum-label padr0">入场车牌</label>
-				    <div class="col-sm-10 db dbac">
-				    	<input type="text" class="form-control dbf1 cpointer" readonly ms-duplex="inCarNum" ms-click='doCorrect'>
-				    	<div class='padl5'>
-				    		<img onerror="Index.onImgError(this);" ms-attr-src="inCarImg" class='img-rounded' alt='车牌识别图片' height='50'>
+				    <div class="col-sm-10">
+				    	<div class='db dbac wall'>
+				    		<div class='dbf1'>
+					    		<input type="text" class="form-control cpointer" readonly ms-duplex="inCarNum" ms-click='doCorrect'>
+					    	</div>
+					    	<div class='padl5'>
+					    		<img onerror="Index.onImgError(this);" ms-attr-src="inCarImg" class='img-rounded' alt='车牌识别图片' height='50'>
+					    	</div>
 				    	</div>
 				    </div>
 				</div>
@@ -108,10 +112,14 @@
 			<form class="form-horizontal">
 				<div class="form-group form-group-lg">
 				    <label class="col-sm-2 control-label carnum-label padr0">入场车牌</label>
-				    <div class="col-sm-10 db dbac">
-				    	<input type="text" class="form-control dbf1" readonly ms-duplex="outInCarNum">
-				    	<div class='padl5'>
-				    		<img onerror="Index.onImgError(this);" ms-widget="tooltip" ms-click='showCarlist' data-tooltip-content="匹配入场车牌" data-tooltip-position='left' ms-attr-src="outInCarImg" class='img-rounded cpointer' alt='车牌识别图片' height='50'>
+				    <div class="col-sm-10">
+				    	<div class='db dbac wall'>
+				    		<div class='dbf1'>
+					    		<input type="text" class="form-control" readonly ms-duplex="outInCarNum">
+					    	</div>
+					    	<div class='padl5'>
+					    		<img onerror="Index.onImgError(this);" ms-widget="tooltip" ms-click='showCarlist' data-tooltip-content="匹配入场车牌" data-tooltip-position='left' ms-attr-src="outInCarImg" class='img-rounded cpointer' alt='车牌识别图片' height='50'>
+					    	</div>
 				    	</div>
 				    </div>
 				</div>
@@ -123,10 +131,14 @@
 				</div>
 				<div class="form-group form-group-lg">
 				    <label class="col-sm-2 control-label carnum-label padr0">离场车牌</label>
-				    <div class="col-sm-10 db dbac">
-				    	<input type="text" class="form-control dbf1" readonly ms-duplex="outCarNum">
-				    	<div class='padl5'>
-				    		<img onerror="Index.onImgError(this);" ms-attr-src="outCarImg" class='img-rounded' alt='车牌识别图片' height='50'>
+				    <div class="col-sm-10">
+				    	<div class='db dbac wall'>
+				    		<div class='dbf1'>
+					    		<input type="text" class="form-control" readonly ms-duplex="outCarNum">
+					    	</div>
+					    	<div class='padl5'>
+					    		<img onerror="Index.onImgError(this);" ms-attr-src="outCarImg" class='img-rounded' alt='车牌识别图片' height='50'>
+					    	</div>
 				    	</div>
 				    </div>
 				</div>
