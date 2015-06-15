@@ -9,7 +9,7 @@
       {{content | html}}
     </div>
     <div class="modal-footer" ms-if='buttons && buttons.length > 0'>
-      <button ms-repeat='buttons' type="button" class="btn" ms-attr-disabled='el.disabled' ms-class='btn-{{el.theme}}' ms-click='$clickBtn(el)'>
+      <button ms-repeat='buttons' type="button" class="btn" ms-attr-disabled='el.disabled' ms-class='btn-{{el.theme}}' ms-click='$clickBtn(el)' ms-visible='el.visible'>
         <i ms-if='el.iconCls' class='glyphicon ' ms-class='{{el.iconCls}}'></i> {{el.text}}
       </button>
     </div>

@@ -9,6 +9,7 @@
 <link href="css/base.css" rel="stylesheet">
 <link href="css/index.css" rel="stylesheet">
 <style>
+.form-group label.entrance{display: inline-block;padding: 7px 8px 0 0;margin: 0}
 </style>
 <!--[if lt IE 10]>
 <script>alert("抱歉，请使用IE10+,Google Chrome,firefox等其他高级浏览器登录本系统!");</script>
@@ -46,32 +47,38 @@
 		</div>
 	</div>
 	<div ms-widget="table,$userTb,$userTbOpts"></div>
-</div>
-<div ms-widget="dialog,$userWin,$userWinOpts">
-	<form class="form-horizontal">
-		<fieldset>
-			<div class="form-group">
-				<label for='userWin-userName' class="col-sm-2 control-label">姓名</label>
-				<div class="col-sm-4">
-					<input type="text" class="form-control" id='userWin-userName'>
-				</div>
-				<label for='userWin-cardNum' class="col-sm-2 control-label">车牌号码</label>
-				<div class="col-sm-4">
-					<input type="text" class="form-control" id='userWin-cardNum'>
-				</div>
-			</div>
-			<div class="form-group">
-				<label for='userWin-type' class="col-sm-2 control-label">类型</label>
-				<div class="col-sm-4">
-					<input type="text" class="form-control" id='userWin-type'>
-				</div>
-				<label for='userWin-date' class="col-sm-2 control-label">有效期</label>
-				<div class="col-sm-4">
-					<input type="text" class="form-control" id='userWin-date'>
-				</div>
-			</div>
-		</fieldset>
-	</form>
+	<div ms-widget="dialog,$step,$stepOpts">
+		<div ms-visible='step === 0'>
+			<form class="form-horizontal">
+				<fieldset>
+					<div class="form-group" ms-class='has-error:channelMes'>
+						<label class="col-sm-2 control-label">选择通道</label>
+						<div class="col-sm-10" id='channelList'>
+							<label class='entrance' ms-repeat='entranceData'><input type='checkbox' ms-attr-value='el.entrance_channel_seq' ms-on-change='changeEntrance'> {{el.entrance_name}}</label>
+							<div class='text-danger' ms-visible='channelMes'>{{channelMes}}</div>
+						</div>
+					</div>
+					<div class="form-group" ms-class='has-error:authNameMes'>
+						<label for='auth-name' class="col-sm-2 control-label">权限名字</label>
+						<div class="col-sm-4">
+							<input type="text" class="form-control" id='auth-name' ms-duplex='authName' ms-keydown='changeAuthName'>
+							<div class='text-danger' ms-visible='authNameMes'>{{authNameMes}}</div>
+						</div>
+						<div class='col-sm-6'>
+							<button ms-click='addEntrance' type="button" class="btn btn-primary"><i class='glyphicon glyphicon-plus'></i> 添加</button>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+			<div id='auth'></div>
+		</div>
+		<div ms-visible='step === 1'>
+			1
+		</div>
+		<div ms-visible='step === 2'>
+			2
+		</div>
+	</div>
 </div>
 <script src='module/avalon.modern.min.js'></script>
 <script src='module/business/setting.js'></script>

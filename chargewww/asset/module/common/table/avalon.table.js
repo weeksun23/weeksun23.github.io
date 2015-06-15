@@ -127,6 +127,7 @@ define(["avalon","text!./avalon.table.html","css!./avalon.table.css"],function(a
 		start : 0,
 		end : 0,
 		pageSize : 5,
-		pageSizeArr : [5,10,20,40]
+		pageSizeArr : [5,10,20,40],
+		onInit : avalon.noop
 	};
 });

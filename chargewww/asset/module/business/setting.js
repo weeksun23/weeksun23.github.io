@@ -14,14 +14,19 @@ require([
 			title : "VIP用户列表",
 			columns : [
 				{title : "姓名",field : "customer_name"},
-				{title : "类型",field : "customer_type"},
+				{title : "类型",field : "vip_type",formatter : Index.getCarType},
 				{title : "车牌号码",field : "car_license_number"},
 				{title : "有效期",field : "date",
 					formatter : function(v,r){
-						return r.vip_begin_time + "~" + r.vip_end_time;
+						return r.vip_begin_time + "~<br>" + r.vip_end_time;
 					}
 				},
-				{title : "安保",field : "is_open_safe_mode"},
+				{title : "安保",field : "is_open_safe_mode",
+					formatter : function(v){
+						return v === "0" ? "<span class='fz2 text-danger'>×</span>" : 
+							"<span class='fz2 text-success'>√</span>";
+					}
+				},
 				{title : "操作",field : "oper",
 					formatter : function(){
 						return "<a href='javascript:void(0)'>编辑</a> <a href='javascript:void(0)'>删除</a>"
@@ -32,16 +37,25 @@ require([
 		},
 		parkingName : '--',
 		add : function(){
-			avalon.vmodels.$userWin.open();
-		}
-	});
-	var body = avalon.define({
-		$id : "body",
-		$userWinOpts : {
-			title : "用户信息窗口",
+			avalon.vmodels.$step.open();
+		},
+		$stepOpts : {
+			title : "",
 			buttons : [{
+				text : "上一步",
+				theme : "default",
+				handler : function(vmodel){
+					vmodel.step--;
+				}
+			},{
+				text : "下一步",
+				theme : "default",
+				handler : function(vmodel){
+					vmodel.step++;
+				}
+			},{
 				text : "确定",
-				theme : "primary",
+				theme : "default",
 				handler : function(vmodel){
 
 				}
@@ -49,26 +63,175 @@ require([
 				text : "取消",
 				theme : "default",
 				close : true
-			}]
+			}],
+			step : -1,
+			afterShow : function(isInit,vmodel){
+				if(isInit){
+					Index.initWidget("auth","table,$auth,$authOpts",vmodel);
+				}
+				vmodel.step = 0;
+			},
+			//step0
+			$authOpts : {
+				title : "通道权限列表",
+				columns : [
+					{title : "选择",field : 'checkbox',align : "center",
+						formatter : function(){
+							return "<label class='checkbox-x1'><input type='radio' name='auth'><label>";
+						}
+					},
+					{title : '通道权限名字',field : "channel_permission_group_name"},
+					{title : '通道详细',field : "channelNames"},
+				],
+				onInit : function(){
+					refreshAuth();
+				}
+			},
+			channelMes : "",
+			authNameMes : "",
+			entranceData : [],
+			chooseEntrance : [],
+			changeEntrance : function(){
+				avalon.vmodels.$step.channelMes = '';
+			},
+			authName : "",
+			changeAuthName : function(){
+				avalon.vmodels.$step.authNameMes = '';
+			},
+			addEntrance : function(){
+				var entrance = [];
+				avalon.each(document.querySelectorAll("#channelList input"),function(i,v){
+					if(v.checked){
+						entrance.push(v.value);
+					}
+				});
+				var step = avalon.vmodels.$step;
+				if(entrance.length === 0){
+					return step.channelMes = "请勾选通道";
+				}
+				if(step.authName === ''){
+					return step.authNameMes = "请输入权限名称";
+				}
+				var grpList = [];
+				var mappingList = [];
+				var grpSeq = String(setAuthData.maxGrpSeq + 1);
+				grpList.push({
+					channel_permission_group_seq : grpSeq,
+					channel_permission_group_name : step.authName
+				});
+				for(var i=0,ii=entrance.length;i<ii;i++){
+					mappingList.push({
+						channel_permission_group_mapping_seq : String(setAuthData.maxMappingSeq + i + 1),
+						entrance_channel_seq : entrance[i],
+						channel_permission_group_seq : grpSeq
+					});
+				}
+				SYNCHRONIZATION_CUSTOMER({
+					synchronization_type : '2',
+					permission_group_list : grpList,
+					permission_group_mapping_list : mappingList
+				},step.widgetElement,function(){
+					step.authName = '';
+					refreshAuth();
+				});
+			}
 		}
 	});
 	avalon.scan();
-	function getList(){
+	avalon.vmodels.$step.$watch("step",function(newVal){
+		var arr = ["选择通道权限","选择用户","选择车辆"];
+		var step = avalon.vmodels.$step;
+		step.title = arr[newVal];
+		var buttons = step.buttons;
+		if(newVal === 0){
+			buttons[0].visible = false;
+			buttons[1].visible = true;
+			buttons[2].visible = false;
+		}else if(newVal === 1){
+			buttons[0].visible = true;
+			buttons[1].visible = true;
+			buttons[2].visible = false;
+		}else{
+			buttons[0].visible = true;
+			buttons[1].visible = false;
+			buttons[2].visible = true;
+		}
+	});
+	function SYNCHRONIZATION_CUSTOMER(content,el,func){
+		Index.websocket.send({
+			command : "SYNCHRONIZATION_CUSTOMER",
+			biz_content : content
+		},el,function(data){
+			if(data.code === "0" && data.msg === "ok"){
+				Index.alert("操作成功");
+				func && func();
+			}
+		});
+	}
+	function getList(func){
 		Index.websocket.send({
 			command : "GET_CUSTOMER_INFOR"
 		},document.body,function(data){
-			var vip_customer_list = data.vip_customer_list;
-			var vip_car_lsit = data.vip_car_lsit;
-			for(var i=0,ii;ii=vip_customer_list[i++];){
-				for(var j=0,jj;jj=vip_car_lsit[j++];){
-					if(ii.customer_seq === jj.vip_customer_seq){
-						avalon.mix(ii,jj);
-					}
-				}
-			}
-			avalon.vmodels.$userTb.loadFrontPageData(vip_customer_list);
+			func(data);
 		});
 	}
+	//刷新页面的车场名称
+	function refreshUserTb(){
+		getList(setUserTbData);
+	}
+	function setUserTbData(data){
+		var vip_customer_list = data.vip_customer_list;
+		var vip_car_list = data.vip_car_list;
+		for(var i=0,ii;ii=vip_car_list[i++];){
+			for(var j=0,jj;jj=vip_customer_list[j++];){
+				if(jj.vip_customer_seq === ii.vip_customer_seq){
+					avalon.mix(ii,jj);
+					break;
+				}
+			}
+		}
+		avalon.vmodels.$userTb.loadFrontPageData(vip_car_list);
+	}
+	//刷新通道权限列表
+	function refreshAuth(){
+		getList(setAuthData);
+	}
+	function setAuthData(data){
+		var permission_group_list = data.permission_group_list;
+		var permission_group_mapping_list = data.permission_group_mapping_list;
+		var maxGrpSeq = 0;
+		var maxMappingSeq = 0;
+		for(var i=0,ii;ii=permission_group_list[i++];){
+			if(+ii.channel_permission_group_seq > maxGrpSeq){
+				maxGrpSeq = +ii.channel_permission_group_seq;
+			}
+			var seqList = [];
+			var nameList = [];
+			for(var j=0,jj;jj=permission_group_mapping_list[j++];){
+				if(+jj.channel_permission_group_mapping_seq > maxMappingSeq){
+					maxMappingSeq = +jj.channel_permission_group_mapping_seq;
+				}
+				if(jj.channel_permission_group_seq === ii.channel_permission_group_seq){
+					seqList.push(jj.entrance_channel_seq);
+					nameList.push(getChannelNameBySeq(jj.entrance_channel_seq));
+				}
+			}
+			ii.seqList = seqList;
+			ii.channelNames = nameList.join(",");
+		}
+		setAuthData.maxGrpSeq = maxGrpSeq;
+		setAuthData.maxMappingSeq = maxMappingSeq;
+		avalon.vmodels.$auth.loadFrontPageData(permission_group_list);
+	}
+	function getChannelNameBySeq(seq){
+		for(var i=0,ii;ii=Entrance_channel_list[i++];){
+			if(ii.entrance_channel_seq === seq){
+				return ii.entrance_name;
+			}
+		}
+		return '';
+	}
+	var Entrance_channel_list = [];
 	Index.websocket.send({
 		command : "GET_PARKING_LOT_BASE_DATE",
 		biz_content : {
@@ -77,8 +240,12 @@ require([
 	},document.body,function(data){
 		Index.init();
 		if(data.code === '0' && data.msg === "ok"){
+			Entrance_channel_list = data.entrance_channel_list;
+			avalon.vmodels.$step.entranceData = Entrance_channel_list;
 			content.parkingName = data.parking_lot_list[0].parking_lot_name;
-			getList();
+			getList(function(data){
+				setUserTbData(data);
+			});
 		}
 	});
 });

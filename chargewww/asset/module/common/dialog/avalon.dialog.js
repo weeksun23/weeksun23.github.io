@@ -7,7 +7,8 @@ define(["avalon","text!./avalon.dialog.html"],function(avalon,templete){
 				handler : null,
 				disabled : false,
 				text : "",
-				iconCls : null
+				iconCls : null,
+				visible : true
 			};
 			for(var i in obj){
 				if(el[i] === undefined){
