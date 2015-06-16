@@ -82,59 +82,102 @@ require([
 					},
 					{title : '通道权限名字',field : "channel_permission_group_name"},
 					{title : '通道详细',field : "channelNames"},
+					{title : "操作",field : "oper",
+						formatter : function(){
+							return "<a href='javascript:void(0)' ms-click='edit(item)'>编辑</a> "+
+							"<a href='javascript:void(0)' ms-click='del'>删除</a>";
+						}
+					}
 				],
+				edit : function(item){
+					var win = avalon.vmodels.$authWin;
+					win.title = "编辑通道权限";
+					win.$editAuth = item;
+					win.authName = item.channel_permission_group_name;
+					win.open();
+				},
+				del : function(){
+
+				},
 				onInit : function(){
 					refreshAuth();
 				}
 			},
+			addEntrance : function(){
+				var win = avalon.vmodels.$authWin;
+				win.title = "添加通道权限";
+				win.$editAuth = null;
+				win.open();
+			}
+		},
+		$authWinOpts : {
+			$editAuth : null,
+			title : "",
 			channelMes : "",
 			authNameMes : "",
 			entranceData : [],
-			chooseEntrance : [],
 			changeEntrance : function(){
-				avalon.vmodels.$step.channelMes = '';
+				avalon.vmodels.$authWin.channelMes = '';
 			},
 			authName : "",
 			changeAuthName : function(){
-				avalon.vmodels.$step.authNameMes = '';
+				avalon.vmodels.$authWin.authNameMes = '';
 			},
-			addEntrance : function(){
-				var entrance = [];
-				avalon.each(document.querySelectorAll("#channelList input"),function(i,v){
-					if(v.checked){
-						entrance.push(v.value);
-					}
-				});
-				var step = avalon.vmodels.$step;
-				if(entrance.length === 0){
-					return step.channelMes = "请勾选通道";
-				}
-				if(step.authName === ''){
-					return step.authNameMes = "请输入权限名称";
-				}
-				var grpList = [];
-				var mappingList = [];
-				var grpSeq = String(setAuthData.maxGrpSeq + 1);
-				grpList.push({
-					channel_permission_group_seq : grpSeq,
-					channel_permission_group_name : step.authName
-				});
-				for(var i=0,ii=entrance.length;i<ii;i++){
-					mappingList.push({
-						channel_permission_group_mapping_seq : String(setAuthData.maxMappingSeq + i + 1),
-						entrance_channel_seq : entrance[i],
-						channel_permission_group_seq : grpSeq
+			onClose : function(vmodel){
+				vmodel.authName = '';
+			},
+			buttons : [{
+				text : "确定",
+				theme : "default",
+				handler : function(vmodel){
+					var entrance = [];
+					avalon.each(document.querySelectorAll("#authWin-channelList input"),function(i,v){
+						if(v.checked){
+							entrance.push(v.value);
+						}
 					});
+					var authWin = avalon.vmodels.$authWin;
+					if(entrance.length === 0){
+						return authWin.channelMes = "请勾选通道";
+					}
+					if(authWin.authName === ''){
+						return authWin.authNameMes = "请输入权限名称";
+					}
+					if(authWin.$editAuth){
+						//编辑
+
+					}else{
+						//添加
+						var grpList = [];
+						var mappingList = [];
+						var grpSeq = String(setAuthData.maxGrpSeq + 1);
+						grpList.push({
+							channel_permission_group_seq : grpSeq,
+							channel_permission_group_name : authWin.authName
+						});
+						for(var i=0,ii=entrance.length;i<ii;i++){
+							mappingList.push({
+								channel_permission_group_mapping_seq : String(setAuthData.maxMappingSeq + i + 1),
+								entrance_channel_seq : entrance[i],
+								channel_permission_group_seq : grpSeq
+							});
+						}
+						SYNCHRONIZATION_CUSTOMER({
+							synchronization_type : '2',
+							permission_group_list : grpList,
+							permission_group_mapping_list : mappingList
+						},authWin.widgetElement,function(){
+							authWin.close();
+							authWin.authName = '';
+							refreshAuth();
+						});
+					}
 				}
-				SYNCHRONIZATION_CUSTOMER({
-					synchronization_type : '2',
-					permission_group_list : grpList,
-					permission_group_mapping_list : mappingList
-				},step.widgetElement,function(){
-					step.authName = '';
-					refreshAuth();
-				});
-			}
+			},{
+				text : "取消",
+				theme : "default",
+				close : true
+			}]
 		}
 	});
 	avalon.scan();
@@ -241,7 +284,7 @@ require([
 		Index.init();
 		if(data.code === '0' && data.msg === "ok"){
 			Entrance_channel_list = data.entrance_channel_list;
-			avalon.vmodels.$step.entranceData = Entrance_channel_list;
+			avalon.vmodels.$authWin.entranceData = Entrance_channel_list;
 			content.parkingName = data.parking_lot_list[0].parking_lot_name;
 			getList(function(data){
 				setUserTbData(data);

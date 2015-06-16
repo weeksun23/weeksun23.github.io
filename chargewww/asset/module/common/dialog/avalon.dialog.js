@@ -103,6 +103,7 @@ define(["avalon","text!./avalon.dialog.html"],function(avalon,templete){
 					len === 1 && avalon(modalBackDrop).addClass('in');
 					dealCloseDialog();
 				}
+				vmodel.onClose.call(element,vmodel);
 			};
 			vm.open = function(isInit){
 				element.style.display = 'block';
@@ -135,7 +136,8 @@ define(["avalon","text!./avalon.dialog.html"],function(avalon,templete){
 		title : null,
 		content : null,
 		show : false,
-		afterShow : avalon.noop
+		afterShow : avalon.noop,
+		onClose : avalon.noop
 	};
 	/*
 	avalon.showDialog.xxx : {
