@@ -38,8 +38,15 @@
 					</div>
 					<div class="form-group mgb0">
 					    <div class="col-sm-offset-2 col-sm-10">
-					    	<button type="button" class="btn btn-primary"><i class='glyphicon glyphicon-search'></i> 搜索</button>
-					    	<button ms-click="add" type="button" class="btn btn-primary"><i class='glyphicon glyphicon-plus'></i> 添加</button>
+					    	<button type="button" class="btn btn-primary">
+					    		<i class='glyphicon glyphicon-search'></i> 搜索
+					    	</button>
+					    	<button ms-click='authManage' type='button' class='btn btn-primary'>
+					    		<i class='glyphicon glyphicon-th-list'></i> 通道权限管理
+					    	</button>
+					    	<button ms-click='userManage' type='button' class='btn btn-primary'>
+					    		<i class='glyphicon glyphicon-user'></i> 用户管理
+					    	</button>
 					    </div>
 					</div>
 				</fieldset>
@@ -47,19 +54,11 @@
 		</div>
 	</div>
 	<div ms-widget="table,$userTb,$userTbOpts"></div>
-	<div ms-widget="dialog,$step,$stepOpts">
-		<div ms-visible='step === 0'>
-			<p>
-				<button ms-click='addEntrance' type="button" class="btn btn-primary"><i class='glyphicon glyphicon-plus'></i> 添加</button>
-			</p>
-			<div id='auth' class='mgb0'></div>
-		</div>
-		<div ms-visible='step === 1'>
-			1
-		</div>
-		<div ms-visible='step === 2'>
-			2
-		</div>
+	<div ms-widget="dialog,$authManageWin,$authManageWinOpts">
+		<p>
+			<button ms-click='addEntrance' type="button" class="btn btn-primary"><i class='glyphicon glyphicon-plus'></i> 添加</button>
+		</p>
+		<div id='auth' class='mgb0'></div>
 	</div>
 	<div ms-widget="dialog,$authWin,$authWinOpts">	
 		<form class="form-horizontal">
@@ -79,6 +78,157 @@
 					<div class="col-sm-10">
 						<input type="text" class="form-control" id='authWin-name' ms-duplex='authName' ms-keydown='changeAuthName'>
 						<div class='text-danger' ms-visible='authNameMes'>{{authNameMes}}</div>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+	<div ms-widget='dialog,$userManageWin,$userManageWinOpts'>
+		<p>
+			<button ms-click='add' type="button" class="btn btn-primary"><i class='glyphicon glyphicon-plus'></i> 添加</button>
+		</p>
+		<div id='user' class='mgb0'></div>
+	</div>
+	<div ms-widget="dialog,$userWin,$userWinOpts">
+		<form class="form-horizontal">
+			<fieldset>
+				<div class="form-group">
+					<div class='col-sm-6'>
+						<div class='row' ms-class='has-error:customer_name_mes'> 
+							<label class="col-sm-4 control-label">用户名字</label>
+							<div class="col-sm-8">
+								<input type='text' class='form-control' ms-duplex="model.customer_name">
+								<div class='text-danger' ms-visible='customer_name_mes'>{{customer_name_mes}}</div>
+							</div>
+						</div>
+					</div>
+					<div class='col-sm-6'>
+						<div class='row' ms-class='has-error:carport_number_mes'>
+							<label class="col-sm-4 control-label">车位数量</label>
+							<div class="col-sm-8">
+								<input type='text' class='form-control' ms-duplex="model.carport_number"> 
+								<div class='text-danger' ms-visible='carport_number_mes'>{{carport_number_mes}}</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class='col-sm-6'>
+						<div class='row' ms-class='has-error:car_number_mes'>
+							<label class="col-sm-4 control-label">车数量</label>
+							<div class="col-sm-8">
+								<input type='text' class='form-control' ms-duplex="model.car_number"> 
+								<div class='text-danger' ms-visible='car_number_mes'>{{car_number_mes}}</div>
+							</div>
+						</div>
+					</div>
+					<div class='col-sm-6'>
+						<div class='row' ms-class='has-error:customer_role_mes'>
+							<label class="col-sm-4 control-label">用户角色</label>
+							<div class="col-sm-8">
+								<input type='text' class='form-control' ms-duplex="model.customer_role">
+								<div class='text-danger' ms-visible='customer_role_mes'>{{customer_role_mes}}</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class='col-sm-6'>
+						<div class='row' ms-class='has-error:customer_telphone_mes'>
+							<label class="col-sm-4 control-label">电话号码</label>
+							<div class="col-sm-8">
+								<input type='text' class='form-control' ms-duplex="model.customer_telphone">
+								<div class='text-danger' ms-visible='customer_telphone_mes'>{{customer_telphone_mes}}</div>
+							</div>
+						</div>
+					</div>
+					<div class='col-sm-6'>
+						<div class='row' ms-class='has-error:customer_type_mes'>
+							<label class="col-sm-4 control-label">用户类型</label>
+							<div class="col-sm-8">
+								<input type='text' class='form-control' ms-duplex="model.customer_type">
+								<div class='text-danger' ms-visible='customer_type_mes'>{{customer_type_mes}}</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+	<div ms-widget='dialog,$carManageWin,$carManageWinOpts'>
+		<p>
+			<button ms-click='add' type="button" class="btn btn-primary"><i class='glyphicon glyphicon-plus'></i> 添加</button>
+		</p>
+		<div id='cars' class='mgb0'></div>
+	</div>
+	<div ms-widget="dialog,$carWin,$carWinOpts">
+		<form class="form-horizontal">
+			<fieldset>
+				<div class="form-group">
+					<div class='col-sm-6'>
+						<div class='row' ms-class='has-error:car_license_number_mes'> 
+							<label class="col-sm-4 control-label">车牌号码</label>
+							<div class="col-sm-8">
+								<input type='text' class='form-control' ms-duplex="model.car_license_number">
+								<div class='text-danger' ms-visible='car_license_number_mes'>{{car_license_number_mes}}</div>
+							</div>
+						</div>
+					</div>
+					<div class='col-sm-6'>
+						<div class='row'>
+							<label class="col-sm-4 control-label">车位数量</label>
+							<div class="col-sm-8">
+								<select class='form-control' ms-duplex="model.car_license_color">
+									<option value='0'>不支持</option><option value='1'>白</option>
+									<option value='2'>银</option><option value='3'></option>
+									<option value='4'></option><option value='5'></option>
+									<option value='6'></option><option value='7'></option>
+									<option value='8'></option><option value='9'></option>
+									<option value='10'></option><option value='11'></option>
+									<option value='12'></option><option value='13'></option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class='col-sm-6'>
+						<div class='row' ms-class='has-error:car_number_mes'>
+							<label class="col-sm-4 control-label">车数量</label>
+							<div class="col-sm-8">
+								<input type='text' class='form-control' ms-duplex="model.car_number"> 
+								<div class='text-danger' ms-visible='car_number_mes'>{{car_number_mes}}</div>
+							</div>
+						</div>
+					</div>
+					<div class='col-sm-6'>
+						<div class='row' ms-class='has-error:customer_role_mes'>
+							<label class="col-sm-4 control-label">用户角色</label>
+							<div class="col-sm-8">
+								<input type='text' class='form-control' ms-duplex="model.customer_role">
+								<div class='text-danger' ms-visible='customer_role_mes'>{{customer_role_mes}}</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class='col-sm-6'>
+						<div class='row' ms-class='has-error:customer_telphone_mes'>
+							<label class="col-sm-4 control-label">电话号码</label>
+							<div class="col-sm-8">
+								<input type='text' class='form-control' ms-duplex="model.customer_telphone">
+								<div class='text-danger' ms-visible='customer_telphone_mes'>{{customer_telphone_mes}}</div>
+							</div>
+						</div>
+					</div>
+					<div class='col-sm-6'>
+						<div class='row' ms-class='has-error:customer_type_mes'>
+							<label class="col-sm-4 control-label">用户类型</label>
+							<div class="col-sm-8">
+								<input type='text' class='form-control' ms-duplex="model.customer_type">
+								<div class='text-danger' ms-visible='customer_type_mes'>{{customer_type_mes}}</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</fieldset>
