@@ -1,7 +1,9 @@
 define([
-	"common/websocket","common/dialog/avalon.dialog",
+	"common/websocket",
+	"business/data",
+	"common/dialog/avalon.dialog",
 	"lib/datetimepicker/bootstrap-datetimepicker-module"
-	],function(websocket){
+	],function(websocket,mData){
 	avalon.config({
 		debug : true
 	});
@@ -174,6 +176,7 @@ define([
 		total_parking_space : "--"
 	});
 	var Index = window.Index = {
+		mData : mData,
 		top : top,
 		body : body,
 		noCarImgSrc : "image/no-car.png",
@@ -198,17 +201,6 @@ define([
 			});
 		},
 		websocket : websocket,
-		getCarType : function(type){
-			if(type === "0"){
-				return "未知";
-			}else if(type === '1'){
-				return "临时车";
-			}else if(type === "2"){
-				return "本地VIP";
-			}else if(type === "3"){
-				return "会员车";
-			}
-		},
 		alert : function(mes){
 			var $alert = avalon.vmodels.$alert;
 			$alert.mes = mes;

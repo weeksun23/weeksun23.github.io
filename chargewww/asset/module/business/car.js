@@ -90,7 +90,7 @@ require([
 						return '--';
 					}
 				},
-				{title : "车辆类型",field : "enter_vip_type",formatter : Index.getCarType},
+				{title : "车辆类型",field : "enter_vip_type",formatter : Index.mData.getVipType},
 				{title : "放行模式",field : "pass_type",formatter : Index.getPassType},
 				{title : "置信度",field : "enter_recognition_confidence"},
 				{title : "值班人员",field : "in_operate_name"}

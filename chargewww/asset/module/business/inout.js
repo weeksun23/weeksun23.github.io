@@ -271,7 +271,7 @@ require([
 				content.outInCarImg = Index.websocket.plateImgUrl + 
 					item.enter_car_license_picture + "?" + (+new Date);
 				content.outInCarTime = item.enter_time;
-				content.outCarType = Index.getCarType(item.enter_type);
+				content.outCarType = Index.mData.getVipType(item.enter_type);
 				getCharge(item.car_license_number,item.enter_time,content.outCarTime);
 			},
 			//查看大图
@@ -452,7 +452,7 @@ require([
 				target = {
 					inTime : enter.enter_time,
 					inCarNum : enter.car_license_number,
-					inCarType : Index.getCarType(enter.enter_vip_type),
+					inCarType : Index.mData.getVipType(enter.enter_vip_type),
 					inCarFullImg : Index.websocket.fullImgUrl + enter.enter_car_full_picture + "?" + (+new Date),
 					inCarImg : Index.websocket.plateImgUrl + enter.enter_car_license_picture + "?" + (+new Date)
 				};
@@ -490,7 +490,7 @@ require([
 					outCarNum : leave.leave_car_license_number,
 					outCarImg : Index.websocket.plateImgUrl + leave.leave_car_license_picture + "?" + (+new Date),
 					outCarTime : leave.leave_time,
-					outCarType : Index.getCarType(leave.leave_vip_type),
+					outCarType : Index.mData.getVipType(leave.leave_vip_type),
 					outCarCost : "--"
 				};
 				if(leave.leave_type !== '0'){
