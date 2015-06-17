@@ -74,10 +74,11 @@ require([
 			//step0
 			$authOpts : {
 				title : "通道权限列表",
+				chooseAuth : "",
 				columns : [
 					{title : "选择",field : 'checkbox',align : "center",
 						formatter : function(){
-							return "<label class='checkbox-x1'><input type='radio' name='auth'><label>";
+							return "<label class='checkbox-x1'><input type='radio' name='auth' ms-duplex='chooseAuth'><label>";
 						}
 					},
 					{title : '通道权限名字',field : "channel_permission_group_name"},
@@ -94,6 +95,16 @@ require([
 					win.title = "编辑通道权限";
 					win.$editAuth = item;
 					win.authName = item.channel_permission_group_name;
+					var seqList = item.seqList;
+					avalon.each(document.querySelectorAll("#authWin-channelList input"),function(i,v){
+						for(var i=0,ii;ii=seqList[i++];){
+							if(ii === v.value){
+								v.checked = true;
+								return;
+							}
+						}
+						v.checked = false;
+					});
 					win.open();
 				},
 				del : function(){
@@ -143,30 +154,56 @@ require([
 					if(authWin.authName === ''){
 						return authWin.authNameMes = "请输入权限名称";
 					}
+					var grpList = [];
+					var mappingList = [];
+					if(authWin.$editAuth){
+						var grpSeq = authWin.$editAuth.channel_permission_group_seq;
+					}else{
+						grpSeq = String(setAuthData.maxGrpSeq + 1);
+					}
+					//获取新的channel_permission_group_mapping
+					for(var i=0,ii=entrance.length;i<ii;i++){
+						mappingList.push({
+							channel_permission_group_mapping_seq : String(setAuthData.maxMappingSeq + i + 1),
+							entrance_channel_seq : entrance[i],
+							channel_permission_group_seq : grpSeq
+						});
+					}
 					if(authWin.$editAuth){
 						//编辑
-
-					}else{
-						//添加
-						var grpList = [];
-						var mappingList = [];
-						var grpSeq = String(setAuthData.maxGrpSeq + 1);
 						grpList.push({
 							channel_permission_group_seq : grpSeq,
 							channel_permission_group_name : authWin.authName
 						});
-						for(var i=0,ii=entrance.length;i<ii;i++){
-							mappingList.push({
-								channel_permission_group_mapping_seq : String(setAuthData.maxMappingSeq + i + 1),
-								entrance_channel_seq : entrance[i],
-								channel_permission_group_seq : grpSeq
+						//先删除channel_permission_group_mapping_seq
+						SYNCHRONIZATION_CUSTOMER({
+							synchronization_type : '3',
+							permission_group_mapping_list : authWin.$editAuth.$mappList
+						},authWin.widgetElement,function(){
+							//再增加
+							SYNCHRONIZATION_CUSTOMER({
+								synchronization_type : '4',
+								permission_group_list : grpList,
+								permission_group_mapping_list : mappingList
+							},authWin.widgetElement,function(){
+								Index.alert("操作成功");
+								authWin.close();
+								authWin.authName = '';
+								refreshAuth();
 							});
-						}
+						});
+					}else{
+						//添加
+						grpList.push({
+							channel_permission_group_seq : grpSeq,
+							channel_permission_group_name : authWin.authName
+						});
 						SYNCHRONIZATION_CUSTOMER({
 							synchronization_type : '2',
 							permission_group_list : grpList,
 							permission_group_mapping_list : mappingList
 						},authWin.widgetElement,function(){
+							Index.alert("操作成功");
 							authWin.close();
 							authWin.authName = '';
 							refreshAuth();
@@ -206,7 +243,6 @@ require([
 			biz_content : content
 		},el,function(data){
 			if(data.code === "0" && data.msg === "ok"){
-				Index.alert("操作成功");
 				func && func();
 			}
 		});
@@ -250,6 +286,7 @@ require([
 			}
 			var seqList = [];
 			var nameList = [];
+			var mappList = [];
 			for(var j=0,jj;jj=permission_group_mapping_list[j++];){
 				if(+jj.channel_permission_group_mapping_seq > maxMappingSeq){
 					maxMappingSeq = +jj.channel_permission_group_mapping_seq;
@@ -257,10 +294,12 @@ require([
 				if(jj.channel_permission_group_seq === ii.channel_permission_group_seq){
 					seqList.push(jj.entrance_channel_seq);
 					nameList.push(getChannelNameBySeq(jj.entrance_channel_seq));
+					mappList.push(jj);
 				}
 			}
 			ii.seqList = seqList;
 			ii.channelNames = nameList.join(",");
+			ii.$mappList = mappList;
 		}
 		setAuthData.maxGrpSeq = maxGrpSeq;
 		setAuthData.maxMappingSeq = maxMappingSeq;

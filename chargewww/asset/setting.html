@@ -67,7 +67,10 @@
 				<div class="form-group" ms-class='has-error:channelMes'>
 					<label class="col-sm-2 control-label">选择通道</label>
 					<div class="col-sm-10" id='authWin-channelList'>
-						<label class='entrance' ms-repeat='entranceData'><input type='checkbox' ms-attr-value='el.entrance_channel_seq' ms-on-change='changeEntrance'> {{el.entrance_name}}</label>
+						<label class='entrance' ms-repeat='entranceData'>
+							<input type='checkbox' ms-attr-value='el.entrance_channel_seq' ms-on-change='changeEntrance'> 
+							{{el.entrance_name}}
+						</label>
 						<div class='text-danger' ms-visible='channelMes'>{{channelMes}}</div>
 					</div>
 				</div>
@@ -82,7 +85,7 @@
 		</form>
 	</div>
 </div>
-<script src='module/avalon.modern.min.js'></script>
+<script src='module/avalon.modern.js'></script>
 <script src='module/business/setting.js'></script>
 </body>
 </html>
