@@ -135,10 +135,10 @@
 			      	<img ms-attr-src="el.src" alt='大图' onerror="Index.onImgError(this);">
 			    </div>
 		  	</div>
-			<a class="left carousel-control" href="javascript:void(0)" ms-click="prev">
+			<a ms-visible='imgs.length > 1' class="left carousel-control" href="javascript:void(0)" ms-click="prev">
 			    <span class="glyphicon glyphicon-chevron-left"></span>
 			</a>
-			<a class="right carousel-control" href="javascript:void(0)" ms-click="next">
+			<a ms-visible='imgs.length > 1' class="right carousel-control" href="javascript:void(0)" ms-click="next">
 				<span class="glyphicon glyphicon-chevron-right"></span>
 		  	</a>
 		</div>

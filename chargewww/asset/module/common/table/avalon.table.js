@@ -126,7 +126,7 @@ define(["avalon","text!./avalon.table.html","css!./avalon.table.css"],function(a
 		changeCurPage : 1,
 		start : 0,
 		end : 0,
-		pageSize : 5,
+		pageSize : 10,
 		pageSizeArr : [5,10,20,40],
 		onInit : avalon.noop
 	};

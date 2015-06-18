@@ -29,16 +29,16 @@
 					<div class="form-group">
 						<label for='userName' class="col-sm-2 control-label">用户名</label>
 						<div class="col-sm-4">
-							<input type="text" class="form-control" id='userName' name='userName' placeholder='请输入用户名关键字'>
+							<input type="text" class="form-control" id='userName' ms-duplex='searchName' placeholder='请输入用户名关键字'>
 						</div>
 						<label for='cardNum' class="col-sm-2 control-label">车牌号码</label>
 						<div class="col-sm-4">
-							<input type="text" class="form-control" id='cardNum' name='cardNum' placeholder='请输入车牌号码关键字'>
+							<input type="text" class="form-control" id='cardNum' ms-duplex='searchCarNum' placeholder='请输入车牌号码关键字'>
 						</div>
 					</div>
 					<div class="form-group mgb0">
 					    <div class="col-sm-offset-2 col-sm-10">
-					    	<button type="button" class="btn btn-primary">
+					    	<button ms-click='search' type="button" class="btn btn-primary">
 					    		<i class='glyphicon glyphicon-search'></i> 搜索
 					    	</button>
 					    	<button ms-click='authManage' type='button' class='btn btn-primary'>
@@ -176,16 +176,10 @@
 					</div>
 					<div class='col-sm-6'>
 						<div class='row'>
-							<label class="col-sm-4 control-label">车位数量</label>
+							<label class="col-sm-4 control-label">车身颜色</label>
 							<div class="col-sm-8">
 								<select class='form-control' ms-duplex="model.car_license_color">
-									<option value='0'>不支持</option><option value='1'>白</option>
-									<option value='2'>银</option><option value='3'></option>
-									<option value='4'></option><option value='5'></option>
-									<option value='6'></option><option value='7'></option>
-									<option value='8'></option><option value='9'></option>
-									<option value='10'></option><option value='11'></option>
-									<option value='12'></option><option value='13'></option>
+									<option ms-repeat='carLicenseColors' ms-attr-value='el.v'>{{el.t}}</option>
 								</select>
 							</div>
 						</div>
@@ -193,42 +187,79 @@
 				</div>
 				<div class="form-group">
 					<div class='col-sm-6'>
-						<div class='row' ms-class='has-error:car_number_mes'>
-							<label class="col-sm-4 control-label">车数量</label>
+						<div class='row'>
+							<label class="col-sm-4 control-label">车牌类型</label>
 							<div class="col-sm-8">
-								<input type='text' class='form-control' ms-duplex="model.car_number"> 
-								<div class='text-danger' ms-visible='car_number_mes'>{{car_number_mes}}</div>
+								<select class='form-control' ms-duplex="model.car_license_type">
+									<option ms-repeat='carLicenseType' ms-attr-value='el.v'>{{el.t}}</option>
+								</select>
 							</div>
 						</div>
 					</div>
 					<div class='col-sm-6'>
-						<div class='row' ms-class='has-error:customer_role_mes'>
-							<label class="col-sm-4 control-label">用户角色</label>
+						<div class='row'>
+							<label class="col-sm-4 control-label">VIP类型</label>
 							<div class="col-sm-8">
-								<input type='text' class='form-control' ms-duplex="model.customer_role">
-								<div class='text-danger' ms-visible='customer_role_mes'>{{customer_role_mes}}</div>
+								<select class='form-control' ms-duplex="model.vip_type">
+									<option ms-repeat='vipType' ms-attr-value='el.v'>{{el.t}}</option>
+								</select>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="form-group">
 					<div class='col-sm-6'>
-						<div class='row' ms-class='has-error:customer_telphone_mes'>
-							<label class="col-sm-4 control-label">电话号码</label>
+						<div class='row'>
+							<label class="col-sm-4 control-label">车辆类型</label>
 							<div class="col-sm-8">
-								<input type='text' class='form-control' ms-duplex="model.customer_telphone">
-								<div class='text-danger' ms-visible='customer_telphone_mes'>{{customer_telphone_mes}}</div>
+								<select class='form-control' ms-duplex="model.car_type">
+									<option ms-repeat='carType' ms-attr-value='el.v'>{{el.t}}</option>
+								</select>
 							</div>
 						</div>
 					</div>
 					<div class='col-sm-6'>
-						<div class='row' ms-class='has-error:customer_type_mes'>
-							<label class="col-sm-4 control-label">用户类型</label>
+						<div class='row'>
+							<label class="col-sm-4 control-label">品牌</label>
 							<div class="col-sm-8">
-								<input type='text' class='form-control' ms-duplex="model.customer_type">
-								<div class='text-danger' ms-visible='customer_type_mes'>{{customer_type_mes}}</div>
+								<select class='form-control' ms-duplex="model.car_logo">
+									<option ms-repeat='carLogo' ms-attr-value='el.v'>{{el.t}}</option>
+								</select>
 							</div>
 						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2 control-label">选择权限</label>
+					<div class="col-sm-10">
+						<select class='form-control' ms-duplex="model.channel_permission_group_seq">
+							<option ms-repeat='channelPermissionGrp' 
+								ms-attr-value='el.channel_permission_group_seq'>
+								{{el.channel_permission_group_name}}
+							</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group" ms-class='has-error:vip_begin_time_mes'>
+					<label for='inTime' class="col-sm-2 control-label">开始时间</label>
+	                <div class='col-sm-10'>
+						<div id='sTimePicker' class="input-group date">
+		                    <input id='inTime' class="form-control" type="text" readonly ms-duplex="model.vip_begin_time">
+		                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+							<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+		                </div>
+		                <div class='text-danger' ms-visible='vip_begin_time_mes'>{{vip_begin_time_mes}}</div>
+					</div>
+				</div>
+				<div class="form-group" ms-class='has-error:vip_end_time_mes'>
+					<label for='outTime' class="col-sm-2 control-label">结束时间</label>
+					<div class='col-sm-10'>
+						<div id='eTimePicker' class="input-group date">
+		                    <input id='outTime' class="form-control" type="text" readonly ms-duplex="model.vip_end_time">
+		                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+							<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+		                </div>
+		                <div class='text-danger' ms-visible='vip_end_time_mes'>{{vip_end_time_mes}}</div>
 					</div>
 				</div>
 			</fieldset>

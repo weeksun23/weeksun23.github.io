@@ -74,7 +74,7 @@ require([
 		});
 	}
 	//开关闸
-	function toggleDoor(seq,carNum,time,area,control_type){
+	function toggleDoor(seq,carNum,time,area,control_type,func){
 		Index.websocket.send({
 			command : "CONVERTOR_CONTROL",
 			biz_content : {
@@ -87,6 +87,7 @@ require([
 			}
 		},area,function(data){
 			Index.alert("操作成功");
+			func && func();
 		});
 	}
 	//校正车牌
@@ -118,7 +119,7 @@ require([
 		$id : "content",
 		showCarlist : function(){
 			if(content.outCarCost.indexOf("已付费") !== -1 || content.outCarCost.indexOf("异常离场") !== -1){
-				return Index.alert("不能为离场车辆付费，请确认");
+				return Index.alert("该车辆已付费出场，无需再匹配");
 			}
 			if(!content.outCarNum || content.outCarNum === '--'){
 				return Index.alert("暂无出场车辆");
@@ -222,8 +223,6 @@ require([
 					Index.initWidget('realCarList',"table,$carList,$carListOpts",content);
 					Index.initWidget('startDate',"date,$startDate,$",content);
 					Index.initWidget('endDate',"date,$endDate,$",content);
-				}else{
-					
 				}
 				Index.websocket.send({
 					command : "GET_REAL_TIME_CAR"
@@ -251,7 +250,7 @@ require([
 			columns : [
 				{title : "车牌图片",field : "enter_car_license_picture",width : 100,
 					formatter : function(v){
-						return "<img onerror='Index.onImgError(this);' ms-click='showPic(item)' alt='车牌图片' src='"+
+						return "<img onerror='Index.onImgError(this);' width='100' ms-click='showPic(item)' alt='车牌图片' src='"+
 						Index.websocket.plateImgUrl + v + "?" + (+new Date) +
 						"' title='点击查看大图' class='img-rounded img-responsive cpointer'>";
 					}
@@ -342,7 +341,11 @@ require([
 						if(data.code === '0' && data.msg === "ok"){
 							//第三步，下发开闸指令：P4.2
 							toggleDoor(content.outList[content.outIndex].entrance_channel_seq,
-								content.outInCarNum,content.outInCarTime,document.body);
+								content.outInCarNum,content.outInCarTime,document.body,'1',function(){
+									//重新获取通道最新消息
+									getNewestChannelData();
+								});
+							
 						}
 					});
 				}else{
@@ -356,7 +359,10 @@ require([
 			//开闸指令
 			var outCar = content.outList[content.outIndex];
 			toggleDoor(outCar.entrance_channel_seq,
-				content.outInCarNum,content.outInCarTime,document.body);
+				content.outInCarNum,content.outInCarTime,document.body,'1',function(){
+					//重新获取通道最新消息
+					getNewestChannelData();
+				});
 		},
 		//入车确认放行
 		inSureOpen : function(){
@@ -424,6 +430,8 @@ require([
 				var enterCar = data.enter_car_list;
 				if(enterCar && enterCar.length > 0){
 					channelData.enterCar = enterCar[0];
+				}else{
+					channelData.enterCar = null;
 				}
 				if(!isIn){
 					//if(hasOut) return;////////////////////////////////
@@ -519,34 +527,7 @@ require([
 			}
 			avalon.mix(content,model);
 		});
-		function GET_LAST_REAL_TIME_CAR_RETURN(data){
-			if(data.code === '0' && data.msg === "ok"){
-				var leave = data.leave_car_list;
-				if(!leave || leave.length === 0){
-					//入场的最新消息
-					var enter = data.enter_car_list;
-					if(enter && enter.length > 0){
-						enter = enter[0];
-						Index.websocket.callbacks.PUSH_CHANNEL_INFO({
-							code : "0",
-							msg : "ok",
-							channel : enter.enter_channel,
-							enter_car_list : data.enter_car_list
-						});
-					}
-				}else{
-					//出场的最新消息
-					leave = leave[0];
-					Index.websocket.callbacks.PUSH_CHANNEL_INFO({
-						code : "0",
-						msg : "ok",
-						channel : leave.leave_channel,
-						enter_car_list : data.enter_car_list,
-						leave_car_list : data.leave_car_list
-					});
-				}
-			}
-		}
+		
 		//基本信息指令
 		Index.websocket.send({
 			command : "GET_PARKING_LOT_BASE_DATE",
@@ -581,25 +562,57 @@ require([
 						content.inList = inList;
 						content.outList = outList;
 						//获取完基本信息后 发送获取通道最新信息的指令
-						if(content.inList.length > 0){
-							Index.websocket.send({
-								command : "GET_LAST_REAL_TIME_CAR",
-								biz_content : {
-									channel : content.inList[0].entrance_channel_seq
-								}
-							},document.body,GET_LAST_REAL_TIME_CAR_RETURN);
-						}
-						if(content.outList.length > 0){
-							Index.websocket.send({
-								command : "GET_LAST_REAL_TIME_CAR",
-								biz_content : {
-									channel : content.outList[0].entrance_channel_seq
-								}
-							},document.body,GET_LAST_REAL_TIME_CAR_RETURN);
-						}
+						getNewestChannelData();
 					}
 				});
 			}
 		});
 	})();
+	//发送获取通道最新信息的指令
+	function getNewestChannelData(){
+		if(content.inList.length > 0){
+			Index.websocket.send({
+				command : "GET_LAST_REAL_TIME_CAR",
+				biz_content : {
+					channel : content.inList[0].entrance_channel_seq
+				}
+			},document.body,GET_LAST_REAL_TIME_CAR_RETURN);
+		}
+		if(content.outList.length > 0){
+			Index.websocket.send({
+				command : "GET_LAST_REAL_TIME_CAR",
+				biz_content : {
+					channel : content.outList[0].entrance_channel_seq
+				}
+			},document.body,GET_LAST_REAL_TIME_CAR_RETURN);
+		}
+	}
+	function GET_LAST_REAL_TIME_CAR_RETURN(data){
+		if(data.code === '0' && data.msg === "ok"){
+			var leave = data.leave_car_list;
+			if(!leave || leave.length === 0){
+				//入场的最新消息
+				var enter = data.enter_car_list;
+				if(enter && enter.length > 0){
+					enter = enter[0];
+					Index.websocket.callbacks.PUSH_CHANNEL_INFO({
+						code : "0",
+						msg : "ok",
+						channel : enter.enter_channel,
+						enter_car_list : data.enter_car_list
+					});
+				}
+			}else{
+				//出场的最新消息
+				leave = leave[0];
+				Index.websocket.callbacks.PUSH_CHANNEL_INFO({
+					code : "0",
+					msg : "ok",
+					channel : leave.leave_channel,
+					enter_car_list : data.enter_car_list,
+					leave_car_list : data.leave_car_list
+				});
+			}
+		}
+	}
 });

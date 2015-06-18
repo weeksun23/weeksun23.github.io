@@ -112,11 +112,14 @@ define(["avalon","text!./avalon.dialog.html"],function(avalon,templete){
 					//强制reflow
 					modalBackDrop.offsetWidth;
 					element.offsetWidth;
-					avalon(element).addClass('in');
+					setTimeout(function(){
+						avalon(element).addClass('in');
+						$modalBack.addClass('in');
+					},20);
 				}else{
 					vmodel.afterShow.call(element,isInit,vmodel);
+					$modalBack.addClass('in');
 				}
-				$modalBack.addClass('in');
 				avalon(document.body).addClass("modal-open");
 				//处理重叠窗口
 				var dgs = modalBackDrop.curDialogs;

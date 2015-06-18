@@ -49,7 +49,7 @@ require([
 						(model.eDateStr && item.enter_time > model.eDateStr) ||
 						(model.enter_vip_type && model.enter_vip_type !== item.enter_vip_type) ||
 						(model.enter_channel && model.enter_channel !== item.enter_channel) ||
-						(model.in_operate_name && item.in_operate_name.indexOf(model.in_operate_name)) ||
+						(model.in_operate_name && item.in_operate_name !== model.in_operate_name) ||
 						(model.sBelieve && +item.enter_recognition_confidence < +model.sBelieve) ||
 						(model.eBelieve && +item.enter_recognition_confidence > +model.eBelieve)
 					){
@@ -268,8 +268,14 @@ require([
 			content.operUsers = arr;
 			//日期
 			var obj = Index.getRange(REAL_TIME_CAR_LIST,"enter_time");
-			content.model.sDateStr = obj.min;
-			content.model.eDateStr = obj.max;
+			if(obj){
+				content.model.sDateStr = obj.min;
+				content.model.eDateStr = obj.max;
+			}else{
+				var nowStr = avalon.filters.date(new Date(),"yyyy-MM-dd hh:mm:ss");
+				content.model.sDateStr = nowStr;
+				content.model.eDateStr = nowStr;
+			}
 			$("#inTimePicker").datetimepicker("update");
 			$("#outTimePicker").datetimepicker("update");
 			Index.init();
@@ -282,6 +288,11 @@ require([
 		},document.body,function(data){
 			if(data.code === "0" && data.msg === "ok"){
 				avalon.vmodels.$carList.loadFrontPageData(REAL_TIME_CAR_LIST = data.real_time_list,page);
+				/*REAL_TIME_CAR_LIST = [{
+					car_license_number : "sdsd",
+					enter_car_license_number : "sdrewe"
+				}];
+				avalon.vmodels.$carList.loadFrontPageData(REAL_TIME_CAR_LIST);*/
 				func && func();
 			}
 		});

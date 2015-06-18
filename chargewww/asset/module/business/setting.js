@@ -10,6 +10,22 @@ require([
 	Index.top.curIndex = 3;
 	var content = avalon.define({
 		$id : "content",
+		search : function(){
+			var data = getUserCarData(getList.data);
+			var result = [];
+			for(var i=0,ii;ii=data[i++];){
+				if(content.searchName !== '' && ii.customer_name.indexOf(content.searchName) === -1){
+					continue;
+				}
+				if(content.searchCarNum !== '' && ii.car_license_number.indexOf(content.searchCarNum) === -1){
+					continue;
+				}
+				result.push(ii);
+			}
+			avalon.vmodels.$userTb.loadFrontPageData(result);
+		},
+		searchName : "",
+		searchCarNum : "",
 		$userTbOpts : {
 			title : "VIP用户列表",
 			columns : [
@@ -76,12 +92,20 @@ require([
 				},
 				del : function(item){
 					Index.confirm("确认删除该通道权限吗？",function(){
+						var vip_car_list = getList.data.vip_car_list;
+						var list = [];
+						for(var i=0,ii;ii=vip_car_list[i++];){
+							if(ii.channel_permission_group_seq === item.channel_permission_group_seq){
+								list.push(ii);
+							}
+						}
 						SYNCHRONIZATION_CUSTOMER({
 							synchronization_type : '3',
 							permission_group_mapping_list : item.$mappList,
 							permission_group_list : [{
 								channel_permission_group_seq : item.channel_permission_group_seq
-							}]
+							}],
+							vip_car_list : list
 						},avalon.vmodels.$authManageWin.widgetElement,function(){
 							Index.alert("操作成功");
 							refreshAuthUser();
@@ -217,7 +241,7 @@ require([
 					{title : '电话号码',field : "customer_telphone"},
 					{title : "拥有车辆",field : "cars",
 						formatter : function(){
-							return "<a href='javascript:void(0)' ms-click='cars'>管理</a>";
+							return "<a href='javascript:void(0)' ms-click='cars(item)'>管理</a>";
 						}
 					},
 					{title : "操作",field : "oper",
@@ -228,7 +252,7 @@ require([
 					}
 				],
 				cars : function(item){
-					avalon.vmodels.$carManageWin.$curUser = item.$model;
+					avalon.vmodels.$carManageWin.$curUser = item;
 					avalon.vmodels.$carManageWin.open();
 				},
 				data : [],
@@ -240,16 +264,21 @@ require([
 				},
 				del : function(item){
 					Index.confirm("确认删除该用户吗？",function(){
-						/*SYNCHRONIZATION_CUSTOMER({
+						var vip_customer_list = [{
+							vip_customer_seq : item.vip_customer_seq
+						}];
+						var vip_car_list = getCarTbData(getList.data,item.vip_customer_seq);
+						SYNCHRONIZATION_CUSTOMER({
 							synchronization_type : '3',
-							permission_group_mapping_list : item.$mappList,
-							permission_group_list : [{
-								channel_permission_group_seq : item.channel_permission_group_seq
-							}]
+							vip_customer_list : vip_customer_list,
+							vip_car_list : vip_car_list
 						},avalon.vmodels.$authManageWin.widgetElement,function(){
 							Index.alert("操作成功");
-							refreshAuthUser();
-						});*/
+							getList(function(data){
+								setUserTbData(data);
+								setUserData(data);
+							});
+						});
 					});
 				}
 			},
@@ -342,22 +371,48 @@ require([
 		$carManageWinOpts : {
 			title : "车辆管理",
 			add : function(){
-
+				var win = avalon.vmodels.$carWin;
+				win.$editCar = null;
+				win.open();
 			},
 			$curUser : null,
 			afterShow : function(isInit,vmodel){
 				if(isInit){
 					Index.initWidget("cars","table,$cars,$carsOpts",vmodel);
 				}
+				setCarTbData(getList.data,vmodel.$curUser.vip_customer_seq);
 			},
 			$carsOpts : {
+				edit : function(item){
+					var win = avalon.vmodels.$carWin;
+					win.$editCar = item;
+					win.open();
+				},
+				del : function(item){
+					Index.confirm("确认删除该车辆吗？",function(){
+						var vip_car_list = [{
+							vip_car_seq : item.vip_car_seq
+						}];
+						SYNCHRONIZATION_CUSTOMER({
+							synchronization_type : '3',
+							vip_car_list : vip_car_list
+						},avalon.vmodels.$authManageWin.widgetElement,function(){
+							Index.alert("操作成功");
+							getList(function(data){
+								setUserTbData(data);
+								setCarTbData(data,avalon.vmodels.$carManageWin.$curUser.vip_customer_seq);
+							});
+						});
+					});
+				},
 				columns : [
 					{title : "车牌号码",field : "car_license_number"},
 					{title : "车主",field : "customer_name"},
 					{title : "类型",field : "vip_type",formatter : Index.mData.getVipType},
 					{title : "有效期",field : "date",
 						formatter : function(v,r){
-							return r.vip_begin_time + "~<br>" + r.vip_end_time;
+							return avalon.filters.date(new Date(r.vip_begin_time),"yyyy-MM-dd")
+							 + "~<br>" + avalon.filters.date(new Date(r.vip_end_time),"yyyy-MM-dd");
 						}
 					},
 					{title : "安保",field : "is_open_safe_mode",
@@ -369,11 +424,119 @@ require([
 					{title : "权限",field : "channel_permission_group_name"},
 					{title : "操作",field : "oper",
 						formatter : function(){
-							return "<a href='javascript:void(0)'>编辑</a> <a href='javascript:void(0)'>删除</a>"
+							return "<a href='javascript:void(0)' ms-click='edit(item)'>编辑</a> "+
+							"<a href='javascript:void(0)' ms-click='del(item)'>删除</a>"
 						}
 					}
 				]
 			}
+		},
+		$carWinOpts : {
+			$editCar : null,
+			title : '',
+			model : {
+				car_license_number : '',
+				car_license_color : "0",
+				car_license_type : "0",
+				vip_type : "0",
+				car_type : '0',
+				car_logo : '0',
+				vip_begin_time : "",
+				vip_end_time : "",
+				channel_permission_group_seq : "1"
+			},
+			car_license_number_mes : "",
+			vip_begin_time_mes : "",
+			vip_end_time_mes : "",
+			carLicenseColors : [],
+			carLicenseType : [],
+			vipType : [],
+			carType : [],
+			carLogo : [],
+			channelPermissionGrp : [],
+			afterShow : function(isInit,vmodel){
+				if(isInit){
+					$("#sTimePicker").datetimepicker(Index.getDateTimePickerOpts({startView : 2}));
+					$("#eTimePicker").datetimepicker(Index.getDateTimePickerOpts({startView : 2}));
+					vmodel.carLicenseColors = Index.mData.car_license_color;
+					vmodel.carLicenseType = Index.mData.car_license_type;
+					vmodel.vipType = Index.mData.vip_type;
+					vmodel.carType = Index.mData.car_type;
+					vmodel.carLogo = Index.mData.car_logo;
+					vmodel.channelPermissionGrp = getList.data.permission_group_list;
+					avalon.each(['car_license_number','vip_begin_time','vip_end_time'],function(i,v){
+						vmodel.model.$watch(v,function(){
+							vmodel[v + "_mes"] = '';
+						});
+					});
+				}
+				if(vmodel.$editCar){
+					vmodel.title = "编辑车辆信息";
+					var $model = vmodel.model.$model;
+					for(var i in $model){
+						if(vmodel.$editCar[i] !== undefined){
+							vmodel.model[i] = vmodel.$editCar[i];
+						}
+					}
+				}else{
+					vmodel.model.car_license_number = '';
+					vmodel.model.vip_begin_time = '';
+					vmodel.model.vip_end_time = '';
+					vmodel.title = "添加车辆信息";
+				}
+			},
+			buttons : [{
+				text : '确定',
+				theme : "primary",
+				handler : function(vmodel){
+					var model = vmodel.model;
+					var f = true;
+					avalon.each(['car_license_number','vip_begin_time','vip_end_time'],function(i,v){
+						if(!model[v]){
+							vmodel[v + "_mes"] = "该输入项为必输项";
+							return f = false;
+						}
+						if(v === 'vip_end_time'){
+							if(model.vip_end_time <= model.vip_begin_time){
+								vmodel.vip_end_time_mes = "结束日期必须大于开始日期";
+								return f = false;
+							}
+						}
+					});
+					if(f){
+						var vip_customer_seq = avalon.vmodels.$carManageWin.$curUser.vip_customer_seq;
+						var vip_car_list = [];
+						if(vmodel.$editCar){
+							var obj = avalon.mix({
+								vip_car_seq : vmodel.$editCar.vip_car_seq,
+								vip_customer_seq : vip_customer_seq
+							},model.$model);
+							var synchronization_type = '4';
+						}else{
+							obj = avalon.mix({
+								vip_car_seq : String(+getUserCarData.maxSeq + 1),
+								vip_customer_seq : vip_customer_seq
+							},model.$model);
+							synchronization_type = '2';
+						}
+						vip_car_list.push(obj);
+						SYNCHRONIZATION_CUSTOMER({
+							synchronization_type : synchronization_type,
+							vip_car_list : vip_car_list
+						},avalon.vmodels.$userWin.widgetElement,function(){
+							Index.alert("操作成功");
+							vmodel.close();
+							getList(function(data){
+								setUserTbData(data);
+								setCarTbData(data,vip_customer_seq);
+							});
+						});
+					}
+				}
+			},{
+				text : "取消",
+				close : true
+			}]
 		}
 	});
 	avalon.scan();
@@ -405,12 +568,16 @@ require([
 	function refreshUserTb(){
 		getList(setUserTbData);
 	}
-	function setUserTbData(data){
+	function getUserCarData(data){
 		var vip_customer_list = data.vip_customer_list;
 		var vip_car_list = data.vip_car_list;
 		var permission_group_list = data.permission_group_list;
 		var permission_group_mapping_list = data.permission_group_mapping_list;
+		var maxSeq = '0';
 		for(var i=0,ii;ii=vip_car_list[i++];){
+			if(+ii.vip_car_seq > +maxSeq){
+				maxSeq = ii.vip_car_seq;
+			}
 			for(var j=0,jj;jj=vip_customer_list[j++];){
 				if(jj.vip_customer_seq === ii.vip_customer_seq){
 					avalon.mix(ii,jj);
@@ -424,7 +591,29 @@ require([
 				}
 			}
 		}
-		avalon.vmodels.$userTb.loadFrontPageData(vip_car_list);
+		getUserCarData.maxSeq = maxSeq;
+		return vip_car_list;
+	}
+	function setUserTbData(data){
+		avalon.vmodels.$userTb.loadFrontPageData(getUserCarData(data));
+	}
+	function refreshCarTb(vip_customer_seq){
+		getList(function(data){
+			setCarTbData(data,vip_customer_seq);
+		});
+	}
+	function getCarTbData(data,vip_customer_seq){
+		var list = getUserCarData(data);
+		var result = [];
+		for(var i=0,ii;ii=list[i++];){
+			if(ii.vip_customer_seq === vip_customer_seq){
+				result.push(ii);
+			}
+		}
+		return result;
+	}
+	function setCarTbData(data,vip_customer_seq){
+		avalon.vmodels.$cars.loadFrontPageData(getCarTbData(data,vip_customer_seq));
 	}
 	//刷新通道权限列表
 	function refreshAuth(){
