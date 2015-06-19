@@ -68,7 +68,8 @@ require([
 			}
 		},document.body,function(data){
 			if(data.code === '0' && data.msg === "ok"){
-				content.outCarCost = data.supplementary;
+				content.outCarCostActual = data.supplementary;
+				content.outCarCost = Index.getMoney(data.supplementary);
 				content.total_amount = data.total_amount;
 			}
 		});
@@ -329,8 +330,8 @@ require([
 								discount_amount : "",
 								discount_time_min : discount_time_min,
 								prepayment_total_amount : content.total_amount,
-								actual_receivable : content.outCarCost,
-								received_amount : content.outCarCost,
+								actual_receivable : content.outCarCostActual,
+								received_amount : content.outCarCostActual,
 								payment_mode : "0",
 								pay_origin : "web",
 								last_prepayment_time : avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss"),
@@ -396,6 +397,7 @@ require([
 		outCarTime : "--",
 		outCarType : "--",
 		outCarCost : "--",
+		outCarCostActual : '',
 		total_amount : '',
 		outDiscount : '',
 		discountList : [{discount_seq : "",discount_name : "无优惠",discount_time_min : "0"}]

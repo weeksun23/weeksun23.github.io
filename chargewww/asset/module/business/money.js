@@ -46,8 +46,8 @@ require([
 						return v ? v : "--";
 					}
 				},
-				{title : "离场应收",field : "received_amount"},
-				{title : "离场实收",field : "actual_receivable"},
+				{title : "离场应收",field : "received_amount",formatter : Index.getMoney},
+				{title : "离场实收",field : "actual_receivable",formatter : Index.getMoney},
 				{title : "收费员",field : "operator"}
 			]
 		},

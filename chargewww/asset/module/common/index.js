@@ -74,10 +74,10 @@ define([
 		},vmodel.widgetElement,function(data){
 			vmodel.sDateStr = begin_time;
 			vmodel.eDateStr = end_time;
-			vmodel.total_amount = data.total_amount;
-			vmodel.total_received_amount = data.total_received_amount;
+			vmodel.total_amount = Index.getMoney(data.total_amount);
+			vmodel.total_received_amount = Index.getMoney(data.total_received_amount);
 			vmodel.total_discount_time = data.total_discount_time;
-			vmodel.total_discount_amount = data.total_discount_amount;
+			vmodel.total_discount_amount = Index.getMoney(data.total_discount_amount);
 		});
 	}
 	var personalInfo = JSON.parse(localStorage.getItem("personalInfo") || '{}');
@@ -221,16 +221,10 @@ define([
 			},null,function(data){
 				top.total_parking_space_remaining = data.total_parking_space_remaining;
 				top.total_parking_space = data.total_parking_space;
+				setTimeout(function(){
+					Index.init();
+				},5000);
 			});
-			//5秒刷新一次
-			setInterval(function(){
-				websocket.send({
-					command : "CHECK_PARKING_SPACE"
-				},null,function(data){
-					top.total_parking_space_remaining = data.total_parking_space_remaining;
-					top.total_parking_space = data.total_parking_space;
-				},true);
-			},5000);
 		},
 		initWidget : function(id,widgetAttr,vmodel){
 			var el = document.getElementById(id);
@@ -262,6 +256,9 @@ define([
 			}else if(v === '2'){
 				return "宽模式";
 			}
+		},
+		getMoney : function(m){
+			return "￥" + (+m / 100).toFixed(2);
 		}
 	};
 	return Index;
