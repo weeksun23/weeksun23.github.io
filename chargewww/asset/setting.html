@@ -27,9 +27,9 @@
 			<form class="form-horizontal">
 				<fieldset>
 					<div class="form-group">
-						<label for='userName' class="col-sm-2 control-label">用户名</label>
+						<label for='userName' class="col-sm-2 control-label">车主</label>
 						<div class="col-sm-4">
-							<input type="text" class="form-control" id='userName' ms-duplex='searchName' placeholder='请输入用户名关键字'>
+							<input type="text" class="form-control" id='userName' ms-duplex='searchName' placeholder='请输入车主姓名关键字'>
 						</div>
 						<label for='cardNum' class="col-sm-2 control-label">车牌号码</label>
 						<div class="col-sm-4">
@@ -41,10 +41,10 @@
 					    	<button ms-click='search' type="button" class="btn btn-primary">
 					    		<i class='glyphicon glyphicon-search'></i> 搜索
 					    	</button>
-					    	<button ms-click='authManage' type='button' class='btn btn-primary'>
+					    	<button ms-click='authManage' type='button' class='btn btn-primary' ms-visible='isAdmin'>
 					    		<i class='glyphicon glyphicon-th-list'></i> 通道权限管理
 					    	</button>
-					    	<button ms-click='userManage' type='button' class='btn btn-primary'>
+					    	<button ms-click='userManage' type='button' class='btn btn-primary' ms-visible='isAdmin'>
 					    		<i class='glyphicon glyphicon-user'></i> 用户管理
 					    	</button>
 					    </div>
@@ -84,9 +84,34 @@
 		</form>
 	</div>
 	<div ms-widget='dialog,$userManageWin,$userManageWinOpts'>
-		<p>
-			<button ms-click='add' type="button" class="btn btn-primary"><i class='glyphicon glyphicon-plus'></i> 添加</button>
-		</p>
+		<form class="form-horizontal">
+			<fieldset>
+				<div class="form-group">
+					<div class='col-sm-6'>
+						<div class='row'> 
+							<label class="col-sm-4 control-label">用户名字</label>
+							<div class="col-sm-8">
+								<input type='text' class='form-control' ms-duplex="customer_name">
+							</div>
+						</div>
+					</div>
+					<div class='col-sm-6'>
+						<div class='row'>
+							<label class="col-sm-4 control-label">电话号码</label>
+							<div class="col-sm-8">
+								<input type='text' class='form-control' ms-duplex="customer_telphone"> 
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class='col-sm-10 col-sm-offset-2'>
+						<button ms-click='search' type="button" class="btn btn-primary"><i class='glyphicon glyphicon-search'></i> 搜索</button>
+						<button ms-click='add' type="button" class="btn btn-primary"><i class='glyphicon glyphicon-plus'></i> 添加</button>
+					</div>
+				</div>
+			</fieldset>
+		</form>
 		<div id='user' class='mgb0'></div>
 	</div>
 	<div ms-widget="dialog,$userWin,$userWinOpts">
@@ -243,10 +268,10 @@
 				<div class="form-group" ms-class='has-error:vip_begin_time_mes'>
 					<label for='inTime' class="col-sm-2 control-label">开始时间</label>
 	                <div class='col-sm-10'>
-						<div id='sTimePicker' class="input-group date">
-		                    <input id='inTime' class="form-control" type="text" readonly ms-duplex="model.vip_begin_time">
-		                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-							<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+						<div id='sTimePicker' class="date" ms-class='input-group:!dateDisabled'>
+		                    <input id='inTime' class="form-control" type="text" readonly ms-duplex="model.vip_begin_time" ms-attr-disabled='dateDisabled'>
+		                    <span ms-visible='!dateDisabled' class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+							<span ms-visible='!dateDisabled' class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
 		                </div>
 		                <div class='text-danger' ms-visible='vip_begin_time_mes'>{{vip_begin_time_mes}}</div>
 					</div>
@@ -254,10 +279,10 @@
 				<div class="form-group" ms-class='has-error:vip_end_time_mes'>
 					<label for='outTime' class="col-sm-2 control-label">结束时间</label>
 					<div class='col-sm-10'>
-						<div id='eTimePicker' class="input-group date">
-		                    <input id='outTime' class="form-control" type="text" readonly ms-duplex="model.vip_end_time">
-		                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
-							<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+						<div id='eTimePicker' class="date" ms-class='input-group:!dateDisabled'>
+		                    <input id='outTime' class="form-control" type="text" readonly ms-duplex="model.vip_end_time" ms-attr-disabled='dateDisabled'>
+		                    <span ms-visible='!dateDisabled' class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+							<span ms-visible='!dateDisabled' class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
 		                </div>
 		                <div class='text-danger' ms-visible='vip_end_time_mes'>{{vip_end_time_mes}}</div>
 					</div>

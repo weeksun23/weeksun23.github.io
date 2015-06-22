@@ -94,6 +94,7 @@ define(["avalon","text!./avalon.dialog.html"],function(avalon,templete){
 				}
 			};
 			vm.close = function(){
+				if(element.style.display === 'none') return;
 				var len = modalBackDrop.curDialogs.length;
 				if(avalon.support.transitionend){
 					avalon(element).removeClass("in");
@@ -106,6 +107,7 @@ define(["avalon","text!./avalon.dialog.html"],function(avalon,templete){
 				vmodel.onClose.call(element,vmodel);
 			};
 			vm.open = function(isInit){
+				if(element.style.display === 'block') return;
 				element.style.display = 'block';
 				var $modalBack = avalon(modalBackDrop).removeClass("hide");
 				if(avalon.support.transitionend){

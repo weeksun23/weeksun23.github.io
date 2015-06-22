@@ -6,8 +6,8 @@
 		<table class="table" ms-class='table-striped:striped' ms-class-1='table-bordered:border'>
 			<thead>
 				<tr>
-					<th ms-repeat='columns' ms-css-width="el.width" ms-css-text-align='el.align || "left"'>
-						<div>{{el.title}}</div>
+					<th ms-repeat='columns' ms-css-width="el.width" ms-css-text-align='el.align || "left"' style='vertical-align:middle'>
+						<div>{{el.title | html}}</div>
 					</th>
 				</tr>
 			</thead>

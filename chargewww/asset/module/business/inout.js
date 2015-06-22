@@ -50,7 +50,7 @@ require([
 			for(var i=0,ii=content.discountList.length;i<ii;i++){
 				var item = content.discountList[i];
 				if(item.discount_name === content.outDiscount){
-					var time = new Date(enter_time).getTime();
+					var time = new Date(enter_time.replace(/\-/g,"/")).getTime();
 					var ms = +item.discount_time_min * 60 * 1000;
 					enter_time = avalon.filters.date(new Date(time + ms),"yyyy-MM-dd HH:mm:ss");
 					break;
@@ -173,6 +173,11 @@ require([
 			title : "在场车辆匹配列表",
 			carNum : "",
 			mes : "结束日期不能少于开始日期",
+			keydown : function(e){
+				if(e.keyCode === 13){
+					avalon.vmodels.$carListDialog.searchCar();
+				}
+			},
 			searchCar : function(){
 				if(REAL_TIME_CAR_LIST){
 					var result = [];
@@ -232,8 +237,8 @@ require([
 						REAL_TIME_CAR_LIST = data.real_time_list;
 						var obj = Index.getRange(REAL_TIME_CAR_LIST,'enter_time');
 						if(obj){
-							avalon.vmodels.$startDate.setValue(new Date(obj.min));
-							avalon.vmodels.$endDate.setValue(new Date(obj.max));
+							avalon.vmodels.$startDate.setValue(new Date(obj.min.replace(/\-/g,'/')));
+							avalon.vmodels.$endDate.setValue(new Date(obj.max.replace(/\-/g,'/')));
 						}else{
 							var now = new Date();
 							avalon.vmodels.$startDate.setValue(now);
@@ -399,7 +404,7 @@ require([
 		outCarCost : "--",
 		outCarCostActual : '',
 		total_amount : '',
-		outDiscount : '',
+		outDiscount : '无优惠',
 		discountList : [{discount_seq : "",discount_name : "无优惠",discount_time_min : "0"}]
 	});
 	//切换优惠 重新下发获取金额指令
@@ -442,6 +447,8 @@ require([
 					var leaveCar = data.leave_car_list;
 					if(leaveCar && leaveCar.length > 0){
 						channelData.leaveCar = leaveCar[0];
+					}else{
+						channelData.leaveCar = null;
 					}
 					content.$fire("outIndex",content.outIndex);
 					avalon.log("有车出场了:",channelData);
@@ -494,7 +501,7 @@ require([
 				var leave = target.leaveCar;
 				var model = {
 					outCarFullImg : Index.websocket.fullImgUrl + leave.leave_car_full_picture + "?" + (+new Date),
-					outInCarNum : enter.car_license_number,
+					outInCarNum : enter.enter_car_license_number,
 					outInCarImg : outInCarImg,
 					outInCarTime : enter.enter_time,
 					outCarNum : leave.leave_car_license_number,

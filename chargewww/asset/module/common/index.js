@@ -224,7 +224,7 @@ define([
 				setTimeout(function(){
 					Index.init();
 				},5000);
-			});
+			},true);
 		},
 		initWidget : function(id,widgetAttr,vmodel){
 			var el = document.getElementById(id);
@@ -259,7 +259,8 @@ define([
 		},
 		getMoney : function(m){
 			return "￥" + (+m / 100).toFixed(2);
-		}
+		},
+		personalInfo : personalInfo
 	};
 	return Index;
 });

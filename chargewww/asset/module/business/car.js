@@ -70,8 +70,8 @@ require([
 							v + "</a>";
 					}
 				},
-				{title : "入场识别车牌",field : "enter_car_license_number"},
-				{title : "车牌图片",field : "enter_car_license_picture",
+				{title : "入场识别<br>车牌",field : "enter_car_license_number",align:'center'},
+				{title : "车牌图片",field : "enter_car_license_picture",align:'center',
 					formatter : function(v,r,i){
 						if(!v) return '';
 						return "<img data-index='"+i+"' onerror='Index.onImgError(this)' ms-click='showPic(item)' class='cpointer' src='" +
@@ -79,8 +79,8 @@ require([
 							"' height='30' alt='车牌图片' ms-widget='tooltip' data-tooltip-content='点击查看大图'>";
 					}
 				},
-				{title : "入场时间",field : "enter_time"},
-				{title : "入场通道",field : "enter_channel",
+				{title : "入场时间",field : "enter_time",align:'center'},
+				{title : "入场<br>通道",field : "enter_channel",align:'center',
 					formatter : function(v){
 						for(var i=0,ii;ii=entrance_channel_list[i++];){
 							if(ii.entrance_channel_seq === v){
@@ -90,15 +90,15 @@ require([
 						return '--';
 					}
 				},
-				{title : "车辆类型",field : "enter_vip_type",formatter : Index.mData.getVipType},
-				{title : "放行模式",field : "pass_type",formatter : Index.getPassType},
+				{title : "车辆<br>类型",field : "enter_vip_type",formatter : Index.mData.getVipType,align:'center'},
+				{title : "放行<br>模式",field : "pass_type",formatter : Index.getPassType,align:'center'},
 				{title : "置信度",field : "enter_recognition_confidence"},
-				{title : "值班人员",field : "in_operate_name"}
+				{title : "值班<br>人员",field : "in_operate_name",align:'center'}
 			],
 			correctCarNum : function(item){
 				var $win = avalon.vmodels.$correctWin;
 				$win.carNumImg = Index.websocket.plateImgUrl + item.enter_car_license_picture + "?" + (+new Date);
-				$win.inCarNum = item.enter_car_license_number;
+				$win.inCarNum = item.car_license_number;
 				$win.curChoose = item.enter_car_license_number.charAt(0);
 				$win.correctNum = item.enter_car_license_number.substring(1);
 				$win.$curRecord = item;
@@ -287,7 +287,11 @@ require([
 			command : "GET_REAL_TIME_CAR"
 		},document.body,function(data){
 			if(data.code === "0" && data.msg === "ok"){
-				avalon.vmodels.$carList.loadFrontPageData(REAL_TIME_CAR_LIST = data.real_time_list,page);
+				REAL_TIME_CAR_LIST = data.real_time_list,page
+				REAL_TIME_CAR_LIST.sort(function(a,b){
+					return b.enter_time > a.enter_time;
+				});
+				avalon.vmodels.$carList.loadFrontPageData(REAL_TIME_CAR_LIST);
 				/*REAL_TIME_CAR_LIST = [{
 					car_license_number : "sdsd",
 					enter_car_license_number : "sdrewe"
