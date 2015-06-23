@@ -104,7 +104,6 @@ define(function(){
 			};
 			socket.onmessage = function(e){
 				var data = JSON.parse(e.data);
-				
 				var message_id = data.message_id;
 				var target = excutingOrder[message_id];
 				if(target){

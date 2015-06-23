@@ -204,7 +204,6 @@ require([
 				prepayment_list.sort(function(a,b){
 					return b.enter_time > a.enter_time;
 				});
-				avalon.log("ssssssssssssssss",prepayment_list);
 				avalon.vmodels.$carList.loadFrontPageData(prepayment_list);
 			}
 			func && func();

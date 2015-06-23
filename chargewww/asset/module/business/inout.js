@@ -135,6 +135,82 @@ require([
 			$win.correctNum = content.inCarNum.substring(1);
 			$win.open();
 		},
+		reCamera : function(){
+			avalon.vmodels.$recameraWin.open();
+		},
+		$recameraWinOpts : {
+			title : "入场补录",
+			car_license_number : "",
+			car_license_number_mes : "",
+			provinceData : [
+				[['京','津','粤','泸'],['浙','苏','湘','渝']],
+				[['云','豫','皖','陕'],['桂','新','青','琼']],
+				[['闽','蒙','辽','宁'],['鲁','晋','吉','冀']],
+				[['黑','甘','鄂','赣'],['贵','川','藏']]
+			],
+			curChoose : "粤",
+			doChoose : function(j){
+				avalon.vmodels.$recameraWin.curChoose = j;
+			},
+			buttons : [{
+				text : "确定",
+				theme : "primary",
+				handler : function(vmodel){
+					if(vmodel.car_license_number === ''){
+						return vmodel.car_license_number_mes = "请输入车牌号码";
+					}
+					Index.websocket.send({
+						command : "SYNCHRONIZATION_REAL_TIME_CAR_IN",
+						biz_content : {
+							car_license_number : vmodel.curChoose + vmodel.car_license_number,
+							enter_car_license_number : vmodel.car_license_number,
+							enter_time : avalon.vmodels.$recameraWin_startDate.value,
+							enter_channel : content.inList[content.inIndex].entrance_channel_seq,
+							enter_vip_type : '0',
+							pass_type : '1',
+							enter_type : '1',
+							enter_speed : '0',
+							enter_car_license_color : '0',
+							enter_car_color : '0',
+							enter_car_logo : "0",
+							enter_car_license_type : '0',
+							enter_car_type : '0',
+							enter_recognition_confidence : '100',
+							in_operate_name : Index.top.accountName,
+							in_operate_time : avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss"),
+							is_correct : "0",
+							correct_confidence : "0",
+							enter_car_full_picture : "",
+							enter_car_license_picture : '',
+							correct_license_number : '',
+							last_correct_name : '',
+							last_correct_time : '',
+							remark : ''
+						}
+					},vmodel.widgetElement,function(data){
+						if(data.code === '0'){
+							Index.alert("补录成功");
+							vmodel.close();
+						}else{
+							Index.alert("补录失败");
+						}
+					});
+				}
+			},{
+				text : "取消",
+				close : true
+			}],
+			afterShow : function(isInit,vmodel){
+				if(isInit){
+					Index.initWidget('recameraWin-startDate',"date,$recameraWin_startDate,$",content);
+					vmodel.$watch("car_license_number",function(){
+						vmodel.car_license_number_mes = '';
+					});
+				}
+				avalon.vmodels.$recameraWin_startDate.setValue(new Date());
+				vmodel.car_license_number = '';
+			}
+		},
 		$correctWinOpts : {
 			title : "校正车牌",
 			buttons : [{

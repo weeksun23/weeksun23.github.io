@@ -91,7 +91,26 @@ require([
 					}
 				},
 				{title : "车辆<br>类型",field : "enter_vip_type",formatter : Index.mData.getVipType,align:'center'},
-				{title : "放行<br>模式",field : "pass_type",formatter : Index.getPassType,align:'center'},
+				{title : "放行<br>模式",field : "enter_channel",align:'center',
+					formatter : function(v,r){
+						var type = r.enter_vip_type;
+						if(type === "1"){
+							var key = "normal_car_pass_mode";
+						}else if(type === '2'){
+							key = 'vip_car_pass_mode';
+						}else if(type === '3'){
+							key = 'appointment_car_pass_mode';
+						}else if(type === '0'){
+							key = "no_plate_pass_mode";
+						}
+						for(var i=0,ii;ii=entrance_channel_list[i++];){
+							if(ii.entrance_channel_seq === v){
+								return Index.getPassType(ii[key]);
+							}
+						}
+						return '--';
+					}
+				},
 				{title : "置信度",field : "enter_recognition_confidence"},
 				{title : "值班<br>人员",field : "in_operate_name",align:'center'}
 			],

@@ -1,4 +1,4 @@
-define(["avalon.extend","text!./avalon.tab.html"],function(avalon,templete){
+define(["avalon","text!./avalon.tab.html"],function(avalon,templete){
 	var widget = avalon.ui.tab = function(element, data, vmodels){
 		var options = data.tabOptions;
 		var children = avalon(element).children();
@@ -24,7 +24,7 @@ define(["avalon.extend","text!./avalon.tab.html"],function(avalon,templete){
 			vm.$skipArray = ['widgetElement','add','getTab'];
 			vm.$init = function(){
 				element.innerHTML = templete;
-				avalon.scan(element, vmodel);
+				avalon.scan(element, [vmodel].concat(vmodels));
 				vmodel.curIndex = 0;
 				vmodel.onInit && vmodel.onInit.call(element, vmodel, vmodels);
 			};

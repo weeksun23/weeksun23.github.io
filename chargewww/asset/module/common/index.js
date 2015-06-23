@@ -110,7 +110,10 @@ define([
 			total_discount_time : "--",
 			total_discount_amount : "--",
 			sDateStr : '--',
-			eDateStr : '--'
+			eDateStr : '--',
+			changePwd : function(){
+				avalon.vmodels.$pwd.open();
+			}
 		},
 		$alertOpts : {
 			title : "提示信息",
@@ -132,6 +135,70 @@ define([
 					var re = vmodel.okFunc(vmodel,el);
 					if(re !== false){
 						vmodel.close();
+					}
+				}
+			},{
+				theme : "default",
+				close : true,
+				text : "取消"
+			}]
+		},
+		$pwdOpts : {
+			title : "修改密码",
+			changed_password_confirm : "",
+			changed_password_confirm_mes : "",
+			origin_password : "",
+			origin_password_mes : "",
+			changed_password : "",
+			changed_password_mes : "",
+			afterShow : function(isInit,vmodel){
+				if(isInit){
+					avalon.each(["origin_password","changed_password","changed_password_confirm"],function(i,v){
+						vmodel.$watch(v,function(){
+							vmodel[v + "_mes"] = '';
+						});
+					});
+				}
+			},
+			buttons : [{
+				theme : "primary",
+				text : "确定",
+				handler : function(vmodel){
+					var f = true;
+					avalon.each(["origin_password","changed_password","changed_password_confirm"],function(i,v){
+						if(vmodel[v] === ''){
+							vmodel[v + "_mes"] = "该输入项为必填项";
+							return f = false;
+						}else{
+							vmodel[v + "_mes"] = '';
+						}
+						if(v === "changed_password_confirm"){
+							if(vmodel.changed_password_confirm !== vmodel.changed_password){
+								vmodel.changed_password_confirm_mes = "两次输入的密码不一样";
+								return f = false;
+							}
+						}
+					});
+					if(f){
+						websocket.send({
+							command : "CHANGE_PASSWORD",
+							biz_content : {
+								origin_user_login_name : top.accountName,
+								origin_password : vmodel.origin_password,
+								changed_password : vmodel.changed_password
+							}
+						},null,function(data){
+							if(data.code === '0'){
+								Index.alert("修改成功");
+								vmodel.close();
+							}else{
+								if(data.msg === 'fail'){
+									Index.alert("原密码错误");
+								}else{
+									Index.alert("修改失败");
+								}
+							}
+						},true);
 					}
 				}
 			},{
@@ -175,6 +242,10 @@ define([
 		total_parking_space_remaining : "--",
 		total_parking_space : "--"
 	});
+	websocket.callbacks.PUSH_PARKING_SPACE = function(data){
+		top.total_parking_space_remaining = data.total_parking_space_remaining;
+		top.total_parking_space = data.total_parking_space;
+	};
 	var Index = window.Index = {
 		mData : mData,
 		top : top,
@@ -221,9 +292,6 @@ define([
 			},null,function(data){
 				top.total_parking_space_remaining = data.total_parking_space_remaining;
 				top.total_parking_space = data.total_parking_space;
-				setTimeout(function(){
-					Index.init();
-				},5000);
 			},true);
 		},
 		initWidget : function(id,widgetAttr,vmodel){

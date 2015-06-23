@@ -35,6 +35,12 @@
 						用户
 					</a>
 				</li>
+				<li>
+					<a href="exception.html" class='text-center' ms-class='selected:curIndex === 4'>
+						<i class='glyphicon glyphicon-warning-sign'></i><br>
+						异常
+					</a>
+				</li>
 			</ul>
 			<div class="navbar-right">
 				<ul class="nav navbar-nav">
@@ -69,7 +75,7 @@
 	<p class='text-center personal-title'>
 		<i class='glyphicon glyphicon-user'></i>
 	</p>
-	<form class="form-horizontal mgt10">
+	<div class="form-horizontal mgt10">
 		<fieldset>
 			<div class="form-group">
 				<label for='personal-name' class="col-sm-2 control-label">姓名</label>
@@ -131,7 +137,7 @@
 			    <div class="col-sm-offset-2 col-sm-10">
 			    	<div class='row'>
 			    		<div class='col-xs-6'>
-			    			<button type="button" class="btn btn-danger btn-lg btn-block"><i class='glyphicon glyphicon-pencil'></i> 密码修改</button>
+			    			<button type="button" ms-click='changePwd' class="btn btn-danger btn-lg btn-block"><i class='glyphicon glyphicon-pencil'></i> 密码修改</button>
 			    		</div>
 			    		<div class='col-xs-6'>
 			    			<button type="button" class="btn btn-success btn-lg btn-block"><i class='glyphicon glyphicon-refresh'></i> 交接班</button>
@@ -140,11 +146,38 @@
 			    </div>
 			</div>
 		</fieldset>
-	</form>
+	</div>
 </div>
 <div ms-widget="dialog,$alert,$alertOpts">
 	<h2 class='text-center'>{{mes | html}}</h2>
 </div>
 <div ms-widget='dialog,$confirm,$confirmOpts'>
 	<h2 class='text-center'>{{mes | html}}</h2>
+</div>
+<div ms-widget="dialog,$pwd,$pwdOpts">
+	<div class="form-horizontal">
+		<fieldset>
+			<div class="form-group" ms-class='has-error:origin_password_mes'>
+				<label for='pwd-old' class="col-sm-2 control-label">原密码</label>
+				<div class="col-sm-10">
+					<input type="password" class="form-control" id='pwd-old' ms-duplex='origin_password'>
+					<div class='text-danger' ms-visible='origin_password_mes'>{{origin_password_mes}}</div>
+				</div>
+			</div>
+			<div class="form-group" ms-class='has-error:changed_password_mes'>
+				<label for='pwd-new' class="col-sm-2 control-label">新密码</label>
+				<div class="col-sm-10">
+					<input type="password" class="form-control" id='pwd-new' ms-duplex='changed_password'>
+					<div class='text-danger' ms-visible='changed_password_mes'>{{changed_password_mes}}</div>
+				</div>
+			</div>
+			<div class="form-group mgb0" ms-class='has-error:changed_password_confirm_mes'>
+				<label for='pwd-confirm' class="col-sm-2 control-label">确认密码</label>
+				<div class="col-sm-10">
+					<input type="password" class="form-control" id='pwd-confirm' ms-duplex='changed_password_confirm'>
+					<div class='text-danger' ms-visible='changed_password_confirm_mes'>{{changed_password_confirm_mes}}</div>
+				</div>
+			</div>
+		</fieldset>
+	</div>
 </div>

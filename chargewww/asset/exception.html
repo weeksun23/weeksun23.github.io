@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>岗亭收费管理系统-异常管理</title>
+<link href="css/bootstrap/bootstrap.css" rel="stylesheet">
+<link href="css/base.css" rel="stylesheet">
+<link href="css/index.css" rel="stylesheet">
+<!--[if lt IE 10]>
+<script>alert("抱歉，请使用IE10+,Google Chrome,firefox等其他高级浏览器登录本系统!");</script>
+<![endif]-->
+</head>
+<body id='car' ms-controller='body'>
+<div ms-include-src="'tpl/top.html'" data-include-replace="true"></div>
+<div class="mcontent container-fluid" ms-controller='content'>
+	<div class='row'>
+		<div ms-widget="tab,$tab,$tabOpts" class='mgt10'>
+			<div title='矫正' data-iconCls="glyphicon-glass">
+				<div class='col-sm-12 mgt10'>
+					<form class="form-horizontal">
+						<fieldset>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">入场时间</label>
+				                <div class='col-sm-4'>
+									<div class="input-group date">
+					                    <input class="form-control" type="text" readonly ms-duplex="correct.sDateStr">
+					                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+					                </div>
+								</div>
+								<label class="col-sm-2 control-label">至</label>
+								<div class='col-sm-4'>
+									<div class="input-group date">
+					                    <input class="form-control" type="text" readonly ms-duplex="correct.eDateStr">
+					                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+					                </div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">操作时间</label>
+				                <div class='col-sm-4'>
+									<div class="input-group date">
+					                    <input class="form-control" type="text" readonly ms-duplex="correct.sOperDateStr">
+					                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+					                </div>
+								</div>
+								<label class="col-sm-2 control-label">至</label>
+								<div class='col-sm-4'>
+									<div class="input-group date">
+					                    <input class="form-control" type="text" readonly ms-duplex="correct.eOperDateStr">
+					                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+					                </div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">最终车牌</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" placeholder='请输入车牌关键字' ms-duplex='correct.car_license_number'>
+								</div>
+								<label class="col-sm-2 control-label">识别车牌</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" placeholder='请输入车牌关键字' ms-duplex='correct.enter_car_license_number'>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label">操作人</label>
+								<div class="col-sm-4">
+									<select class="form-control" ms-duplex='correct.in_operate_name'></select>
+								</div>
+							    <div class="col-sm-6">
+							    	<button type="button" class="btn btn-primary" ms-click='correctSearch'><i class='glyphicon glyphicon-search'></i> 搜索</button>
+							    </div>
+							</div>
+						</fieldset>
+					</form>
+					<div ms-widget="table,$correctList,$correctListOpts"></div>
+				</div>
+			</div>
+			<div title='匹配' data-iconCls="glyphicon-tasks">
+				<div class='col-sm-12 mgt10'>
+					<form class="form-horizontal">
+						<fieldset>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">入场时间</label>
+				                <div class='col-sm-4'>
+									<div class="input-group date">
+					                    <input class="form-control" type="text" readonly ms-duplex="match.sDateStr">
+					                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+					                </div>
+								</div>
+								<label class="col-sm-2 control-label">至</label>
+								<div class='col-sm-4'>
+									<div class="input-group date">
+					                    <input class="form-control" type="text" readonly ms-duplex="match.eDateStr">
+					                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+					                </div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">出场时间</label>
+				                <div class='col-sm-4'>
+									<div class="input-group date">
+					                    <input class="form-control" type="text" readonly ms-duplex="match.sOutDateStr">
+					                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+					                </div>
+								</div>
+								<label class="col-sm-2 control-label">至</label>
+								<div class='col-sm-4'>
+									<div class="input-group date">
+					                    <input class="form-control" type="text" readonly ms-duplex="match.eOutDateStr">
+					                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+					                </div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">车牌号码</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" placeholder='请输入车牌关键字' ms-duplex='match.car_license_number'>
+								</div>
+								<label class="col-sm-2 control-label">出场通道</label>
+								<div class="col-sm-4">
+									<select class="form-control" ms-duplex='match.channel'><select/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">车辆类型</label>
+								<div class="col-sm-4">
+									<select class="form-control" ms-duplex='match.cartype'><select/>
+								</div>
+								<label class="col-sm-2 control-label">操作人</label>
+								<div class="col-sm-4">
+									<select class="form-control" ms-duplex='match.oper'><select/>
+								</div>
+							</div>
+							<div class="form-group">
+							    <div class="col-sm-10 col-sm-offset-2">
+							    	<button type="button" class="btn btn-primary" ms-click='matchSearch'><i class='glyphicon glyphicon-search'></i> 搜索</button>
+							    </div>
+							</div>
+						</fieldset>
+					</form>
+					<div ms-widget="table,$matchList,$matchListOpts"></div>
+				</div>
+			</div>
+			<div title='异常入场' data-iconCls="glyphicon-object-align-vertical">
+				<div class='col-sm-12 mgt10'>
+				</div>
+			</div>
+			<div title='异常出场' data-iconCls="glyphicon-object-align-horizontal">
+				<div class='col-sm-12 mgt10'>
+				</div>
+			</div>
+			<div title='未交费' data-iconCls="glyphicon-compressed">
+				<div class='col-sm-12 mgt10'>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!--
+	 -->
+</div>
+<script src='module/avalon.modern.js'></script>
+<script src='module/business/exception.js'></script>
+</body>
+</html>

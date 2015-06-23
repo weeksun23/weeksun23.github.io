@@ -35,7 +35,11 @@ require([
 				{title : "类型",field : "vip_type",formatter : Index.mData.getVipType},
 				{title : "有效期",field : "date",
 					formatter : function(v,r){
-						return r.vip_begin_time + "~<br>" + r.vip_end_time;
+						if(r.vip_type === '2'){
+							return "永久";
+						}
+						return r.vip_begin_time
+						 + "~<br>" + r.vip_end_time;
 					}
 				},
 				{title : "安保",field : "is_open_safe_mode",
