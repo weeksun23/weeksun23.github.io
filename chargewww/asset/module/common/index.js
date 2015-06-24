@@ -286,12 +286,13 @@ define([
 		isCarNum : function(num){
 			return num && num !== '--' && num.indexOf("未") === -1;
 		},
-		init : function(){
+		init : function(func){
 			websocket.send({
 				command : "CHECK_PARKING_SPACE"
 			},null,function(data){
 				top.total_parking_space_remaining = data.total_parking_space_remaining;
 				top.total_parking_space = data.total_parking_space;
+				func && func();
 			},true);
 		},
 		initWidget : function(id,widgetAttr,vmodel){
@@ -328,7 +329,18 @@ define([
 		getMoney : function(m){
 			return "￥" + (+m / 100).toFixed(2);
 		},
-		personalInfo : personalInfo
+		personalInfo : personalInfo,
+		getUnsameVal : function(list,key){
+			var obj = {};
+			for(var i=0,ii;ii=list[i++];){
+				obj[ii[key]] = 1;
+			}
+			var re = [];
+			for(var i in obj){
+				re.push(i);
+			}
+			return re;
+		}
 	};
 	return Index;
 });

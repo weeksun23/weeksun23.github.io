@@ -3,7 +3,8 @@ define(["avalon","text!./avalon.tab.html"],function(avalon,templete){
 		var options = data.tabOptions;
 		var children = avalon(element).children();
 		if(children.length > 0){
-			var headerData = options.headerData = [];
+			var headerData = options.headerData || [];
+			var newHeaderData = [];
 			var contentData = options.contentData = [];
 			avalon.each(children,function(i,v){
 				var obj = {
@@ -11,12 +12,17 @@ define(["avalon","text!./avalon.tab.html"],function(avalon,templete){
 				};
 				obj.iconCls = v.getAttribute("data-iconCls");
 				obj.closeable = v.getAttribute("data-closeable") !== null;
-				headerData.push(obj);
+				obj = avalon.mix(headerData[i] || {},obj);
+				if(!obj.icons){
+					obj.icons = [];
+				}
+				newHeaderData.push(obj);
 				contentData.push({
 					html : v.innerHTML,
 					$init : false
 				});
 			});
+			options.headerData = newHeaderData;
 		}
 		var vmodel = avalon.define(data.tabId,function(vm){
 			avalon.mix(vm,options);

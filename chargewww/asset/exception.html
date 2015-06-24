@@ -71,7 +71,10 @@
 							<div class="form-group">
 								<label class="col-sm-2 control-label">操作人</label>
 								<div class="col-sm-4">
-									<select class="form-control" ms-duplex='correct.in_operate_name'></select>
+									<select class="form-control" ms-duplex='correct.in_operate_name'>
+										<option value=''>请选择</option>
+										<option ms-attr-value='el' ms-repeat='correct_operators'>{{el}}</option>
+									</select>
 								</div>
 							    <div class="col-sm-6">
 							    	<button type="button" class="btn btn-primary" ms-click='correctSearch'><i class='glyphicon glyphicon-search'></i> 搜索</button>
@@ -129,17 +132,26 @@
 								</div>
 								<label class="col-sm-2 control-label">出场通道</label>
 								<div class="col-sm-4">
-									<select class="form-control" ms-duplex='match.channel'><select/>
+									<select class="form-control" ms-duplex='match.channel'>
+										<option value=''>请选择</option>
+										<option ms-repeat="match_channelData" ms-attr-value='el.value'>{{el.text}}</option>
+									</select>
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-sm-2 control-label">车辆类型</label>
 								<div class="col-sm-4">
-									<select class="form-control" ms-duplex='match.cartype'><select/>
+									<select class="form-control" ms-duplex='match.cartype'>
+										<option value=''>请选择</option>
+										<option ms-repeat="match_cay_type" ms-attr-value='el.value'>{{el.text}}</option>
+									</select>
 								</div>
 								<label class="col-sm-2 control-label">操作人</label>
 								<div class="col-sm-4">
-									<select class="form-control" ms-duplex='match.oper'><select/>
+									<select class="form-control" ms-duplex='match.oper'>
+										<option value=''>请选择</option>
+										<option ms-attr-value='el' ms-repeat='match_operators'>{{el}}</option>
+									</select>
 								</div>
 							</div>
 							<div class="form-group">
@@ -154,14 +166,196 @@
 			</div>
 			<div title='异常入场' data-iconCls="glyphicon-object-align-vertical">
 				<div class='col-sm-12 mgt10'>
+					<form class="form-horizontal">
+						<fieldset>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">入场时间</label>
+				                <div class='col-sm-4'>
+									<div class="input-group date">
+					                    <input class="form-control" type="text" readonly ms-duplex="into.sDateStr">
+					                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+					                </div>
+								</div>
+								<label class="col-sm-2 control-label">至</label>
+								<div class='col-sm-4'>
+									<div class="input-group date">
+					                    <input class="form-control" type="text" readonly ms-duplex="into.eDateStr">
+					                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+					                </div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">车牌号码</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" placeholder='请输入车牌关键字' ms-duplex='into.car_license_number'>
+								</div>
+								<label class="col-sm-2 control-label">VIP类型</label>
+								<div class="col-sm-4">
+									<select class="form-control" ms-duplex='into.vip_type'>
+										<option value=''>请选择</option>
+										<option ms-repeat="into_vip_type" ms-attr-value='el.value'>{{el.text}}</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+							    <div class="col-sm-10 col-sm-offset-2">
+							    	<button type="button" class="btn btn-primary" ms-click='intoSearch'><i class='glyphicon glyphicon-search'></i> 搜索</button>
+							    </div>
+							</div>
+						</fieldset>
+					</form>
+					<div ms-widget="table,$intoList,$intoListOpts"></div>
 				</div>
 			</div>
 			<div title='异常出场' data-iconCls="glyphicon-object-align-horizontal">
 				<div class='col-sm-12 mgt10'>
+					<form class="form-horizontal">
+						<fieldset>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">出场时间</label>
+				                <div class='col-sm-4'>
+									<div class="input-group date">
+					                    <input class="form-control" type="text" readonly ms-duplex="out.sDateStr">
+					                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+					                </div>
+								</div>
+								<label class="col-sm-2 control-label">至</label>
+								<div class='col-sm-4'>
+									<div class="input-group date">
+					                    <input class="form-control" type="text" readonly ms-duplex="out.eDateStr">
+					                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+					                </div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">入场时间</label>
+				                <div class='col-sm-4'>
+									<div class="input-group date">
+					                    <input class="form-control" type="text" readonly ms-duplex="out.sInDateStr">
+					                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+					                </div>
+								</div>
+								<label class="col-sm-2 control-label">至</label>
+								<div class='col-sm-4'>
+									<div class="input-group date">
+					                    <input class="form-control" type="text" readonly ms-duplex="out.eInDateStr">
+					                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+					                </div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">车牌号码</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" placeholder='请输入车牌关键字' ms-duplex='out.car_license_number'>
+								</div>
+								<label class="col-sm-2 control-label">出场通道</label>
+								<div class="col-sm-4">
+									<select class="form-control" ms-duplex='out.channel'>
+										<option value=''>请选择</option>
+										<option ms-repeat="out_channelData" ms-attr-value='el.value'>{{el.text}}</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">VIP类型</label>
+								<div class="col-sm-4">
+									<select class="form-control" ms-duplex='out.vip_type'>
+										<option value=''>请选择</option>
+										<option ms-repeat="out_vip_type" ms-attr-value='el.value'>{{el.text}}</option>
+									</select>
+								</div>
+								<label class="col-sm-2 control-label">操作人</label>
+								<div class="col-sm-4">
+									<select class="form-control" ms-duplex='out.oper'>
+										<option value=''>请选择</option>
+										<option ms-attr-value='el' ms-repeat='out_operators'>{{el}}</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+							    <div class="col-sm-10 col-sm-offset-2">
+							    	<button type="button" class="btn btn-primary" ms-click='outSearch'><i class='glyphicon glyphicon-search'></i> 搜索</button>
+							    </div>
+							</div>
+						</fieldset>
+					</form>
+					<div ms-widget="table,$outList,$outListOpts"></div>
 				</div>
 			</div>
 			<div title='未交费' data-iconCls="glyphicon-compressed">
 				<div class='col-sm-12 mgt10'>
+					<form class="form-horizontal">
+						<fieldset>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">出场时间</label>
+				                <div class='col-sm-4'>
+									<div class="input-group date">
+					                    <input class="form-control" type="text" readonly ms-duplex="unpay.sDateStr">
+					                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+					                </div>
+								</div>
+								<label class="col-sm-2 control-label">至</label>
+								<div class='col-sm-4'>
+									<div class="input-group date">
+					                    <input class="form-control" type="text" readonly ms-duplex="unpay.eDateStr">
+					                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+					                </div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">入场时间</label>
+				                <div class='col-sm-4'>
+									<div class="input-group date">
+					                    <input class="form-control" type="text" readonly ms-duplex="unpay.sInDateStr">
+					                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+					                </div>
+								</div>
+								<label class="col-sm-2 control-label">至</label>
+								<div class='col-sm-4'>
+									<div class="input-group date">
+					                    <input class="form-control" type="text" readonly ms-duplex="unpay.eInDateStr">
+					                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+										<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+					                </div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">车牌号码</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" placeholder='请输入车牌关键字' ms-duplex='unpay.car_license_number'>
+								</div>
+								<label class="col-sm-2 control-label">出场通道</label>
+								<div class="col-sm-4">
+									<select class="form-control" ms-duplex='unpay.entrance'></select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">VIP类型</label>
+								<div class="col-sm-4">
+									<select class="form-control" ms-duplex='unpay.vip_type'></select>
+								</div>
+								<label class="col-sm-2 control-label">操作人</label>
+								<div class="col-sm-4">
+									<select class="form-control" ms-duplex='unpay.oper'></select>
+								</div>
+							</div>
+							<div class="form-group">
+							    <div class="col-sm-10 col-sm-offset-2">
+							    	<button type="button" class="btn btn-primary" ms-click='unpaySearch'><i class='glyphicon glyphicon-search'></i> 搜索</button>
+							    </div>
+							</div>
+						</fieldset>
+					</form>
+					<div ms-widget="table,$unpayList,$unpayListOpts"></div>
 				</div>
 			</div>
 		</div>
