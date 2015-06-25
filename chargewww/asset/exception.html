@@ -335,17 +335,26 @@
 								</div>
 								<label class="col-sm-2 control-label">出场通道</label>
 								<div class="col-sm-4">
-									<select class="form-control" ms-duplex='unpay.entrance'></select>
+									<select class="form-control" ms-duplex='unpay.channel'>
+										<option value=''>请选择</option>
+										<option ms-repeat="unpay_channelData" ms-attr-value='el.value'>{{el.text}}</option>
+									</select>
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-sm-2 control-label">VIP类型</label>
 								<div class="col-sm-4">
-									<select class="form-control" ms-duplex='unpay.vip_type'></select>
+									<select class="form-control" ms-duplex='unpay.vip_type'>
+										<option value=''>请选择</option>
+										<option ms-repeat="unpay_vip_type" ms-attr-value='el.value'>{{el.text}}</option>
+									</select>
 								</div>
 								<label class="col-sm-2 control-label">操作人</label>
 								<div class="col-sm-4">
-									<select class="form-control" ms-duplex='unpay.oper'></select>
+									<select class="form-control" ms-duplex='unpay.oper'>
+										<option value=''>请选择</option>
+										<option ms-attr-value='el' ms-repeat='unpay_operators'>{{el}}</option>
+									</select>
 								</div>
 							</div>
 							<div class="form-group">

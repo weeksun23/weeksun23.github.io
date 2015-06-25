@@ -100,6 +100,10 @@ require([
 					content.out_channelData = getChannelData(list,"leave_channel");
 					content.out_vip_type = getVipType(list,'leave_vip_type');
 					content.out_operators = Index.getUnsameVal(list,"out_operate_name");
+				}else if(listId === "$unpayList"){
+					//content.unpay_channelData = getChannelData(list,"leave_channel");
+					//content.unpay_vip_type = getVipType(list,"leave_channel");
+					content.unpay_operators =  Index.getUnsameVal(list,"operator");
 				}
 			}
 		});
@@ -156,7 +160,7 @@ require([
 					formatter : formatter.img
 				},
 				{field : "enter_time",title : '入场时间'},
-				{field : "enter_car_type",title : 'VIP类型',formatter : Index.mData.getVipType},
+				{field : "enter_vip_type",title : 'VIP类型',formatter : Index.mData.getVipType},
 				{field : "in_operate_name",title : '操作人'},
 				{field : "in_operate_time",title : '操作时间'}
 			]
@@ -301,9 +305,9 @@ require([
 		$outListOpts : {
 			title : "异常信息列表",
 			columns : [
-				{field : "enter_car_license_number",title : '入场车牌'},
-				{field : "enter_car_license_picture",title : '车牌照',formatter : formatter.img},
-				{field : "enter_time",title : '入场时间'},
+				{field : "a1",title : '入场车牌',formatter : function(){return '--'}},
+				{field : "a2",title : '车牌照',formatter : function(){return '--'}},
+				{field : "a3",title : '入场时间',formatter : function(){return '--'}},
 				{field : "leave_car_license_number",title : '出场车牌'},
 				{field : "leave_car_license_picture",title : '车牌照',formatter : formatter.img},
 				{field : "leave_time",title : '出场时间'},
@@ -319,12 +323,32 @@ require([
 			sInDateStr : "",
 			eInDateStr : "",
 			car_license_number : "",
-			entrance : "",
+			channel : "",
 			vip_type : "",
 			oper : ""
 		},
+		unpay_channelData : [],
+		unpay_vip_type : [],
+		unpay_operators : [],
 		unpaySearch : function(){
-
+			var list = list_data.$unpayList;
+			var model = content.unpay;
+			var re = [];
+			for(var i=0,ii=list.length;i<ii;i++){
+				var item = list[i];
+				if((model.car_license_number && item.car_license_number.indexOf(model.car_license_number) === -1) 
+					|| (model.sDateStr && item.last_prepayment_time < model.sDateStr) 
+					|| (model.eDateStr && item.last_prepayment_time > model.eDateStr)
+					|| (model.sInDateStr && item.enter_time < model.sInDateStr) 
+					|| (model.eInDateStr && item.enter_time > model.eInDateStr)
+					|| (model.channel && item.leave_channel !== model.channel)
+					|| (model.vip_type && item.leave_vip_type !== model.vip_type)
+					|| (model.oper && item.operator !== model.oper)){
+					continue;
+				}
+				re.push(item);
+			}
+			avalon.vmodels.$unpayList.loadFrontPageData(re);
 		},
 		$unpayListOpts : {
 			title : "异常信息列表",
