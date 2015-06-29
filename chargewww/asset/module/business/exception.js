@@ -116,6 +116,8 @@ require([
 				icons : [{
 					iconCls : 'glyphicon-refresh',
 					handler : function(i){
+						var tab = avalon.vmodels.$tab;
+						if(!tab.contentData[i].$init) return;
 						getData(idArr[i]);
 					}
 				}]
@@ -341,8 +343,8 @@ require([
 					|| (model.eDateStr && item.last_prepayment_time > model.eDateStr)
 					|| (model.sInDateStr && item.enter_time < model.sInDateStr) 
 					|| (model.eInDateStr && item.enter_time > model.eInDateStr)
-					|| (model.channel && item.leave_channel !== model.channel)
-					|| (model.vip_type && item.leave_vip_type !== model.vip_type)
+					//|| (model.channel && item.leave_channel !== model.channel)
+					//|| (model.vip_type && item.leave_vip_type !== model.vip_type)
 					|| (model.oper && item.operator !== model.oper)){
 					continue;
 				}

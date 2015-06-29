@@ -5,10 +5,11 @@ require.config({
 });
 require([
 	"common/index",
+	'common/base64',
 	"common/tooltip/avalon.tooltip",
 	"common/table/avalon.table",
 	"common/date/avalon.date"
-],function(Index){
+],function(Index,Base64){
 	Index.top.curIndex = 0;
 	var REAL_TIME_CAR_LIST;
 	function matchNum(num,list){
@@ -116,8 +117,50 @@ require([
 			}
 		});
 	}
+	var cameraData;
 	var content = avalon.define({
 		$id : "content",
+		toggleVideo : function(direction){
+			var str = direction === 'in' ? "showInVideo" : "showOutVideo";
+			if(content[str]){
+				document.getElementById(direction + "VideoContainer").innerHTML = '';
+				content[str] = false;
+			}else{
+				content[str] = true;
+				var target = content[direction + "List"][content[direction + "Index"]];
+				for(var i=0,ii;ii=cameraData[i++];){
+					if(ii.entrance_channel_seq === target.entrance_channel_seq){
+						document.getElementById(direction + "VideoContainer").innerHTML =
+							"<embed type='application/hwitcp-webvideo-plugin' "+
+							"id='"+direction+"PreviewActiveX' width='100%' height='100%' "+
+							"name='"+direction+"PreviewActiveX' align='center' wndtype='1' playmode='normal'>";
+						var szURL = "rtsp://${ip}:${port}/ISAPI/streaming/channels/101?auth=${auth}";
+						var pwd = ii.equipment_r_c_validate_password;
+			            var userName = ii.equipment_r_c_validate_name;
+			            var str = Base64.encode(userName + ":" + pwd);
+			            //var str = userName + ":" + pwd;
+			            var ip = ii.equipment_recognition_camera_ip;
+			            var port = ii.equipment_recognition_camera_port;
+			            var url = szURL.replace("${ip}",ip)
+			                .replace("${port}",port)
+			                .replace("${auth}",str);
+			            avalon.log("摄像头流地址",url);
+			            var PreviewActiveX = document.getElementById(direction + "PreviewActiveX");
+			            if(PreviewActiveX.HWP_Play){
+			            	var re = PreviewActiveX.HWP_Play(url,str, 0, "", "");
+				            if(re === -1){
+				                Index.alert("连接失败,请检查摄像头的IP地址、端口配置是否正确");
+				            }
+			            }else{
+			            	Index.alert("请先安装摄像头浏览器插件");
+			            }
+						break;
+					}
+				}
+			}
+		},
+		showInVideo : false,
+		showOutVideo : false,
 		showCarlist : function(){
 			if(content.outCarCost.indexOf("已付费") !== -1 || content.outCarCost.indexOf("异常离场") !== -1){
 				return Index.alert("该车辆已付费出场，无需再匹配");
@@ -540,6 +583,10 @@ require([
 		};
 		//切换入场通道口处理
 		content.$watch("inIndex",function(newVal){
+			if(content.showInVideo){
+				//正在播放视频 切换通道 默认回到图像模式
+				content.toggleVideo('in');
+			}
 			var item = content.inList[newVal];
 			var target = obj[item.entrance_channel_seq];
 			if(target){
@@ -564,6 +611,10 @@ require([
 		});
 		//切换出场通道口处理
 		content.$watch("outIndex",function(newVal){
+			if(content.showOutVideo){
+				//正在播放视频 切换通道 默认回到图像模式
+				content.toggleVideo('out');
+			}
 			var item = content.outList[newVal];
 			var target = obj[item.entrance_channel_seq];
 			if(target){
@@ -614,7 +665,6 @@ require([
 			}
 			avalon.mix(content,model);
 		});
-		
 		//基本信息指令
 		Index.websocket.send({
 			command : "GET_PARKING_LOT_BASE_DATE",
@@ -624,6 +674,7 @@ require([
 		},document.body,function(data){
 			Index.init();
 			if(data.code === '0' && data.msg === "ok"){
+				cameraData = data.camera_list;
 				//获取优惠信息
 				Index.websocket.send({
 					command : "GET_DISCOUNT"

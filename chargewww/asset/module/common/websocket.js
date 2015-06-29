@@ -5,8 +5,6 @@ define(function(){
 	var host = "127.0.0.1"
 	var url = "ws://" + host + ":51601";
 	var socket;
-	//20秒超时连接
-	var timeout = 20000;
 	//出错后重新连接时间
 	var errorReconectTime = 5000;
 	var socketHelper = {
@@ -71,21 +69,8 @@ define(function(){
 		this.area = area;
 		this.func = func;
 		this.unPrint = unPrint;
-		this.inter = null;
-		this.start();
-	}
-	OrderHelper.prototype.start = function(){
-		var me = this;
-		this.inter = setTimeout(function(){
-			avalon.log("======连接超时======");
-			if(socket){
-				socket.close();
-				socket = null;
-			}
-			me.start();
-		},timeout);
 		this.send();
-	};
+	}
 	OrderHelper.prototype.send = function(){
 		var me = this;
 		if(!socket){
@@ -93,10 +78,9 @@ define(function(){
 			socket.onerror = function(e){
 				avalon.log("======连接出错======",e);
 				avalon.each(excutingOrder,function(i,v){
-					clearTimeout(v.inter);
 					//重新发送
 					setTimeout(function(){
-						v.start();
+						v.send();
 					},errorReconectTime);
 				});
 				socket.close();
