@@ -1,3 +1,6 @@
+function GetSelectWndInfo(){
+	avalon.log("摄像头回调参数",arguments);
+}
 require.config({
 	paths: {
 		jquery : "lib/jquery/jquery-2.1.4"
@@ -154,6 +157,7 @@ require([
 			            }else{
 			            	Index.alert("请先安装摄像头浏览器插件");
 			            }
+			            cameraResizeHandler(direction);
 						break;
 					}
 				}
@@ -753,4 +757,23 @@ require([
 			}
 		}
 	}
+	//录像resize
+	var cameraResizeHandler = (function(){
+		var factor = 1360 / 1024;
+		avalon.bind(window,"resize",function(){
+			cameraResizeHandler("in");
+			cameraResizeHandler("out");
+		});
+		function cameraResizeHandler(direction){
+			if(content[direction === 'in' ? "showInVideo" : "showOutVideo"]){
+				var embed = document.getElementById(direction + "PreviewActiveX");
+				var p = embed.parentNode;
+				var w = avalon(p).width();
+				var h = parseInt(w / factor);
+				embed.height = h;
+				embed.width = w;
+			}
+		}
+		return cameraResizeHandler;
+	})();
 });
