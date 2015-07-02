@@ -13,6 +13,12 @@ require([
 	"common/table/avalon.table",
 	"common/date/avalon.date"
 ],function(Index,Base64){
+	avalon.ui.dialog.defaults.onClose = function(){
+		cameraHelper.afterClose();
+	};
+	avalon.ui.dialog.defaults.onBeforeOpen = function(){
+		cameraHelper.beforeShow();
+	};
 	Index.top.curIndex = 0;
 	var REAL_TIME_CAR_LIST;
 	function matchNum(num,list){
@@ -120,6 +126,43 @@ require([
 			}
 		});
 	}
+	function createVideo(direction){
+		var target = content[direction + "List"][content[direction + "Index"]];
+			for(var i=0,ii;ii=cameraData[i++];){
+				if(ii.entrance_channel_seq === target.entrance_channel_seq){
+					var factor = 1360 / 1024;
+					var container = document.getElementById(direction + "VideoContainer");
+					var w = avalon(container).width();
+					var h = parseInt(w / factor);
+					container.innerHTML =
+						"<embed type='application/hwitcp-webvideo-plugin' "+
+						"id='"+direction+"PreviewActiveX' width='"+w+"' height='"+h+"' "+
+						"name='"+direction+"PreviewActiveX' align='center' wndtype='1' playmode='normal'>";
+					var szURL = "rtsp://${ip}:${port}/ISAPI/streaming/channels/101?auth=${auth}";
+					var pwd = ii.equipment_r_c_validate_password;
+		            var userName = ii.equipment_r_c_validate_name;
+		            var str = Base64.encode(userName + ":" + pwd);
+		            //var str = userName + ":" + pwd;
+		            var ip = ii.equipment_recognition_camera_ip;
+		            var port = ii.equipment_recognition_camera_port;
+		            var url = szURL.replace("${ip}",ip)
+		                .replace("${port}",port)
+		                .replace("${auth}",str);
+		            avalon.log("摄像头流地址",url);
+		            var PreviewActiveX = document.getElementById(direction + "PreviewActiveX");
+		            if(PreviewActiveX.HWP_Play){
+		            	var re = PreviewActiveX.HWP_Play(url,str, 0, "", "");
+			            if(re === -1){
+			                Index.alert("连接失败,请检查摄像头的IP地址、端口配置是否正确");
+			            }
+		            }else{
+		            	//Index.alert("请先安装摄像头浏览器插件");
+		            	avalon.log("请先安装摄像头浏览器插件");
+		            }
+					break;
+				}
+			}
+	}
 	var cameraData;
 	var content = avalon.define({
 		$id : "content",
@@ -130,37 +173,7 @@ require([
 				content[str] = false;
 			}else{
 				content[str] = true;
-				var target = content[direction + "List"][content[direction + "Index"]];
-				for(var i=0,ii;ii=cameraData[i++];){
-					if(ii.entrance_channel_seq === target.entrance_channel_seq){
-						document.getElementById(direction + "VideoContainer").innerHTML =
-							"<embed type='application/hwitcp-webvideo-plugin' "+
-							"id='"+direction+"PreviewActiveX' width='100%' height='100%' "+
-							"name='"+direction+"PreviewActiveX' align='center' wndtype='1' playmode='normal'>";
-						var szURL = "rtsp://${ip}:${port}/ISAPI/streaming/channels/101?auth=${auth}";
-						var pwd = ii.equipment_r_c_validate_password;
-			            var userName = ii.equipment_r_c_validate_name;
-			            var str = Base64.encode(userName + ":" + pwd);
-			            //var str = userName + ":" + pwd;
-			            var ip = ii.equipment_recognition_camera_ip;
-			            var port = ii.equipment_recognition_camera_port;
-			            var url = szURL.replace("${ip}",ip)
-			                .replace("${port}",port)
-			                .replace("${auth}",str);
-			            avalon.log("摄像头流地址",url);
-			            var PreviewActiveX = document.getElementById(direction + "PreviewActiveX");
-			            if(PreviewActiveX.HWP_Play){
-			            	var re = PreviewActiveX.HWP_Play(url,str, 0, "", "");
-				            if(re === -1){
-				                Index.alert("连接失败,请检查摄像头的IP地址、端口配置是否正确");
-				            }
-			            }else{
-			            	Index.alert("请先安装摄像头浏览器插件");
-			            }
-			            cameraResizeHandler(direction);
-						break;
-					}
-				}
+				createVideo(direction);
 			}
 		},
 		showInVideo : false,
@@ -530,7 +543,14 @@ require([
 		outCarCostActual : '',
 		total_amount : '',
 		outDiscount : '无优惠',
-		discountList : [{discount_seq : "",discount_name : "无优惠",discount_time_min : "0"}]
+		discountList : [{discount_seq : "",discount_name : "无优惠",discount_time_min : "0"}],
+		changeIndex : function(direction){
+			var str = direction === 'in' ? "showInVideo" : "showOutVideo";
+			if(content[str]){
+				createVideo(direction);
+				//content.toggleVideo(direction);
+			}
+		}
 	});
 	//切换优惠 重新下发获取金额指令
 	content.$watch("outDiscount",function(newVal){
@@ -587,10 +607,6 @@ require([
 		};
 		//切换入场通道口处理
 		content.$watch("inIndex",function(newVal){
-			if(content.showInVideo){
-				//正在播放视频 切换通道 默认回到图像模式
-				content.toggleVideo('in');
-			}
 			var item = content.inList[newVal];
 			var target = obj[item.entrance_channel_seq];
 			if(target){
@@ -615,10 +631,6 @@ require([
 		});
 		//切换出场通道口处理
 		content.$watch("outIndex",function(newVal){
-			if(content.showOutVideo){
-				//正在播放视频 切换通道 默认回到图像模式
-				content.toggleVideo('out');
-			}
 			var item = content.outList[newVal];
 			var target = obj[item.entrance_channel_seq];
 			if(target){
@@ -758,22 +770,64 @@ require([
 		}
 	}
 	//录像resize
-	var cameraResizeHandler = (function(){
+	var cameraHelper = (function(){
 		var factor = 1360 / 1024;
 		avalon.bind(window,"resize",function(){
 			cameraResizeHandler("in");
 			cameraResizeHandler("out");
 		});
+		var inter = {
+			"in" : null,
+			"out" : null
+		};
 		function cameraResizeHandler(direction){
-			if(content[direction === 'in' ? "showInVideo" : "showOutVideo"]){
-				var embed = document.getElementById(direction + "PreviewActiveX");
+			var str = direction === 'in' ? "showInVideo" : "showOutVideo";
+			if(content[str]){
+				/*var embed = document.getElementById(direction + "PreviewActiveX");
 				var p = embed.parentNode;
 				var w = avalon(p).width();
 				var h = parseInt(w / factor);
 				embed.height = h;
 				embed.width = w;
+				clearTimeout(inter[direction]);
+				var container = document.getElementById(direction + "VideoContainer");
+				if(container.innerHTML){
+					var factor = 1360 / 1024;
+					var w = avalon(container).width();
+					var h = parseInt(w / factor);
+					container.innerHTML = '<div style="width:'+w+'px;height:'+h+'px;background-color:#333"></div>';
+				}*/
+				clearVideo(direction);
+				inter[direction] = setTimeout(function(){
+					content[str] && createVideo(direction);
+				},500);
 			}
 		}
-		return cameraResizeHandler;
+		function clearVideo(direction){
+			var str = direction === 'in' ? "showInVideo" : "showOutVideo";
+			if(content[str]){
+				var container = document.getElementById(direction + "VideoContainer");
+				clearTimeout(inter[direction]);
+				if(container.innerHTML){
+					var factor = 1360 / 1024;
+					var w = avalon(container).width();
+					var h = parseInt(w / factor);
+					container.innerHTML = '<div style="width:'+w+'px;height:'+h+'px;background-color:#333"></div>';
+				}
+			}
+		}
+		function beforeShow(){
+			clearVideo("in");
+			clearVideo("out");
+		}
+		function afterClose(){
+			content.showInVideo && createVideo('in');
+			content.showOutVideo && createVideo('out');
+		}
+		return {
+			cameraResizeHandler : cameraResizeHandler,
+			beforeShow : beforeShow,
+			afterClose : afterClose
+		};
 	})();
 });

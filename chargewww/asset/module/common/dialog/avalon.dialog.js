@@ -108,6 +108,7 @@ define(["avalon","text!./avalon.dialog.html"],function(avalon,templete){
 			};
 			vm.open = function(isInit){
 				if(element.style.display === 'block') return;
+				vmodel.onBeforeOpen.call(element,vmodel);
 				element.style.display = 'block';
 				var $modalBack = avalon(modalBackDrop).removeClass("hide");
 				if(avalon.support.transitionend){
@@ -142,7 +143,8 @@ define(["avalon","text!./avalon.dialog.html"],function(avalon,templete){
 		content : null,
 		show : false,
 		afterShow : avalon.noop,
-		onClose : avalon.noop
+		onClose : avalon.noop,
+		onBeforeOpen : avalon.noop
 	};
 	/*
 	avalon.showDialog.xxx : {

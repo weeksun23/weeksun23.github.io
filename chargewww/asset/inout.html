@@ -24,7 +24,7 @@
 			<div class='form-inline padtb1' ms-if="inList && inList.length > 0">
 				<div class="form-group">
 					<label for="inSel">选择入场通道</label>
-					<select class='form-control' id='inSel' ms-duplex-number="inIndex">
+					<select class='form-control' id='inSel' ms-duplex-number="inIndex" ms-change='changeIndex("in")'>
 						<option ms-repeat="inList" ms-attr-value="$index">{{el.entrance_name}}</option>
 					</select>
 				</div>
@@ -94,7 +94,7 @@
 			<form class='form-inline padtb1' ms-if="outList && outList.length > 0">
 				<div class="form-group">
 					<label for="inSel">选择出场通道</label>
-					<select class='form-control' id='inSel' ms-duplex="outIndex">
+					<select class='form-control' id='inSel' ms-duplex="outIndex" ms-change='changeIndex("out")'>
 						<option ms-repeat="outList" ms-attr-value="$index">{{el.entrance_name}}</option>
 					</select>
 				</div>
