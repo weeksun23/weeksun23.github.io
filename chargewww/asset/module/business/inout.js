@@ -439,7 +439,6 @@ require([
 			if(!Index.isCarNum(content.outInCarNum)){
 				return Index.alert("请先匹配入场车牌");
 			}
-			
 			//第一步：下发手动匹配接口P9.1
 			Index.websocket.send({
 				command : "CAR_IN_OUT_MATCH",
@@ -501,12 +500,27 @@ require([
 		//出车确认放行
 		outSureOpen : function(){
 			//开闸指令
-			var outCar = content.outList[content.outIndex];
-			toggleDoor(outCar.entrance_channel_seq,
-				content.outInCarNum,content.outInCarTime,document.body,'1',function(){
-					//重新获取通道最新消息
-					getNewestChannelData();
-				});
+			//下发手动匹配接口P9.1
+			Index.websocket.send({
+				command : "CAR_IN_OUT_MATCH",
+				biz_content : {
+					enter_car_license_number : content.outInCarNum,
+					enter_car_card_number : "",
+					enter_time : content.outInCarTime,
+					leave_car_license_number : content.outCarNum,
+					leave_car_card_number : "",
+					leave_time : content.outCarTime
+				}
+			},document.body,function(data){
+				if(data.code === '0' && data.msg === "ok"){
+					var outCar = content.outList[content.outIndex];
+					toggleDoor(outCar.entrance_channel_seq,
+						content.outInCarNum,content.outInCarTime,document.body,'1',function(){
+							//重新获取通道最新消息
+							getNewestChannelData();
+						});
+				}
+			});
 		},
 		//入车确认放行
 		inSureOpen : function(){
