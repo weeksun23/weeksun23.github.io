@@ -23,8 +23,8 @@ require([
 				adjust_list_recognition_confidence : "100",
 				report_status : "1",
 				report_time : "",
-				modify_time : "",
-				modify_by : ""
+				modify_time : avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss"),
+				modify_by : Index.top.accountName
 			}
 		},vmodel.widgetElement,function(data){
 			if(data.code === "0" && data.msg === "ok"){

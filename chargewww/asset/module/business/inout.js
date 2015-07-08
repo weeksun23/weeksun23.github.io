@@ -113,8 +113,8 @@ require([
 				adjust_list_recognition_confidence : "100",
 				report_status : "1",
 				report_time : "",
-				modify_time : "",
-				modify_by : ""
+				modify_time : avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss"),
+				modify_by : Index.top.accountName
 			}
 		},vmodel.widgetElement,function(data){
 			if(data.code === "0" && data.msg === "ok"){
@@ -414,7 +414,7 @@ require([
 				content.outInCarImg = Index.websocket.plateImgUrl + 
 					item.enter_car_license_picture + "?" + (+new Date);
 				content.outInCarTime = item.enter_time;
-				content.outCarType = Index.mData.getVipType(item.enter_type);
+				content.outCarType = Index.mData.getVipType(item.enter_vip_type);
 				getCharge(item.car_license_number,item.enter_time,content.outCarTime);
 			},
 			//查看大图
