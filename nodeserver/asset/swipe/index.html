@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+<title>swipe</title>
+<style>
+	html {
+	  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	}
+	body{
+	  font-size: 16px;font-family: Helvetica;
+	  -webkit-overflow-scrolling: touch;
+	  -ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;
+	}
+	body,html{width: 100%;height: 100%;overflow: hidden;}
+	input,button{-webkit-appearance: none;}
+	body,p,input,ul,li{margin:0;padding: 0}
+	* {
+	  -webkit-box-sizing: border-box;
+	  -moz-box-sizing: border-box;
+	  box-sizing: border-box;
+	}
+	*:before,
+	*:after {
+	  -webkit-box-sizing: border-box;
+	  -moz-box-sizing: border-box;
+	  box-sizing: border-box;
+	}
+	/**/
+	.swipe,.swipe-item{height: 100%;width: 100%;}
+	.swipe{
+
+	}
+	.swipe-animate{
+		transition: all 0.2s;
+		-webkit-transition: all 0.2s;
+		transition-timing-function: ease;
+		-webkit-transition-timing-function: ease;
+	}
+	.swipe-item{}
+</style>
+</head>
+<body>
+	<div class='swipe' id='swipe'>
+		<div class='swipe-item' style='background-color:#ccc'>
+			1111111111111111111111111111
+		</div>
+		<div class='swipe-item' style='background-color:#111'>
+			2222222222222222222222222222
+		</div>
+		<div class='swipe-item' style='background-color:#f2f2f2'>
+			3333333333333333333333333333
+		</div>
+		<div class='swipe-item' style='background-color:#ddd'>
+			4444444444444444444444444444
+		</div>
+	</div>
+	<script>
+		(function(){
+			function getPos(e){
+				if(isMobile){
+					var touch = e.changedTouches[0];
+					return {
+						x : touch.pageX,
+						y : touch.pageY
+					};
+				}else{
+					return {
+						x : e.pageX,
+						y : e.pageY
+					};
+				}
+			}
+			function getTranslateDistance(el){
+		        var transform = el.style[transformName];
+		        if(!transform){
+		        	return 0;
+		        }
+		        var match = transform.match(/\-?[0-9]+\.?[0-9]*/g);
+		        return +match[0];
+		    }
+		    function setTranslateY(el,y){
+		        el.style[transformName] = 'translateY('+y+'px)';
+		    }
+			var deviceIsAndroid = navigator.userAgent.indexOf('Android') > 0;
+			var deviceIsIOS = /iP(ad|hone|od)/.test(navigator.userAgent);
+			var deviceIsBlackBerry10 = navigator.userAgent.indexOf('BB10') > 0;
+			var isMobile = deviceIsAndroid || deviceIsIOS || deviceIsBlackBerry10;
+			if(isMobile){
+				var eventNames = ["touchstart","touchmove","touchend","touchcancel",'transitionend'];
+			}else{
+				eventNames = ["mousedown","mousemove","mouseup","",'webkitTransitionEnd'];
+			}
+			var transformName = 'transform' in document.documentElement.style ? 'transform' : 'webkitTransform';
+			var swipe = document.querySelector("#swipe");
+			var data = {};
+			var curIndex = 0;
+			var timeInterval = 500;
+			var swipeDistance = 30;
+			swipe.addEventListener(eventNames[0],function(e){
+				data.startPos = getPos(e);
+				data.startY = getTranslateDistance(this);
+				data.startTime = +new Date;
+				data.itemHeight = this.offsetHeight;
+				data.itemLen = this.querySelectorAll(".swipe-item").length;
+				function move(e){
+					var ePos = getPos(e);
+					var sPos = data.startPos;
+					var dY = ePos.y - sPos.y;
+					if((dY > 0 && curIndex === 0) || (dY < 0 && curIndex === data.itemLen - 1)){
+						dY = dY / 2;
+					}
+					setTranslateY(swipe,data.startY + dY);
+				}
+				function end(e){
+					document.body.removeEventListener(eventNames[1],move);
+					document.body.removeEventListener(eventNames[2],end);
+					var endPos = getPos(e);
+					var dy = data.startPos.y - endPos.y;
+					var h = data.itemHeight;
+					if(+new Date - data.startTime > timeInterval || Math.abs(dy) < swipeDistance){
+						var hh = h / 2;
+						if(Math.abs(dy) < hh){
+							animateSetY(swipe,data.startY);
+							return;
+						}
+					}
+					if((curIndex === data.itemLen - 1 && dy > 0) || (curIndex === 0 && dy < 0)){
+						animateSetY(swipe,data.startY);
+					}else{
+						if(dy > 0){
+							animateSetY(swipe,-h * (curIndex + 1));
+							curIndex++;
+						}else{
+							animateSetY(swipe,-h * (curIndex - 1));
+							curIndex--;
+						}
+					}
+				}
+				document.body.addEventListener(eventNames[1],move);
+				document.body.addEventListener(eventNames[2],end);
+			});
+			swipe.addEventListener(eventNames[4],function(){
+				if(this.classList.contains('swipe-animate')){
+					this.classList.remove('swipe-animate');
+				}
+			});
+			function animateSetY(el,y){
+				el.classList.add("swipe-animate");
+				el.offsetWidth;
+				setTranslateY(el,y);
+			}
+		})();
+	</script>
+</body>
+</html>
