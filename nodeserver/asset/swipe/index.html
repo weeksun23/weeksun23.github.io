@@ -58,7 +58,6 @@
 			4444444444444444444444444444
 		</div>
 	</div>
-	<div class='console' id='console'></div>
 	<script>
 		(function(){
 			function getPos(e){
@@ -91,71 +90,153 @@
 			var deviceIsBlackBerry10 = navigator.userAgent.indexOf('BB10') > 0;
 			var isMobile = deviceIsAndroid || deviceIsIOS || deviceIsBlackBerry10;
 			if(isMobile){
-				var eventNames = ["touchstart","touchmove","touchend","touchcancel",'transitionend'];
+				var eventNames = ["touchstart","touchmove","touchend","touchcancel"];
 			}else{
-				eventNames = ["mousedown","mousemove","mouseup","",'webkitTransitionEnd'];
+				eventNames = ["mousedown","mousemove","mouseup",""];
 			}
+			var support = {
+				transitionend : (function(){
+					var el = document.createElement('div');
+					var transEndEventNames = {
+						WebkitTransition: 'webkitTransitionEnd',
+						MozTransition: 'transitionend',
+						OTransition: 'oTransitionEnd otransitionend',
+						transition: 'transitionend'
+					};
+					for (var name in transEndEventNames) {
+						if (el.style[name] !== undefined) {
+							return transEndEventNames[name];
+						}
+					}
+					return false;
+				})()
+			};
+			function AnimationTimer() {
+		        //不存在msRequestAnimationFrame，IE10与Chrome24直接用:requestAnimationFrame
+		        if (window.requestAnimationFrame) {
+		            return {
+		                start: requestAnimationFrame.bind(window),
+		                stop: cancelAnimationFrame.bind(window)
+		            }
+		            //Firefox11-没有实现cancelRequestAnimationFrame
+		            //并且mozRequestAnimationFrame与标准出入过大
+		        } else if (window.mozCancelRequestAnimationFrame && window.mozCancelAnimationFrame) {
+		            return {
+		                start: mozRequestAnimationFrame.bind(window),
+		                stop: mozCancelAnimationFrame.bind(window)
+		            }
+		        } else if (window.webkitRequestAnimationFrame && webkitRequestAnimationFrame(String)) {
+		            return {//修正某个特异的webKit版本下没有time参数
+		                start: webkitRequestAnimationFrame.bind(window),
+		                stop: (window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame).bind(window)
+		            }
+		        } else {
+		            var timeLast = 0
+		            // http://jsperf.com/date-now-vs-date-gettime/11
+		            var now = Date.now || function() {
+		                return (new Date).getTime()
+		            }
+		            return {
+		                start: function(callback) {//主要用于IE，必须千方百计要提高性能
+		                    var timeCurrent = now()
+		                    // http://jsperf.com/math-max-vs-comparison/3
+		                    var timeDelta = 16 - (timeCurrent - timeLast)
+		                    if (timeDelta < 0)
+		                        timeDelta = 0
+		                    timeLast = timeCurrent + timeDelta
+		                    return setTimeout(callback, timeDelta)
+		                },
+		                stop: function(id) {
+		                    clearTimeout(id)
+		                }
+		            };
+		        }
+		    }
+		    var Timer = new AnimationTimer();
 			var transformName = 'transform' in document.documentElement.style ? 'transform' : 'webkitTransform';
 			var swipe = document.querySelector("#swipe");
 			var data = {};
 			var curIndex = 0;
 			var timeInterval = 500;
 			var swipeDistance = 30;
-			swipe.addEventListener(eventNames[0],function(e){
-				data.startPos = getPos(e);
-				data.startY = getTranslateDistance(this);
-				data.startTime = +new Date;
-				data.itemHeight = this.offsetHeight;
-				data.itemLen = this.querySelectorAll(".swipe-item").length;
-				function move(e){
-					var ePos = getPos(e);
-					var sPos = data.startPos;
-					var dY = ePos.y - sPos.y;
-					if((dY > 0 && curIndex === 0) || (dY < 0 && curIndex === data.itemLen - 1)){
-						dY = dY / 2;
-					}
-					setTranslateY(swipe,data.startY + dY);
-					document.querySelector("#console").innerHTML = ePos.x + "," + ePos.y;
+			function move(e){
+				e.preventDefault();
+				e.stopPropagation();
+				var ePos = getPos(e);
+				var sPos = data.startPos;
+				var dY = ePos.y - sPos.y;
+				if((dY > 0 && curIndex === 0) || (dY < 0 && curIndex === data.itemLen - 1)){
+					dY = dY / 2;
 				}
-				function end(e){
-					document.querySelector("#console").innerHTML = 'end';
-					swipe.removeEventListener(eventNames[1],move);
-					swipe.removeEventListener(eventNames[2],end);
-					var endPos = getPos(e);
-					var dy = data.startPos.y - endPos.y;
-					var h = data.itemHeight;
-					if(+new Date - data.startTime > timeInterval || Math.abs(dy) < swipeDistance){
-						var hh = h / 2;
-						if(Math.abs(dy) < hh){
-							animateSetY(swipe,data.startY);
-							return;
-						}
-					}
-					if((curIndex === data.itemLen - 1 && dy > 0) || (curIndex === 0 && dy < 0)){
+				setTranslateY(swipe,data.startY + dY);
+			}
+			function end(e){
+				e.preventDefault();
+				e.stopPropagation();
+				document.removeEventListener(eventNames[1],move);
+				document.removeEventListener(eventNames[2],end);
+				var endPos = getPos(e);
+				var dy = data.startPos.y - endPos.y;
+				var h = data.itemHeight;
+				if(+new Date - data.startTime > timeInterval || Math.abs(dy) < swipeDistance){
+					var hh = h / 2;
+					if(Math.abs(dy) < hh){
 						animateSetY(swipe,data.startY);
-					}else{
-						if(dy > 0){
-							animateSetY(swipe,-h * (curIndex + 1));
-							curIndex++;
-						}else{
-							animateSetY(swipe,-h * (curIndex - 1));
-							curIndex--;
-						}
+						return;
 					}
 				}
-				document.querySelector("#console").innerHTML = 'start';
-				swipe.addEventListener(eventNames[1],move);
-				swipe.addEventListener(eventNames[2],end);
+				if((curIndex === data.itemLen - 1 && dy > 0) || (curIndex === 0 && dy < 0)){
+					animateSetY(swipe,data.startY);
+				}else{
+					if(dy > 0){
+						animateSetY(swipe,-h * (curIndex + 1));
+						curIndex++;
+					}else{
+						animateSetY(swipe,-h * (curIndex - 1));
+						curIndex--;
+					}
+				}
+			}
+			document.addEventListener(eventNames[0],function(e){
+				e.preventDefault();
+				e.stopPropagation();
+				data.startPos = getPos(e);
+				data.startY = getTranslateDistance(swipe);
+				data.startTime = +new Date;
+				data.itemHeight = swipe.offsetHeight;
+				data.itemLen = swipe.querySelectorAll(".swipe-item").length;
+				document.addEventListener(eventNames[1],move);
+				document.addEventListener(eventNames[2],end);
 			});
-			swipe.addEventListener(eventNames[4],function(){
-				if(this.classList.contains('swipe-animate')){
+			swipe.addEventListener(support.transitionend,function(){
+				if(this.classList.contains("swipe-animate")){
 					this.classList.remove('swipe-animate');
 				}
 			});
 			function animateSetY(el,y){
-				el.classList.add("swipe-animate");
-				el.offsetWidth;
-				setTranslateY(el,y);
+				var curY = getTranslateDistance(swipe);
+				var distance = Math.abs(curY - y) / 10;
+				var f = y > curY;
+				var d = f ? distance : -distance;
+				var timerID = Timer.start(function raf() {
+	                if (timerID) {
+	                	curY += d;
+						if((f && curY >= y) || (!f && curY <= y)){
+							curY = y;
+							Timer.stop(timerID);
+							timerID = null;
+						}
+						setTranslateY(el,curY);
+	                    Timer.start(raf);
+	                }
+	            })
+				//var t = setInterval(function(){
+					
+				//},20);
+
+				//el.classList.add("swipe-animate");
+				//el.offsetWidth;
+				//setTranslateY(el,y);
 			}
 		})();
 	</script>
