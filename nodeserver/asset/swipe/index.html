@@ -32,15 +32,24 @@
 	/**/
 	.swipe,.swipe-item{height: 100%;width: 100%;}
 	.swipe{
-		background-color: #fff
+		background-color: #fff;
+		-webkit-transform-style: preserve-3d;
+		-webkit-backface-visibility: hidden;
 	}
-	.swipe-animate{
-		transition: all 0.2s;
-		-webkit-transition: all 0.2s;
+
+	.swipe-item{}
+	.swipe-transition{
+		/*animation-duration: 0.2s;
+		animation-timing-function: linear;
+		animation-name:swipeto;
+		-webkit-animation-duration: 0.2s;
+		-webkit-animation-timing-function: linear;
+		-webkit-animation-name:swipeto;*/
+		transition: transform 0.2s;
+		-webkit-transition: -webkit-transform 0.2s;
 		transition-timing-function: ease;
 		-webkit-transition-timing-function: ease;
 	}
-	.swipe-item{}
 </style>
 </head>
 <body>
@@ -79,11 +88,14 @@
 		        if(!transform){
 		        	return 0;
 		        }
-		        var match = transform.match(/\-?[0-9]+\.?[0-9]*/g);
+		        var match = transform.match(/\(.*\)/);
+		        var str = match[0];
+		        str = str.substring(1,str.length - 1);
+		        var match = str.split(",")[1].match(/\-?[0-9]+\.?[0-9]*/g);
 		        return +match[0];
 		    }
 		    function setTranslateY(el,y){
-		        el.style[transformName] = 'translateY('+y+'px)';
+		        el.style[transformName] = 'translate3d(0,'+y+'px,0)';
 		    }
 			var deviceIsAndroid = navigator.userAgent.indexOf('Android') > 0;
 			var deviceIsIOS = /iP(ad|hone|od)/.test(navigator.userAgent);
@@ -111,53 +123,11 @@
 					return false;
 				})()
 			};
-			function AnimationTimer() {
-		        //不存在msRequestAnimationFrame，IE10与Chrome24直接用:requestAnimationFrame
-		        if (window.requestAnimationFrame) {
-		            return {
-		                start: requestAnimationFrame.bind(window),
-		                stop: cancelAnimationFrame.bind(window)
-		            }
-		            //Firefox11-没有实现cancelRequestAnimationFrame
-		            //并且mozRequestAnimationFrame与标准出入过大
-		        } else if (window.mozCancelRequestAnimationFrame && window.mozCancelAnimationFrame) {
-		            return {
-		                start: mozRequestAnimationFrame.bind(window),
-		                stop: mozCancelAnimationFrame.bind(window)
-		            }
-		        } else if (window.webkitRequestAnimationFrame && webkitRequestAnimationFrame(String)) {
-		            return {//修正某个特异的webKit版本下没有time参数
-		                start: webkitRequestAnimationFrame.bind(window),
-		                stop: (window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame).bind(window)
-		            }
-		        } else {
-		            var timeLast = 0
-		            // http://jsperf.com/date-now-vs-date-gettime/11
-		            var now = Date.now || function() {
-		                return (new Date).getTime()
-		            }
-		            return {
-		                start: function(callback) {//主要用于IE，必须千方百计要提高性能
-		                    var timeCurrent = now()
-		                    // http://jsperf.com/math-max-vs-comparison/3
-		                    var timeDelta = 16 - (timeCurrent - timeLast)
-		                    if (timeDelta < 0)
-		                        timeDelta = 0
-		                    timeLast = timeCurrent + timeDelta
-		                    return setTimeout(callback, timeDelta)
-		                },
-		                stop: function(id) {
-		                    clearTimeout(id)
-		                }
-		            };
-		        }
-		    }
-		    var Timer = new AnimationTimer();
 			var transformName = 'transform' in document.documentElement.style ? 'transform' : 'webkitTransform';
 			var swipe = document.querySelector("#swipe");
 			var data = {};
 			var curIndex = 0;
-			var timeInterval = 500;
+			var timeInterval = 400;
 			var swipeDistance = 30;
 			function move(e){
 				e.preventDefault();
@@ -209,34 +179,13 @@
 				document.addEventListener(eventNames[2],end);
 			});
 			swipe.addEventListener(support.transitionend,function(){
-				if(this.classList.contains("swipe-animate")){
-					this.classList.remove('swipe-animate');
+				if(this.classList.contains("swipe-transition")){
+					this.classList.remove('swipe-transition');
 				}
 			});
 			function animateSetY(el,y){
-				var curY = getTranslateDistance(swipe);
-				var distance = Math.abs(curY - y) / 10;
-				var f = y > curY;
-				var d = f ? distance : -distance;
-				var timerID = Timer.start(function raf() {
-	                if (timerID) {
-	                	curY += d;
-						if((f && curY >= y) || (!f && curY <= y)){
-							curY = y;
-							Timer.stop(timerID);
-							timerID = null;
-						}
-						setTranslateY(el,curY);
-	                    Timer.start(raf);
-	                }
-	            })
-				//var t = setInterval(function(){
-					
-				//},20);
-
-				//el.classList.add("swipe-animate");
-				//el.offsetWidth;
-				//setTranslateY(el,y);
+				el.classList.add("swipe-transition");
+				setTranslateY(el,y);
 			}
 		})();
 	</script>
