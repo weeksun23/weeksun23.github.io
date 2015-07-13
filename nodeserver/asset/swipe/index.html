@@ -4,15 +4,27 @@
 <meta charset="utf-8">
 <meta name="format-detection" content="telephone=no">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
-<link rel="stylesheet" type="text/css" href="swipe.css">
+<link rel="stylesheet" type="text/css" href="swipe.css?ddsa">
 <link rel="stylesheet" type="text/css" href="base.css">
 <title>swipe</title>
 <style>
 	.zone{width: 90%;margin:20px auto;}
 	.zone>p{margin-bottom: 5px;}
-	.swipe{height:200px;border:1px solid #d2d2d2}
+	.swipe{height:200px;}
 	.swipe-item{padding: 1em}
 	.swipe .swipe{height: 150px}
+	.swipe-inner>.swipe-item:nth-child(1){
+		background-color: #43C8F4
+	}
+	.swipe-inner>.swipe-item:nth-child(2){
+		background-color: #66E84F
+	}
+	.swipe-inner>.swipe-item:nth-child(3){
+		background-color: #EC734B
+	}
+	.swipe-inner>.swipe-item:nth-child(4){
+		background-color: #FCF93B
+	}
 </style>
 </head>
 <body>
@@ -40,16 +52,16 @@
 		<div class='swipe' id='swipeX'>
 			<div class='swipe-inner'>
 				<div class='swipe-item'>
-					egrgertertertertret
+					2e2fefew
 				</div>
 				<div class='swipe-item'>
-					2222222222222222222222222222
+					23r3
 				</div>
 				<div class='swipe-item'>
-					3333333333333333333333333333
+					d3e
 				</div>
 				<div class='swipe-item'>
-					4444444444444444444444444444
+					r3r3rsssssssssssss
 				</div>
 			</div>
 		</div>
@@ -85,7 +97,7 @@
 			</div>
 		</div>
 	</div>
-	<script src='swipe.js'></script>
+	<script src='swipe.js?1'></script>
 	<script>
 		new Swipe("#swipe",{
 			direction : 'y'

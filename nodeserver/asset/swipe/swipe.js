@@ -149,7 +149,9 @@
 			var swipeInner = swipeEl.querySelector(".swipe-inner");
 			swipeInner.style[this.options.direction === 'y' ? "height" : "width"] = 
 				this.swipeData.itemLen * 100 + "%";
-			swipeInner.addEventListener(support.transitionend,function(){
+			swipeInner.addEventListener(support.transitionend,function(e){
+				e.preventDefault();
+				e.stopPropagation();
 				if(this.classList.contains("swipe-transition")){
 					this.classList.remove('swipe-transition');
 				}
