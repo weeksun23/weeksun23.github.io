@@ -1,0 +1,35 @@
+/*swipe插件by linyz 2015-07-11*/
+.swipe{
+	background-color: #fff;
+	-webkit-transform-style: preserve-3d;
+	-webkit-backface-visibility: hidden;
+	width: 100%;height: 100%;
+}
+.swipe-x .swipe-inner{
+	-webkit-flex-flow: row nowrap;
+  	flex-flow: row nowrap;
+  	height: 100%;
+}
+.swipe-y .swipe-inner{
+	flex-flow: column nowrap;
+  	-webkit-flex-flow: column nowrap;
+  	-webkit-box-orient: vertical;
+}
+.swipe-inner{
+	display: -webkit-box;
+	display: box;
+	display: -webkit-flex;
+  	display: flex;
+}
+.swipe-item{
+	-webkit-box-flex: 1;
+	box-flex : 1;
+	-webkit-flex: 1;
+	flex: 1;
+}
+.swipe-transition{
+	transition: transform 0.2s;
+	-webkit-transition: -webkit-transform 0.2s;
+	transition-timing-function: ease;
+	-webkit-transition-timing-function: ease;
+}

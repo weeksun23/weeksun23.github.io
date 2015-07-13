@@ -4,190 +4,70 @@
 <meta charset="utf-8">
 <meta name="format-detection" content="telephone=no">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+<link rel="stylesheet" type="text/css" href="swipe.css">
+<link rel="stylesheet" type="text/css" href="base.css">
 <title>swipe</title>
 <style>
-	html {
-	  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	.swipe-item{padding: 1em 1em 0;}
+	.title{text-align: center;font-size: 1.5em}
+	.title img{width: 1.5em;}
+	.title p{}
+	.des{
+		color:#8d8d8d;line-height: 1.4em;
+		margin-bottom: 0.5em
 	}
-	body{
-	  font-size: 16px;font-family: Helvetica;
-	  -webkit-overflow-scrolling: touch;
-	  -ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;
-	}
-	body,html{width: 100%;height: 100%;overflow: hidden;}
-	input,button{-webkit-appearance: none;}
-	body,p,input,ul,li{margin:0;padding: 0}
-	* {
-	  -webkit-box-sizing: border-box;
-	  -moz-box-sizing: border-box;
-	  box-sizing: border-box;
-	}
-	*:before,
-	*:after {
-	  -webkit-box-sizing: border-box;
-	  -moz-box-sizing: border-box;
-	  box-sizing: border-box;
-	}
-	.console{position: fixed;left: 0;top:0;z-index: 10;font-size: 2em;}
-	/**/
-	.swipe,.swipe-item{height: 100%;width: 100%;}
-	.swipe{
-		background-color: #fff;
-		-webkit-transform-style: preserve-3d;
-		-webkit-backface-visibility: hidden;
-	}
-
-	.swipe-item{}
-	.swipe-transition{
-		/*animation-duration: 0.2s;
-		animation-timing-function: linear;
-		animation-name:swipeto;
-		-webkit-animation-duration: 0.2s;
-		-webkit-animation-timing-function: linear;
-		-webkit-animation-name:swipeto;*/
-		transition: transform 0.2s;
-		-webkit-transition: -webkit-transform 0.2s;
-		transition-timing-function: ease;
-		-webkit-transition-timing-function: ease;
+	.img1{
+		width: 2em;float: left;
 	}
 </style>
 </head>
 <body>
 	<div class='swipe' id='swipe'>
-		<div class='swipe-item' style='background-color:#ccc'>
-			1111111111111111111111111111
-		</div>
-		<div class='swipe-item' style='background-color:#111'>
-			2222222222222222222222222222
-		</div>
-		<div class='swipe-item' style='background-color:#f2f2f2'>
-			3333333333333333333333333333
-		</div>
-		<div class='swipe-item' style='background-color:#ddd'>
-			4444444444444444444444444444
+		<div class='swipe-inner'>
+			<div class='swipe-item'>
+				<div class='title'>
+					<p>小米净水器是采用哪种净水技术？</p>
+				</div>
+				<p class='des'>
+					小米净水器采用反渗透净水技术提供安全的饮用水。
+				</p>
+				<p class='des'>
+					目前市场上家用净水器过滤技术按过滤精度分主要有微滤、超滤、反渗透。
+				</p>
+				<ul>
+					<li>
+						微滤(MF)，过滤精度一般在0.1～1微米。用于简单的粗过滤，过滤水中的泥沙、铁锈等大颗粒杂质，一般不能去除水中的细菌、病毒等有害物质。滤芯通常不能清洗，为一次性过滤材料，需要经常更换。大家经常使用的过滤水壶就属于微滤。
+					</li>
+					<li>
+						超滤(UF)：过滤精度在0.01～0.1微米。可滤除水中的铁锈、泥沙、悬浮物、胶体、部分细菌等有害物质，不能去除重金属、水垢等。
+					</li>
+					<li>
+						反渗透(RO)，理论过滤精度达到0.0001微米，比超滤、微滤过滤精度高，反渗透技术能滤除水中的铁锈、泥沙、悬浮物、胶体、细菌、病毒、重金属、水垢、有机物等。一般用于纯净水、工业超纯水、医药超纯水的制造。
+					</li>
+				</ul>
+<!-- 
+				<div><img width=12.59% height=9.84% src="./images/img1.png"></div>
+				 <div class="p1">关于TDS</div>
+				 <p style="line-height:1.3;width:100%;margin-top:8.28%;color:#8d8d8d;font-size:12px;text-align:left;"><img style="float:left;margin-top:0.1%;margin-right:2.11%;" height=4.21% src="./images/101.png" width=7.5%>TDS为溶解性总固体(Total dissolved solids)的缩写,它表明1升水中溶解有多少毫克溶解性固体,单位为毫克/升(mg/L)。TDS包括无机物和有机物两者的含量。由于天然水中所含的有机物以及呈分子状。</p>
+			 		 <p style="line-height:1.3;width:100%;margin-top:5.15%;color:#8d8d8d;font-size:12px;text-align:left;"><img style="float:left;margin-top:0.1%;margin-right:2.11%;" height=4.21% src="./images/102.png" width=7.5%>GB/T　5750《生活饮用水标准检验方法》中采用称量法测定溶解性总固体，实验室和日常生活中一般采用TDS笔或者TDS仪来测试水中的溶解性总固体。</p>
+			 		 <p style="line-height:1.3;width:100%;margin-top:5.15%;color:#8d8d8d;font-size:12px;text-align:left;"><img style="float:left;margin-top:0.1%;margin-right:2.11%;" height=4.21% src="./images/103.png" width=7.5%>反渗透净水器对于盐份有较高的脱除率，可以使自来水中的TDS值大幅度降低。根据消费者自来水水源和使用条件的不同，一般出水的TDS在100 mg/L以下均属正常现象。</p>-->
+			</div>
+			<div class='swipe-item'>
+				2222222222222222222222222222
+			</div>
+			<div class='swipe-item'>
+				3333333333333333333333333333
+			</div>
+			<div class='swipe-item'>
+				4444444444444444444444444444
+			</div>
 		</div>
 	</div>
+	<script src='swipe.js'></script>
 	<script>
-		(function(){
-			function getPos(e){
-				if(isMobile){
-					var touch = e.changedTouches[0];
-					return {
-						x : touch.pageX,
-						y : touch.pageY
-					};
-				}else{
-					return {
-						x : e.pageX,
-						y : e.pageY
-					};
-				}
-			}
-			function getTranslateDistance(el){
-		        var transform = el.style[transformName];
-		        if(!transform){
-		        	return 0;
-		        }
-		        var match = transform.match(/\(.*\)/);
-		        var str = match[0];
-		        str = str.substring(1,str.length - 1);
-		        var match = str.split(",")[1].match(/\-?[0-9]+\.?[0-9]*/g);
-		        return +match[0];
-		    }
-		    function setTranslateY(el,y){
-		        el.style[transformName] = 'translate3d(0,'+y+'px,0)';
-		    }
-			var deviceIsAndroid = navigator.userAgent.indexOf('Android') > 0;
-			var deviceIsIOS = /iP(ad|hone|od)/.test(navigator.userAgent);
-			var deviceIsBlackBerry10 = navigator.userAgent.indexOf('BB10') > 0;
-			var isMobile = deviceIsAndroid || deviceIsIOS || deviceIsBlackBerry10;
-			if(isMobile){
-				var eventNames = ["touchstart","touchmove","touchend","touchcancel"];
-			}else{
-				eventNames = ["mousedown","mousemove","mouseup",""];
-			}
-			var support = {
-				transitionend : (function(){
-					var el = document.createElement('div');
-					var transEndEventNames = {
-						WebkitTransition: 'webkitTransitionEnd',
-						MozTransition: 'transitionend',
-						OTransition: 'oTransitionEnd otransitionend',
-						transition: 'transitionend'
-					};
-					for (var name in transEndEventNames) {
-						if (el.style[name] !== undefined) {
-							return transEndEventNames[name];
-						}
-					}
-					return false;
-				})()
-			};
-			var transformName = 'transform' in document.documentElement.style ? 'transform' : 'webkitTransform';
-			var swipe = document.querySelector("#swipe");
-			var data = {};
-			var curIndex = 0;
-			var timeInterval = 400;
-			var swipeDistance = 30;
-			function move(e){
-				e.preventDefault();
-				e.stopPropagation();
-				var ePos = getPos(e);
-				var sPos = data.startPos;
-				var dY = ePos.y - sPos.y;
-				if((dY > 0 && curIndex === 0) || (dY < 0 && curIndex === data.itemLen - 1)){
-					dY = dY / 2;
-				}
-				setTranslateY(swipe,data.startY + dY);
-			}
-			function end(e){
-				e.preventDefault();
-				e.stopPropagation();
-				document.removeEventListener(eventNames[1],move);
-				document.removeEventListener(eventNames[2],end);
-				var endPos = getPos(e);
-				var dy = data.startPos.y - endPos.y;
-				var h = data.itemHeight;
-				if(+new Date - data.startTime > timeInterval || Math.abs(dy) < swipeDistance){
-					var hh = h / 2;
-					if(Math.abs(dy) < hh){
-						animateSetY(swipe,data.startY);
-						return;
-					}
-				}
-				if((curIndex === data.itemLen - 1 && dy > 0) || (curIndex === 0 && dy < 0)){
-					animateSetY(swipe,data.startY);
-				}else{
-					if(dy > 0){
-						animateSetY(swipe,-h * (curIndex + 1));
-						curIndex++;
-					}else{
-						animateSetY(swipe,-h * (curIndex - 1));
-						curIndex--;
-					}
-				}
-			}
-			document.addEventListener(eventNames[0],function(e){
-				e.preventDefault();
-				e.stopPropagation();
-				data.startPos = getPos(e);
-				data.startY = getTranslateDistance(swipe);
-				data.startTime = +new Date;
-				data.itemHeight = swipe.offsetHeight;
-				data.itemLen = swipe.querySelectorAll(".swipe-item").length;
-				document.addEventListener(eventNames[1],move);
-				document.addEventListener(eventNames[2],end);
-			});
-			swipe.addEventListener(support.transitionend,function(){
-				if(this.classList.contains("swipe-transition")){
-					this.classList.remove('swipe-transition');
-				}
-			});
-			function animateSetY(el,y){
-				el.classList.add("swipe-transition");
-				setTranslateY(el,y);
-			}
-		})();
+		new Swipe("#swipe",{
+			direction : 'y'
+		});
 	</script>
 </body>
 </html>

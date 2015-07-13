@@ -1,0 +1,5 @@
+.list{background-color: #fff}
+.list-item{border-bottom:1px solid #e5e5e5;cursor:pointer}
+.list-item.click-active{background-color: rgba(229,229,229,.8)}
+.list-center{padding: 1em;color: #436170}
+.list-right{padding:0 15px;text-align: center;color: #a5b1b6}
