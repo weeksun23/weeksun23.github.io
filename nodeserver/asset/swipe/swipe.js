@@ -61,15 +61,22 @@
 		},
 		timeInterval : 400,
 		swipeDistance : 30,
-		hasParentNode : function(el,validate){
+		hasParentNode : function(el,node){
+			if(el.tagName.toLowerCase() === 'body'){
+				return el === node;
+			}
 			var p = el.parentNode;
-			
+			while(p.tagName.toLowerCase() !== 'body'){
+				if(p === node) return true;
+				p = p.parentNode;
+			}
+			return false;
 		}
 	});
 	Swipe.prototype = {
 		//获取元素当前的translate值
 		getTranslate : function(){
-			var transform = this.el.style[support.transformName];
+			var transform = this.el.querySelector(".swipe-inner").style[support.transformName];
 	        if(!transform){
 	        	return 0;
 	        }
@@ -80,11 +87,11 @@
 	        return +match[0];
 		},
 		setTranslate : function(value){
-			this.el.style[support.transformName] = this.options.direction === 'y' 
+			this.el.querySelector(".swipe-inner").style[support.transformName] = this.options.direction === 'y' 
 				? ('translate3d(0,'+value+'px,0)') : ('translate3d('+value+'px,0,0)');
 		},
 		setTranslateAnimate : function(value){
-			this.el.classList.add("swipe-transition");
+			this.el.querySelector(".swipe-inner").classList.add("swipe-transition");
 			this.setTranslate(value);
 		},
 		init : function(){
@@ -94,7 +101,8 @@
 				itemLen : swipeEl.querySelectorAll(".swipe-item").length
 			};
 			swipeEl.classList.add("swipe-" + this.options.direction);
-			swipeEl.querySelector(".swipe-inner").style[this.options.direction === 'y' ? "height" : "width"] = data.itemLen * 100 + "%";
+			var swipeInner = swipeEl.querySelector(".swipe-inner");
+			swipeInner.style[this.options.direction === 'y' ? "height" : "width"] = data.itemLen * 100 + "%";
 			var curIndex = 0;
 			function move(e){
 				var ePos = Swipe.getPos(e);
@@ -130,6 +138,9 @@
 				}
 			}
 			document.addEventListener(support.touchEventNames[0],function(e){
+				if(!Swipe.hasParentNode(e.target,swipeEl)){
+					return;
+				}
 				e.preventDefault();
 				e.stopPropagation();
 				data.startPos = Swipe.getPos(e);
@@ -139,7 +150,7 @@
 				document.addEventListener(support.touchEventNames[1],move);
 				document.addEventListener(support.touchEventNames[2],end);
 			});
-			swipeEl.addEventListener(support.transitionend,function(){
+			swipeInner.addEventListener(support.transitionend,function(){
 				if(this.classList.contains("swipe-transition")){
 					this.classList.remove('swipe-transition');
 				}

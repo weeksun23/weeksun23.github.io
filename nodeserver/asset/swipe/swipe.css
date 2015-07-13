@@ -4,6 +4,7 @@
 	-webkit-transform-style: preserve-3d;
 	-webkit-backface-visibility: hidden;
 	width: 100%;height: 100%;
+	overflow: hidden;
 }
 .swipe-x .swipe-inner{
 	-webkit-flex-flow: row nowrap;
@@ -26,6 +27,7 @@
 	box-flex : 1;
 	-webkit-flex: 1;
 	flex: 1;
+	overflow: hidden;
 }
 .swipe-transition{
 	transition: transform 0.2s;
