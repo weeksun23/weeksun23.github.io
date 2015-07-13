@@ -8,43 +8,80 @@
 <link rel="stylesheet" type="text/css" href="base.css">
 <title>swipe</title>
 <style>
-	.swipe-item{padding: 1em 1em 0;}
-	.title{text-align: center;font-size: 1.5em}
-	.title img{width: 1.5em;}
-	.title p{}
-	.des{
-		color:#8d8d8d;line-height: 1.4em;
-		margin-bottom: 0.5em
-	}
-	.img1{
-		width: 2em;float: left;
-	}
+	.zone{width: 90%;margin:20px auto;}
+	.zone>p{margin-bottom: 5px;}
+	.swipe{height:200px;border:1px solid #d2d2d2}
+	.swipe-item{padding: 1em}
+	.swipe .swipe{height: 150px}
 </style>
 </head>
 <body>
-	<div class='swipe' id='swipe' style='height:300px;border:1px solid red'>
-		<div class='swipe-inner'>
-			<div class='swipe-item'>
-				<ul>
-					<li>
-						22333
-					</li>
-					<li>
-						ererer
-					</li>
-					<li>
-						erer
-					</li>
-				</ul>
+	<div class='zone'>
+		<p>垂直方向</p>
+		<div class='swipe' id='swipe'>
+			<div class='swipe-inner'>
+				<div class='swipe-item'>
+					egrgertertertertret
+				</div>
+				<div class='swipe-item'>
+					2222222222222222222222222222
+				</div>
+				<div class='swipe-item'>
+					3333333333333333333333333333
+				</div>
+				<div class='swipe-item'>
+					4444444444444444444444444444
+				</div>
 			</div>
-			<div class='swipe-item'>
-				2222222222222222222222222222
+		</div>
+	</div>
+	<div class='zone'>
+		<p>水平方向</p>
+		<div class='swipe' id='swipeX'>
+			<div class='swipe-inner'>
+				<div class='swipe-item'>
+					egrgertertertertret
+				</div>
+				<div class='swipe-item'>
+					2222222222222222222222222222
+				</div>
+				<div class='swipe-item'>
+					3333333333333333333333333333
+				</div>
+				<div class='swipe-item'>
+					4444444444444444444444444444
+				</div>
 			</div>
-			<div class='swipe-item'>
-				3333333333333333333333333333
-			</div>
-			<div class='swipe-item'>
-				4444444444444444444444444444
+		</div>
+	</div>
+	<div class='zone'>
+		<p>嵌套</p>
+		<div class='swipe' id='outerSwipe'>
+			<div class='swipe-inner'>
+				<div class='swipe-item'>
+					egrgertertertertret
+				</div>
+				<div class='swipe-item'>
+					2222222222222222222222222222
+				</div>
+				<div class='swipe-item'>
+					<div class='swipe' id='innerSwipe'>
+						<div class='swipe-inner'>
+							<div class='swipe-item'>
+								egrgertertertertret
+							</div>
+							<div class='swipe-item'>
+								erhrter43534534
+							</div>
+							<div class='swipe-item'>
+								12312312323
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class='swipe-item'>
+					4444444444444444444444444444
+				</div>
 			</div>
 		</div>
 	</div>
@@ -53,6 +90,11 @@
 		new Swipe("#swipe",{
 			direction : 'y'
 		});
+		new Swipe("#swipeX",{
+			direction : 'x'
+		});
+		new Swipe("#outerSwipe");
+		new Swipe("#innerSwipe");
 	</script>
 </body>
 </html>
