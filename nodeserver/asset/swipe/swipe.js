@@ -40,12 +40,19 @@
 	function Swipe(el,options){
 		this.el = typeof el == 'string' ? document.querySelector(el) : el;
 		this.swipeData = {
-			itemLen : Swipe.getChildren(this.el.querySelector(".swipe-inner")).length,
-			curIndex : 0
+			itemLen : Swipe.getChildren(this.el.querySelector(".swipe-inner")).length
 		};
+		this.curIndex = 0;
 		this.options = extend({
-			direction : "y"
+			direction : "y",
+			//每次切换item后触发
+			onChangeItem : function(){},
+			//是否显示导航点
+			dot : false,
+			//导航点方向
+			dotPosition : 'right'
 		},options);
+		this.transitioning = false;
 		this.init();
 	}
 	extend(Swipe,{
@@ -85,48 +92,21 @@
 			return children;
 		}
 	});
-	function AnimationTimer() {
-        //不存在msRequestAnimationFrame，IE10与Chrome24直接用:requestAnimationFrame
-        if (window.requestAnimationFrame) {
-            return {
-                start: requestAnimationFrame.bind(window),
-                stop: cancelAnimationFrame.bind(window)
-            }
-            //Firefox11-没有实现cancelRequestAnimationFrame
-            //并且mozRequestAnimationFrame与标准出入过大
-        } else if (window.mozCancelRequestAnimationFrame && window.mozCancelAnimationFrame) {
-            return {
-                start: mozRequestAnimationFrame.bind(window),
-                stop: mozCancelAnimationFrame.bind(window)
-            }
-        } else if (window.webkitRequestAnimationFrame && webkitRequestAnimationFrame(String)) {
-            return {//修正某个特异的webKit版本下没有time参数
-                start: webkitRequestAnimationFrame.bind(window),
-                stop: (window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame).bind(window)
-            }
-        } else {
-            var timeLast = 0
-            // http://jsperf.com/date-now-vs-date-gettime/11
-            var now = Date.now || function() {
-                return (new Date).getTime()
-            }
-            return {
-                start: function(callback) {//主要用于IE，必须千方百计要提高性能
-                    var timeCurrent = now()
-                    // http://jsperf.com/math-max-vs-comparison/3
-                    var timeDelta = 16 - (timeCurrent - timeLast)
-                    if (timeDelta < 0)
-                        timeDelta = 0
-                    timeLast = timeCurrent + timeDelta
-                    return setTimeout(callback, timeDelta)
-                },
-                stop: function(id) {
-                    clearTimeout(id)
-                }
-            };
-        }
-    }
-    var Timer = new AnimationTimer();
+	function toggleDot(el,index,isSel){
+		var dots = el.querySelectorAll(".swipe-nav-dot");
+		var target = dots[index];
+		if(isSel !== undefined){
+			target.classList[isSel ? "add" : "remove"]("selected");
+		}else{
+			var sel = el.querySelector(".swipe-nav").querySelector(".selected");
+			if(sel && sel !== target){
+				sel.classList.remove("selected");
+			}
+			if(sel !== target){
+				target.classList.add("selected");
+			}
+		}
+	}
 	var swipeNum = 0;
 	Swipe.prototype = {
 		//获取元素当前的translate值
@@ -146,33 +126,17 @@
 				? ('translate3d(0,'+value+'px,0)') : ('translate3d('+value+'px,0,0)');
 		},
 		setTranslateAnimate : function(value){
-			//this.el.querySelector(".swipe-inner").classList.add("swipe-transition");
-			//this.setTranslate(value);
-			var curVal = this.getTranslate();
-			var f = value > curVal;
-			var dv = Math.abs(value - curVal) / 10; 
-			var d = f ? dv : -dv;
-			var me = this;
-            var TimerID = Timer.start(function raf() {
-                if (TimerID) {
-                	curVal = curVal + d;
-					if((f && curVal >= value) || (!f && curVal <= value)){
-						curVal = value;
-						Timer.stop(TimerID);
-						TimerID = null;
-					}
-					me.setTranslate(curVal);
-                    Timer.start(raf)
-                }
-            })
+			this.transitioning = true;
+			this.el.querySelector(".swipe-inner").classList.add("swipe-transition");
+			this.setTranslate(value);
 		},
 		_move : function(e){
 			var ePos = Swipe.getPos(e);
 			var swipeData = this.swipeData;
 			var sPos = swipeData.startPos;
 			var dd = ePos[this.options.direction] - sPos[this.options.direction];
-			if((dd > 0 && swipeData.curIndex === 0) || 
-				(dd < 0 && swipeData.curIndex === swipeData.itemLen - 1)){
+			if((dd > 0 && this.curIndex === 0) || 
+				(dd < 0 && this.curIndex === swipeData.itemLen - 1)){
 				dd = dd / 2;
 			}
 			this.setTranslate(swipeData.startD + dd);
@@ -188,16 +152,10 @@
 					return;
 				}
 			}
-			if((data.curIndex === data.itemLen - 1 && dd > 0) || (data.curIndex === 0 && dd < 0)){
+			if((this.curIndex === data.itemLen - 1 && dd > 0) || (this.curIndex === 0 && dd < 0)){
 				this.setTranslateAnimate(data.startD);
 			}else{
-				if(dd > 0){
-					this.setTranslateAnimate(-size * (data.curIndex + 1));
-					data.curIndex++;
-				}else{
-					this.setTranslateAnimate(-size * (data.curIndex - 1));
-					data.curIndex--;
-				}
+				this._swipeTo(this.curIndex + (dd > 0 ? 1 : -1));
 			}
 		},
 		init : function(){
@@ -208,14 +166,26 @@
 			var swipeInner = swipeEl.querySelector(".swipe-inner");
 			swipeInner.style[this.options.direction === 'y' ? "height" : "width"] = 
 				this.swipeData.itemLen * 100 + "%";
-			/*swipeInner.addEventListener(support.transitionend,function(e){
-				setConsole("transitionend" + transitionendNum++);
+			swipeInner.addEventListener(support.transitionend,function(e){
+				me.transitioning = false;
 				e.preventDefault();
 				e.stopPropagation();
 				if(this.classList.contains("swipe-transition")){
 					this.classList.remove('swipe-transition');
 				}
-			});*/
+			});
+			if(this.options.dot){
+				var dots = document.createElement("div");
+				dots.className = "swipe-nav swipe-nav-" + this.options.dotPosition;
+				var len = this.swipeData.itemLen;
+				var html = [];
+				for(var i=0;i<len;i++){
+					html.push("<span class='swipe-nav-dot'></span>");
+				}
+				dots.innerHTML = html.join("");
+				swipeEl.appendChild(dots);
+				toggleDot(swipeEl,0,true);
+			}
 			if(swipeNum === 0){
 				document.addEventListener(support.touchEventNames[0],function(e){
 					var swipeEl = Swipe.hasParentNodeByCls(e.target,"swipe");
@@ -225,11 +195,16 @@
 					e.preventDefault();
 					e.stopPropagation();
 					var _swipe = swipeEl._swipe;
+					if(_swipe.transitioning) {
+						swipeEl.querySelector(".swipe-inner").classList.remove("swipe-transition");
+						//swipeEl.querySelector(".swipe-inner").classList.add("swipe-transition-stop");
+						//swipeEl.querySelector(".swipe-inner").classList.remove("swipe-transition-stop");
+					}
 					var data = _swipe.swipeData;
 					data.startPos = Swipe.getPos(e);
 					data.startD = _swipe.getTranslate();
 					data.startTime = +new Date;
-					data.itemSize = _swipe.options.direction === 'y' ? swipeEl.offsetHeight : swipeEl.offsetWidth;
+					_swipe.updateItemSize();
 					function move(e){
 						_swipe._move(e);
 					}
@@ -243,6 +218,27 @@
 				});
 			}
 			swipeNum++;
+		},
+		updateItemSize : function(){
+			this.swipeData.itemSize = this.options.direction === 'y' ? this.el.offsetHeight : this.el.offsetWidth;
+		},
+		_swipeTo : function(i){
+			var data = this.swipeData;
+			this.curIndex = i;
+			this.setTranslateAnimate(-data.itemSize * i);
+			this.options.onChangeItem.call(this,i);
+			if(this.options.dot){
+				toggleDot(this.el,i);
+			}
+		},
+		/*方法*/
+		swipeTo : function(i){
+			this.updateItemSize();
+			this._swipeTo(i);
+		},
+		resize : function(){
+			this.updateItemSize();
+			this.setTranslate(-this.swipeData.itemSize * this.curIndex);
 		}
 	};
 	window.Swipe = Swipe;

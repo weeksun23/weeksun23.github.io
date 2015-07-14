@@ -3,6 +3,7 @@
 	background-color: #fff;
 	width: 100%;height: 100%;
 	overflow: hidden;
+	position: relative;
 }
 .swipe-x>.swipe-inner{
 	-webkit-flex-flow: row nowrap;
@@ -35,10 +36,42 @@
 	height: 100%;
 	overflow: hidden;
 }
-/*
 .swipe-transition{
-	transition: transform 0.2s;
-	-webkit-transition: -webkit-transform 0.2s;
+	transition: transform 0.3s;
+	-webkit-transition: -webkit-transform 0.3s;
 	transition-timing-function: ease;
 	-webkit-transition-timing-function: ease;
-}*/
+}
+.swipe-transition-stop{
+	transition-duration : 0s;
+	-weblit-transition-duration : 0s;
+}
+.swipe-nav{
+	position: absolute;
+}
+.swipe-nav-dot{
+	width: 8px;height: 8px;border-radius: 100%;background-color: #000;opacity: .2;
+}
+.swipe-nav-dot.selected{
+	background-color: #007aff;opacity: 1;
+}
+/*right*/
+.swipe-nav-right{
+	right: 10px;
+	top: 50%;
+	-webkit-transform: translate3d(0,-50%,0);
+	transform: translate3d(0,-50%,0);
+}
+.swipe-nav-right span{
+	display: block;margin: 5px 0;
+}
+/*bottom*/
+.swipe-nav-bottom{
+	bottom: 10px;
+	left: 50%;
+	-webkit-transform: translate3d(-50%,0,0);
+	transform: translate3d(-50%,0,0);
+}
+.swipe-nav-bottom span{
+	display: inline-block;margin: 0 5px;
+}
