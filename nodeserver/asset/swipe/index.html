@@ -25,9 +25,12 @@
 	.swipe-inner>.swipe-item:nth-child(4){
 		background-color: #FCF93B
 	}
+
+	.console{position: fixed;background-color: #000;color: #fff;opacity: 0.8;left:25%;right: 25%;top: 0;z-index: 100}
 </style>
 </head>
 <body>
+	<div class='console'></div>
 	<div class='zone'>
 		<p>垂直方向</p>
 		<div class='swipe' id='swipe'>
@@ -97,8 +100,11 @@
 			</div>
 		</div>
 	</div>
-	<script src='swipe.js?1'></script>
+	<script src='swipe.js?rr'></script>
 	<script>
+		function setConsole(text){
+			document.querySelector(".console").innerHTML = text;
+		}
 		new Swipe("#swipe",{
 			direction : 'y'
 		});

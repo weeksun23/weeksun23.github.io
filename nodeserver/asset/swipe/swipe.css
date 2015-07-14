@@ -35,9 +35,10 @@
 	height: 100%;
 	overflow: hidden;
 }
+/*
 .swipe-transition{
 	transition: transform 0.2s;
 	-webkit-transition: -webkit-transform 0.2s;
 	transition-timing-function: ease;
 	-webkit-transition-timing-function: ease;
-}
+}*/

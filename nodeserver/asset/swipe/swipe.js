@@ -70,7 +70,7 @@
 				return el.classList.contains(cls) ? el : false;
 			}
 			var p = el.parentNode;
-			while(p.tagName.toLowerCase() !== 'body'){
+			while(p && p.tagName && p.tagName.toLowerCase() !== 'body'){
 				if(p.classList.contains(cls)) return p;
 				p = p.parentNode;
 			}
@@ -85,6 +85,48 @@
 			return children;
 		}
 	});
+	function AnimationTimer() {
+        //不存在msRequestAnimationFrame，IE10与Chrome24直接用:requestAnimationFrame
+        if (window.requestAnimationFrame) {
+            return {
+                start: requestAnimationFrame.bind(window),
+                stop: cancelAnimationFrame.bind(window)
+            }
+            //Firefox11-没有实现cancelRequestAnimationFrame
+            //并且mozRequestAnimationFrame与标准出入过大
+        } else if (window.mozCancelRequestAnimationFrame && window.mozCancelAnimationFrame) {
+            return {
+                start: mozRequestAnimationFrame.bind(window),
+                stop: mozCancelAnimationFrame.bind(window)
+            }
+        } else if (window.webkitRequestAnimationFrame && webkitRequestAnimationFrame(String)) {
+            return {//修正某个特异的webKit版本下没有time参数
+                start: webkitRequestAnimationFrame.bind(window),
+                stop: (window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimationFrame).bind(window)
+            }
+        } else {
+            var timeLast = 0
+            // http://jsperf.com/date-now-vs-date-gettime/11
+            var now = Date.now || function() {
+                return (new Date).getTime()
+            }
+            return {
+                start: function(callback) {//主要用于IE，必须千方百计要提高性能
+                    var timeCurrent = now()
+                    // http://jsperf.com/math-max-vs-comparison/3
+                    var timeDelta = 16 - (timeCurrent - timeLast)
+                    if (timeDelta < 0)
+                        timeDelta = 0
+                    timeLast = timeCurrent + timeDelta
+                    return setTimeout(callback, timeDelta)
+                },
+                stop: function(id) {
+                    clearTimeout(id)
+                }
+            };
+        }
+    }
+    var Timer = new AnimationTimer();
 	var swipeNum = 0;
 	Swipe.prototype = {
 		//获取元素当前的translate值
@@ -104,8 +146,25 @@
 				? ('translate3d(0,'+value+'px,0)') : ('translate3d('+value+'px,0,0)');
 		},
 		setTranslateAnimate : function(value){
-			this.el.querySelector(".swipe-inner").classList.add("swipe-transition");
-			this.setTranslate(value);
+			//this.el.querySelector(".swipe-inner").classList.add("swipe-transition");
+			//this.setTranslate(value);
+			var curVal = this.getTranslate();
+			var f = value > curVal;
+			var dv = Math.abs(value - curVal) / 10; 
+			var d = f ? dv : -dv;
+			var me = this;
+            var TimerID = Timer.start(function raf() {
+                if (TimerID) {
+                	curVal = curVal + d;
+					if((f && curVal >= value) || (!f && curVal <= value)){
+						curVal = value;
+						Timer.stop(TimerID);
+						TimerID = null;
+					}
+					me.setTranslate(curVal);
+                    Timer.start(raf)
+                }
+            })
 		},
 		_move : function(e){
 			var ePos = Swipe.getPos(e);
@@ -149,13 +208,14 @@
 			var swipeInner = swipeEl.querySelector(".swipe-inner");
 			swipeInner.style[this.options.direction === 'y' ? "height" : "width"] = 
 				this.swipeData.itemLen * 100 + "%";
-			swipeInner.addEventListener(support.transitionend,function(e){
+			/*swipeInner.addEventListener(support.transitionend,function(e){
+				setConsole("transitionend" + transitionendNum++);
 				e.preventDefault();
 				e.stopPropagation();
 				if(this.classList.contains("swipe-transition")){
 					this.classList.remove('swipe-transition');
 				}
-			});
+			});*/
 			if(swipeNum === 0){
 				document.addEventListener(support.touchEventNames[0],function(e){
 					var swipeEl = Swipe.hasParentNodeByCls(e.target,"swipe");
