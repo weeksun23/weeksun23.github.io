@@ -35,6 +35,7 @@
   	display: -webkit-flex;
   	display: flex; 
 }
+.swipe,.swipe-inner{padding:0;margin:0;}
 .swipe-item{
 	display: block;
 	-webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
@@ -67,9 +68,8 @@
 .swipe-nav-dot.selected{
 	background-color: #007aff;opacity: 1;
 }
-/*right*/
-.swipe-nav-right{
-	right: 10px;
+/*right left*/
+.swipe-nav-right,.swipe-nav-left{
 	top: 50%;
 	transform: translate3d(0,-50%,0);
 	-webkit-transform: translate3d(0,-50%,0);
@@ -77,12 +77,19 @@
 	-ms-transform: translate3d(0,-50%,0);
 	-o-transform: translate3d(0,-50%,0);
 }
-.swipe-nav-right span{
+.swipe-nav-right span,.swipe-nav-left span{
 	display: block;margin: 5px 0;
 }
-/*bottom*/
-.swipe-nav-bottom{
-	bottom: 10px;
+/*right*/
+.swipe-nav-right{
+	right: 10px;
+}
+/*left*/
+.swipe-nav-left{
+	left: 10px;
+}
+/*bottom top*/
+.swipe-nav-bottom,.swipe-nav-top{
 	left: 50%;
 	transform: translate3d(-50%,0,0);
 	-webkit-transform: translate3d(-50%,0,0);
@@ -90,6 +97,14 @@
 	-ms-transform: translate3d(-50%,0,0);
 	-o-transform: translate3d(-50%,0,0);
 }
-.swipe-nav-bottom span{
+.swipe-nav-bottom span,.swipe-nav-top span{
 	display: inline-block;margin: 0 3px;
+}
+/*bottom*/
+.swipe-nav-bottom{
+	bottom: 10px;
+}
+/*top*/
+.swipe-nav-top{
+	top: 10px;
 }

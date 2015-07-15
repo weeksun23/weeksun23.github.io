@@ -8,7 +8,8 @@
 <link rel="stylesheet" type="text/css" href="../base.css">
 <title>swipe</title>
 <style>
-	.zone{width: 90%;margin:20px auto;}
+	body{padding-bottom: 20px}
+	.zone{width: 90%;margin:0 auto;padding-top:20px;}
 	.zone>p{margin-bottom: 5px;}
 	.swipe{height:200px;}
 	.swipe-item{padding: 1em}
@@ -25,7 +26,6 @@
 	.swipe-inner>.swipe-item:nth-child(4){
 		background-color: #FCF93B
 	}
-
 	.console{position: fixed;background-color: #000;color: #fff;opacity: 0.8;left:25%;right: 25%;top: 0;z-index: 100}
 </style>
 </head>
@@ -106,14 +106,16 @@
 			document.querySelector(".console").innerHTML = text;
 		}
 		new Swipe("#swipe",{
-			direction : 'y',autoPlay : true,dot : true
+			autoPlay : false,dot : true
 		});
 		new Swipe("#swipeX",{
-			direction : 'x',dot : true,dotPosition : 'bottom'
+			direction : 'x',dot : true,dotPosition : 'bottom',autoPlay : false
 		});
-		new Swipe("#outerSwipe");
+		new Swipe("#outerSwipe",{
+			dot : true,autoPlay : false,dotPosition : 'left'
+		});
 		new Swipe("#innerSwipe",{
-			direction : 'y',dot : true
+			dot : true,autoPlay : false,direction : 'x',dotPosition : 'top'
 		});
 	</script>
 </body>

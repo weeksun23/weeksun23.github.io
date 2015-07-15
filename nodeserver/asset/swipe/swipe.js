@@ -42,14 +42,17 @@
 		this.swipeData = {};
 		this.curIndex = 0;
 		this.options = extend({
+			//滑动方向
 			direction : "y",
-			//每次切换item后触发
+			//每次切换页后触发
 			onChangeItem : function(){},
 			//是否显示导航点
 			dot : false,
 			//导航点方向
 			dotPosition : 'right',
+			//是否自动播放
 			autoPlay : false,
+			//自动播放周期
 			duration : 3000
 		},options);
 		this.transitioning = false;
@@ -95,12 +98,13 @@
 		}
 	});
 	function toggleDot(el,index,isSel){
-		var dots = el.querySelectorAll(".swipe-nav-dot");
+		var nav = getSwipeNav(el);
+		var dots = nav.querySelectorAll(".swipe-nav-dot");
 		var target = dots[index];
 		if(isSel !== undefined){
 			target.classList[isSel ? "add" : "remove"]("selected");
 		}else{
-			var sel = el.querySelector(".swipe-nav").querySelector(".selected");
+			var sel = nav.querySelector(".selected");
 			if(sel && sel !== target){
 				sel.classList.remove("selected");
 			}
@@ -109,7 +113,16 @@
 			}
 		}
 	}
-	var swipeNum = 0;
+	function getSwipeNav(el){
+		var chs = Swipe.getChildren(el);
+		for(var i=0,ii;ii=chs[i++];){
+			if(ii.classList.contains("swipe-nav")){
+				return ii;
+			}
+		}
+		return null;
+	}
+	var initTouchStart = false;
 	Swipe.prototype = {
 		//获取元素当前的translate值
 		getTranslate : function(){
@@ -179,7 +192,8 @@
 			if(this.options.autoPlay){
 				this._setAutoPlay(true);
 			}
-			if(swipeNum === 0){
+			if(!initTouchStart){
+				initTouchStart = true;
 				document.addEventListener(support.touchEventNames[0],function(e){
 					var swipeEl = Swipe.hasParentNodeByCls(e.target,"swipe");
 					if(!swipeEl){
@@ -192,8 +206,6 @@
 					if(_swipe.transitioning) {
 						swipeEl.querySelector(".swipe-inner").classList.remove("swipe-transition");
 						_swipe.transitioning = false;
-						//swipeEl.querySelector(".swipe-inner").classList.add("swipe-transition-stop");
-						//swipeEl.querySelector(".swipe-inner").classList.remove("swipe-transition-stop");
 					}
 					var data = _swipe.swipeData;
 					data.startPos = Swipe.getPos(e);
@@ -212,7 +224,6 @@
 					document.addEventListener(support.touchEventNames[2],end);
 				});
 			}
-			swipeNum++;
 		},
 		updateItemSize : function(){
 			this.swipeData.itemSize = this.options.direction === 'y' ? this.el.offsetHeight : this.el.offsetWidth;
@@ -223,6 +234,7 @@
 			this.itemLen = newLen;
 			this.el.querySelector(".swipe-inner").style[this.options.direction === 'y' ? "height" : "width"] = 
 				this.itemLen * 100 + "%";
+				//this.itemLen * (this.options.direction === 'y' ? this.el.offsetHeight : this.el.offsetWidth) + "px";
 			if(this.options.dot){
 				var len = this.itemLen;
 				var html = [];
@@ -230,7 +242,7 @@
 					html.push("<span class='swipe-nav-dot'></span>");
 				}
 				var el = this.el;
-				var nav = el.querySelector(".swipe-nav");
+				var nav = getSwipeNav(el);
 				if(nav){
 					nav.innerHTML = html.join("");
 				}else{
@@ -268,27 +280,33 @@
 			}
 		},
 		/*方法*/
+		//设置是否自动播放
 		setAutoPlay : function(isAutoPlay){
 			this._setAutoPlay(this.options.autoPlay = isAutoPlay);
 		},
+		//暂停自动播放
 		pause : function(){
 			if(this.options.autoPlay){
 				this._setAutoPlay(false);
 			}
 		},
+		//继续自动播放
 		goon : function(){
 			if(this.options.autoPlay){
 				this._setAutoPlay(true);
 			}
 		},
+		//根据页索引滑动到目标页
 		swipeTo : function(i){
 			this.updateItemSize();
 			this._swipeTo(i);
 		},
+		//重新调整尺寸
 		resize : function(){
 			this.updateItemSize();
 			this.setTranslate(-this.swipeData.itemSize * this.curIndex);
 		},
+		//更新页数量 并调整尺寸
 		update : function(){
 			this.updateItemLen();
 			this.resize();
