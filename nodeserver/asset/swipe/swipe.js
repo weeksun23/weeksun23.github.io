@@ -124,6 +124,7 @@
 	}
 	var initTouchStart = false;
 	Swipe.prototype = {
+		constructor : Swipe,
 		//获取元素当前的translate值
 		getTranslate : function(){
 			var transform = this.el.querySelector(".swipe-inner").style[support.transformName];
