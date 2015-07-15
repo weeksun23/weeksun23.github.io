@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="format-detection" content="telephone=no">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
-<link rel="stylesheet" type="text/css" href="swipe.css?ddsa">
-<link rel="stylesheet" type="text/css" href="base.css">
+<link rel="stylesheet" type="text/css" href="../swipe.css?234">
+<link rel="stylesheet" type="text/css" href="../base.css">
 <title>swipe</title>
 <style>
 	.zone{width: 90%;margin:20px auto;}
@@ -100,19 +100,21 @@
 			</div>
 		</div>
 	</div>
-	<script src='swipe.js?rr'></script>
+	<script src='../swipe.js?rr'></script>
 	<script>
 		function setConsole(text){
 			document.querySelector(".console").innerHTML = text;
 		}
 		new Swipe("#swipe",{
-			direction : 'y'
+			direction : 'y',autoPlay : true,dot : true
 		});
 		new Swipe("#swipeX",{
-			direction : 'x'
+			direction : 'x',dot : true,dotPosition : 'bottom'
 		});
 		new Swipe("#outerSwipe");
-		new Swipe("#innerSwipe");
+		new Swipe("#innerSwipe",{
+			direction : 'y',dot : true
+		});
 	</script>
 </body>
 </html>

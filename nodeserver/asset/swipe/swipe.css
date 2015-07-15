@@ -6,32 +6,42 @@
 	position: relative;
 }
 .swipe-x>.swipe-inner{
+	height: 100%;
 	-webkit-flex-flow: row nowrap;
+	-moz-flex-flow:row nowrap;
+	-ms-flex-flow:row nowrap;
   	flex-flow: row nowrap;
-  	height: 100%;
   	box-orient: horizontal;
   	-webkit-box-orient: horizontal;
+  	-moz-box-orient: horizontal;
+  	-ms-box-orient: horizontal;
 }
 .swipe-y>.swipe-inner{
 	flex-flow: column nowrap;
   	-webkit-flex-flow: column nowrap;
+  	-moz-flex-flow: column nowrap;
+  	-ms-flex-flow: column nowrap;
   	box-orient: vertical;
   	-webkit-box-orient: vertical;
+  	-moz-box-orient: vertical;
+  	-ms-box-orient: vertical;
 }
 .swipe-inner{
 	-webkit-transform-style: preserve-3d;
 	-webkit-backface-visibility: hidden;
-	display: -webkit-box;
-	display: box;
-	display: -webkit-flex;
-  	display: flex;
+  	display: -webkit-box;
+ 	display: -moz-box;
+  	display: -ms-flexbox;
+  	display: -webkit-flex;
+  	display: flex; 
 }
 .swipe-item{
 	display: block;
-	-webkit-box-flex: 1;
-	box-flex : 1;
-	-webkit-flex: 1;
-	flex: 1;
+	-webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
+  	-moz-box-flex: 1;         /* OLD - Firefox 19- */
+  	-webkit-flex: 1;          /* Chrome */
+  	-ms-flex: 1;              /* IE 10 */
+  	flex: 1;
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
@@ -39,12 +49,14 @@
 .swipe-transition{
 	transition: transform 0.3s;
 	-webkit-transition: -webkit-transform 0.3s;
+	-moz-transition: -moz-transform 0.3s;
+	-ms-transition: -ms-transform 0.3s;
+	-o-transition: -o-transform 0.3s;
 	transition-timing-function: ease;
 	-webkit-transition-timing-function: ease;
-}
-.swipe-transition-stop{
-	transition-duration : 0s;
-	-weblit-transition-duration : 0s;
+	-moz-transition-timing-function: ease;
+	-ms-transition-timing-function: ease;
+	-o-transition-timing-function: ease;
 }
 .swipe-nav{
 	position: absolute;
@@ -59,8 +71,11 @@
 .swipe-nav-right{
 	right: 10px;
 	top: 50%;
-	-webkit-transform: translate3d(0,-50%,0);
 	transform: translate3d(0,-50%,0);
+	-webkit-transform: translate3d(0,-50%,0);
+	-moz-transform: translate3d(0,-50%,0);
+	-ms-transform: translate3d(0,-50%,0);
+	-o-transform: translate3d(0,-50%,0);
 }
 .swipe-nav-right span{
 	display: block;margin: 5px 0;
@@ -69,9 +84,12 @@
 .swipe-nav-bottom{
 	bottom: 10px;
 	left: 50%;
-	-webkit-transform: translate3d(-50%,0,0);
 	transform: translate3d(-50%,0,0);
+	-webkit-transform: translate3d(-50%,0,0);
+	-moz-transform: translate3d(-50%,0,0);
+	-ms-transform: translate3d(-50%,0,0);
+	-o-transform: translate3d(-50%,0,0);
 }
 .swipe-nav-bottom span{
-	display: inline-block;margin: 0 5px;
+	display: inline-block;margin: 0 3px;
 }

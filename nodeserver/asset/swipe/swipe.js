@@ -39,9 +39,7 @@
 	//核心代码
 	function Swipe(el,options){
 		this.el = typeof el == 'string' ? document.querySelector(el) : el;
-		this.swipeData = {
-			itemLen : Swipe.getChildren(this.el.querySelector(".swipe-inner")).length
-		};
+		this.swipeData = {};
 		this.curIndex = 0;
 		this.options = extend({
 			direction : "y",
@@ -50,9 +48,13 @@
 			//是否显示导航点
 			dot : false,
 			//导航点方向
-			dotPosition : 'right'
+			dotPosition : 'right',
+			autoPlay : false,
+			duration : 3000
 		},options);
 		this.transitioning = false;
+		this.autoPlayInterval = null;
+		this.itemLen = null;
 		this.init();
 	}
 	extend(Swipe,{
@@ -136,7 +138,7 @@
 			var sPos = swipeData.startPos;
 			var dd = ePos[this.options.direction] - sPos[this.options.direction];
 			if((dd > 0 && this.curIndex === 0) || 
-				(dd < 0 && this.curIndex === swipeData.itemLen - 1)){
+				(dd < 0 && this.curIndex === this.itemLen - 1)){
 				dd = dd / 2;
 			}
 			this.setTranslate(swipeData.startD + dd);
@@ -152,21 +154,21 @@
 					return;
 				}
 			}
-			if((this.curIndex === data.itemLen - 1 && dd > 0) || (this.curIndex === 0 && dd < 0)){
+			if((this.curIndex === this.itemLen - 1 && dd > 0) || (this.curIndex === 0 && dd < 0)){
 				this.setTranslateAnimate(data.startD);
 			}else{
 				this._swipeTo(this.curIndex + (dd > 0 ? 1 : -1));
 			}
+			this.goon();
 		},
 		init : function(){
 			var me = this;
 			var swipeEl = this.el;
 			swipeEl._swipe = this;
 			swipeEl.classList.add("swipe-" + this.options.direction);
-			var swipeInner = swipeEl.querySelector(".swipe-inner");
-			swipeInner.style[this.options.direction === 'y' ? "height" : "width"] = 
-				this.swipeData.itemLen * 100 + "%";
-			swipeInner.addEventListener(support.transitionend,function(e){
+			//更新inner的size
+			this.updateItemLen();
+			swipeEl.querySelector(".swipe-inner").addEventListener(support.transitionend,function(e){
 				me.transitioning = false;
 				e.preventDefault();
 				e.stopPropagation();
@@ -174,17 +176,8 @@
 					this.classList.remove('swipe-transition');
 				}
 			});
-			if(this.options.dot){
-				var dots = document.createElement("div");
-				dots.className = "swipe-nav swipe-nav-" + this.options.dotPosition;
-				var len = this.swipeData.itemLen;
-				var html = [];
-				for(var i=0;i<len;i++){
-					html.push("<span class='swipe-nav-dot'></span>");
-				}
-				dots.innerHTML = html.join("");
-				swipeEl.appendChild(dots);
-				toggleDot(swipeEl,0,true);
+			if(this.options.autoPlay){
+				this._setAutoPlay(true);
 			}
 			if(swipeNum === 0){
 				document.addEventListener(support.touchEventNames[0],function(e){
@@ -195,8 +188,10 @@
 					e.preventDefault();
 					e.stopPropagation();
 					var _swipe = swipeEl._swipe;
+					_swipe.pause();
 					if(_swipe.transitioning) {
 						swipeEl.querySelector(".swipe-inner").classList.remove("swipe-transition");
+						_swipe.transitioning = false;
 						//swipeEl.querySelector(".swipe-inner").classList.add("swipe-transition-stop");
 						//swipeEl.querySelector(".swipe-inner").classList.remove("swipe-transition-stop");
 					}
@@ -222,6 +217,31 @@
 		updateItemSize : function(){
 			this.swipeData.itemSize = this.options.direction === 'y' ? this.el.offsetHeight : this.el.offsetWidth;
 		},
+		updateItemLen : function(){
+			var newLen = Swipe.getChildren(this.el.querySelector(".swipe-inner")).length;
+			if(this.itemLen === newLen) return;
+			this.itemLen = newLen;
+			this.el.querySelector(".swipe-inner").style[this.options.direction === 'y' ? "height" : "width"] = 
+				this.itemLen * 100 + "%";
+			if(this.options.dot){
+				var len = this.itemLen;
+				var html = [];
+				for(var i=0;i<len;i++){
+					html.push("<span class='swipe-nav-dot'></span>");
+				}
+				var el = this.el;
+				var nav = el.querySelector(".swipe-nav");
+				if(nav){
+					nav.innerHTML = html.join("");
+				}else{
+					nav = document.createElement("div");
+					nav.className = "swipe-nav swipe-nav-" + this.options.dotPosition;
+					nav.innerHTML = html.join("");
+					el.appendChild(nav);
+				}
+				toggleDot(el,0,true);
+			}
+		},
 		_swipeTo : function(i){
 			var data = this.swipeData;
 			this.curIndex = i;
@@ -231,7 +251,36 @@
 				toggleDot(this.el,i);
 			}
 		},
+		_setAutoPlay : function(isAutoPlay){
+			if(isAutoPlay){
+				var me = this;
+				this.autoPlayInterval = setInterval(function(){
+					if(!me.autoPlayInterval) return;
+					var nxtIndex = me.curIndex + 1;
+					if(nxtIndex === me.itemLen){
+						nxtIndex = 0;
+					}
+					me.swipeTo(nxtIndex);
+				},this.options.duration);
+			}else{
+				clearInterval(this.autoPlayInterval);
+				this.autoPlayInterval = null;
+			}
+		},
 		/*方法*/
+		setAutoPlay : function(isAutoPlay){
+			this._setAutoPlay(this.options.autoPlay = isAutoPlay);
+		},
+		pause : function(){
+			if(this.options.autoPlay){
+				this._setAutoPlay(false);
+			}
+		},
+		goon : function(){
+			if(this.options.autoPlay){
+				this._setAutoPlay(true);
+			}
+		},
 		swipeTo : function(i){
 			this.updateItemSize();
 			this._swipeTo(i);
@@ -239,6 +288,10 @@
 		resize : function(){
 			this.updateItemSize();
 			this.setTranslate(-this.swipeData.itemSize * this.curIndex);
+		},
+		update : function(){
+			this.updateItemLen();
+			this.resize();
 		}
 	};
 	window.Swipe = Swipe;
