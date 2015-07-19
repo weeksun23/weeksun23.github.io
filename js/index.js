@@ -17,6 +17,9 @@
 			children : [{
 				href : "YuriUI/demo/index.html",title : "Yuri ui",date : "2014-11-21",
 				desc : "基于avalon的ui库"
+			},{
+				href : "AvalonBootstrap",title : "AvalonBootstrap",date : "2015-07-19",
+				desc : "用avalon做的一些bootstrap组件"
 			}]
 		},{
 			title : 'avalon.mobile',
