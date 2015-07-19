@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title></title>
+<style>
+	textarea{display: block;height: 200px;width: 100%}
+	.btn{display: block;padding: 20px;text-align: center;width: 100%;}
+</style>
+</head>
+<body>
+	<p>
+		<textarea id='source'></textarea>
+	</p>
+	<button class='btn' onclick='transfer()'>transfer</button>
+	<p>
+		<textarea id='target' readonly></textarea>
+	</p>
+	<script>
+		function transfer () {
+			var value = document.getElementById('source').value;
+			console.log(value);
+			document.getElementById('target').value = value.replace(/\</g,"&lt;").replace(/\>/g,"&gt;");
+		}
+	</script>
+</body>
+</html>
