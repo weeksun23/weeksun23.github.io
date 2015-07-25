@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+<link rel="stylesheet" type="text/css" href="swipe/swipe.css">
+<title></title>
+<style>
+	html {
+	  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	}
+	body{
+	  font-size: 16px;font-family: \5FAE\8F6F\96C5\9ED1,Helvetica;
+	  -webkit-overflow-scrolling: touch;background-color: #F8F8F8;
+	  -ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;
+	}
+	body,html{width: 100%;height: 100%;overflow: hidden;}
+	input,button{-webkit-appearance: none;}
+	body,p,input,ul,li{margin:0;padding: 0}
+	* {
+	  -webkit-box-sizing: border-box;
+	  -moz-box-sizing: border-box;
+	  box-sizing: border-box;
+	}
+	*:before,
+	*:after {
+	  -webkit-box-sizing: border-box;
+	  -moz-box-sizing: border-box;
+	  box-sizing: border-box;
+	}
+	.fl{float: left}
+	.vbh{visibility: hidden;}
+	.tac{text-align: center;}
+	.clearfix:after{visibility: hidden;display: block;font-size: 0;content: " ";clear: both;height: 0;}
+	/**/
+	@media (min-width: 532px) {
+		body{font-size: 20px}
+	}
+	/**/
+	.detail{
+		position: absolute;left: 0;right: 0;top: 50%;
+		transform:translate3d(0,-50%,0);
+		-webkit-transform:translate3d(0,-50%,0);
+		padding-bottom: 2em;
+	}
+	.swipe-item{background-color: #F8F8F8;position: relative;}
+	.imgcontainer img{width: 15em;}
+	.des>span{display: inline-block;vertical-align: middle;}
+	.des-num{color:#ff6b00;font-size: 3.3em;font-family: Helvetica;}
+	.des-detail{color: #9E9E9E;text-align: left;line-height: 1.5em}
+	.title{position: fixed;top: 2em;left: 0;right: 0;text-align: center;z-index: 10;color: #707070;font-size: 1.2em;font-weight: bolder;}
+	.detail-video{text-align: center;padding: 0;}
+</style>
+</head>
+<body>
+	<div class='title'>
+		小米净水器安装说明
+	</div>
+	<div class='swipe' id='page'>
+		<div class='swipe-inner'>
+			<div class='swipe-item'>
+				<div class='detail'>
+					<div class='imgcontainer tac'><img src="images/1-2.png" class='mimg'></div>
+					<div class='des tac'>
+						<span class='des-num'>01</span>
+						<span class='des-detail'>
+							安装准备<br>卸载起泡器,安装转接头
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class='swipe-item'>
+				<div class='detail'>
+					<div class='imgcontainer tac'><img src="images/2-2.png" class='mimg'></div>
+					<div class='des tac'>
+						<span class='des-num'>02</span>
+						<span class='des-detail'>
+							安装触控龙头
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class='swipe-item'>
+				<div class='detail'>
+					<div class='imgcontainer tac'><img src="images/3-2.png" class='mimg'></div>
+					<div class='des tac'>
+						<span class='des-num'>03</span>
+						<span class='des-detail'>
+							放置洗涤水管
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class='swipe-item'>
+				<div class='detail'>
+					<div class='imgcontainer tac'><img src="images/4-2.png" class='mimg'></div>
+					<div class='des tac'>
+						<span class='des-num'>04</span>
+						<span class='des-detail'>
+							安装4支滤芯
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class='swipe-item'>
+				<div class='detail'>
+					<div class='imgcontainer tac'><img src="images/5-2.png" class='mimg'></div>
+					<div class='des tac'>
+						<span class='des-num'>05</span>
+						<span class='des-detail'>
+							连接电源,下载手机客户端<br>绑定wifi
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class='swipe-item'>
+				<div class='detail'>
+					<div class='imgcontainer tac'><img src="images/6-2.png" class='mimg'></div>
+					<div class='des tac'>
+						<span class='des-num'>06</span>
+						<span class='des-detail'>
+							用最大水量制纯水<br>冲洗10分钟
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class='swipe-item'>
+			</div>
+		</div>
+	</div>
+	<script src='swipe/swipe.js?eee'></script>
+	<script>
+		var page = new Swipe("#page",{
+			dot : true,
+			dotPosition : 'bottom',
+			direction : 'x',
+			onChangeItem : function(inIndex,outIndex,el,init,outEl){
+				if(inIndex === 6){
+					el.innerHTML = "<div class='detail detail-video'>" +
+						"<iframe src='http://player.youku.com/embed/XMTI4NjA4MjQ4NA=='' frameborder=0 allowfullscreen></iframe>" +
+					"</div>";
+					resizeVideo(el);
+				}
+				if(outIndex === 6){
+					outEl.innerHTML = "";
+				}
+			}
+		});
+		function resizeVideo(item){
+			var w = item.offsetWidth * 0.8;
+			if(w > 600){
+				w = 600;
+			}
+			var h = 40/48 * w;
+			var iframe = item.querySelector("iframe");
+			iframe.width = item.offsetWidth;
+			iframe.height = h;
+		}
+		window.addEventListener("resize",function(){
+			page.resize();
+			if(page.curIndex === 6){
+				resizeVideo(page.getItem(6));
+			}
+		});
+	</script>
+</body>
+</html>

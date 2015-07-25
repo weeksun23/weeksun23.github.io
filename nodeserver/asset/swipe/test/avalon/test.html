@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+<link rel="stylesheet" type="text/css" href="../../swipe.css?234">
+<link rel="stylesheet" type="text/css" href="../../base.css">
+<title>swipe</title>
+<style>
+	body{padding-bottom: 20px}
+	.zone{width: 90%;margin:0 auto;padding-top:20px;}
+	.zone>p{margin-bottom: 5px;}
+	.swipe{height:200px;}
+	.swipe-item{padding: 1em}
+	.swipe .swipe{height: 150px}
+	.swipe-inner>.swipe-item:nth-child(1){
+		background-color: #43C8F4
+	}
+	.swipe-inner>.swipe-item:nth-child(2){
+		background-color: #66E84F
+	}
+	.swipe-inner>.swipe-item:nth-child(3){
+		background-color: #EC734B
+	}
+	.swipe-inner>.swipe-item:nth-child(4){
+		background-color: #FCF93B
+	}
+	.console{position: fixed;background-color: #000;color: #fff;opacity: 0.8;left:25%;right: 25%;top: 0;z-index: 100}
+</style>
+</head>
+<body ms-controller='test'>
+	<div class='console'></div>
+	<button ms-on-tap='tap'>qwdqwdqwed</button>
+	<div class='zone'>
+		<p>垂直方向</p>
+		<div class='swipe' id='swipe'>
+			<div class='swipe-inner'>
+				<div class='swipe-item'>
+					egrgertertertertret
+					<button ms-on-tap='tap'>qwdqwdqwed</button>
+				</div>
+				<div class='swipe-item'>
+					2222222222222222222222222222
+				</div>
+				<div class='swipe-item'>
+					3333333333333333333333333333
+				</div>
+				<div class='swipe-item'>
+					4444444444444444444444444444
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src='avalon.mobile.js'></script>
+	<script src='../../swipe.js?rr'></script>
+	<script>
+		avalon.define({
+			$id : "test",
+			tap : function(){
+				alert(1);
+			}
+		});
+		new Swipe("#swipe",{
+			autoPlay : false,dot : true
+		});
+	</script>
+</body>
+</html>

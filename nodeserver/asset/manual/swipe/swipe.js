@@ -202,7 +202,7 @@
 						return;
 					}
 					var tagName = e.target.tagName.toLowerCase();
-					if(!/^(embed|iframe|object|button|a)$/.test(tagName)){
+					if(tagName !== 'embed' && tagName !== 'iframe'){
 						e.preventDefault();
 						e.stopPropagation();
 					}
