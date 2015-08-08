@@ -72,7 +72,7 @@ require([
 			biz_content : {
 				car_license_number : car_license_number,
 				car_card_number : "",
-				enter_time : enter_time,
+				enter_time : Index.getEmptyStr(enter_time),
 				leave_time : leave_time,
 				request_origin : "web"
 			}
@@ -119,6 +119,12 @@ require([
 		},vmodel.widgetElement,function(data){
 			if(data.code === "0" && data.msg === "ok"){
 				Index.alert("校正成功");
+				Index.websocket.send({
+					command : "GET_LAST_REAL_TIME_CAR",
+					biz_content : {
+						channel : content.inList[content.inIndex].entrance_channel_seq
+					}
+				},document.body,GET_LAST_REAL_TIME_CAR_RETURN);
 				content.inCarNum = newNum;
 				vmodel.close();
 			}else{
@@ -203,7 +209,7 @@ require([
 			car_license_number : "",
 			car_license_number_mes : "",
 			provinceData : [
-				[['京','津','粤','泸'],['浙','苏','湘','渝']],
+				[['京','津','粤','沪'],['浙','苏','湘','渝']],
 				[['云','豫','皖','陕'],['桂','新','青','琼']],
 				[['闽','蒙','辽','宁'],['鲁','晋','吉','冀']],
 				[['黑','甘','鄂','赣'],['贵','川','藏']]
@@ -443,9 +449,9 @@ require([
 			Index.websocket.send({
 				command : "CAR_IN_OUT_MATCH",
 				biz_content : {
-					enter_car_license_number : content.outInCarNum,
+					enter_car_license_number : content.outInCarNum === '--' ? "" : content.outInCarNum,
 					enter_car_card_number : "",
-					enter_time : content.outInCarTime,
+					enter_time : Index.getEmptyStr(content.outInCarTime),
 					leave_car_license_number : content.outCarNum,
 					leave_car_card_number : "",
 					leave_time : content.outCarTime
@@ -467,7 +473,7 @@ require([
 							prepayment_list : [{
 								car_license_number : content.outInCarNum,
 								enter_car_card_number : "",
-								enter_time : content.outInCarTime,
+								enter_time : Index.getEmptyStr(content.outInCarTime),
 								discount_name : content.outDiscount,
 								discount_amount : "",
 								discount_time_min : discount_time_min,
@@ -504,9 +510,9 @@ require([
 			Index.websocket.send({
 				command : "CAR_IN_OUT_MATCH",
 				biz_content : {
-					enter_car_license_number : content.outInCarNum,
+					enter_car_license_number : content.outInCarNum === '--' ? "" : content.outInCarNum,
 					enter_car_card_number : "",
-					enter_time : content.outInCarTime,
+					enter_time : Index.getEmptyStr(content.outInCarTime),
 					leave_car_license_number : content.outCarNum,
 					leave_car_card_number : "",
 					leave_time : content.outCarTime
@@ -526,7 +532,7 @@ require([
 		inSureOpen : function(){
 			//开闸指令
 			var inCar = content.inList[content.inIndex];
-			toggleDoor(inCar.entrance_channel_seq,content.inCarNum,content.outInCarTime,document.body);
+			toggleDoor(inCar.entrance_channel_seq,content.inCarNum,content.inTime,document.body);
 		},
 		outCloseDoor : function(){
 			var outCar = content.outList[content.outIndex];
@@ -534,7 +540,7 @@ require([
 		},
 		inCloseDoor : function(){
 			var inCar = content.inList[content.inIndex];
-			toggleDoor(inCar.entrance_channel_seq,content.inCarNum,content.outInCarTime,document.body,'2');
+			toggleDoor(inCar.entrance_channel_seq,content.inCarNum,content.inTime,document.body,'2');
 		},
 		inList : [],
 		outList : [],
@@ -649,7 +655,7 @@ require([
 			var target = obj[item.entrance_channel_seq];
 			if(target){
 				var enter = target.enterCar || {
-					enter_car_license_number : "--",
+					car_license_number : "--",
 					enter_time : "--"
 				};
 				if(enter.enter_car_license_picture){
@@ -660,7 +666,7 @@ require([
 				var leave = target.leaveCar;
 				var model = {
 					outCarFullImg : Index.websocket.fullImgUrl + leave.leave_car_full_picture + "?" + (+new Date),
-					outInCarNum : enter.enter_car_license_number,
+					outInCarNum : enter.car_license_number,
 					outInCarImg : outInCarImg,
 					outInCarTime : enter.enter_time,
 					outCarNum : leave.leave_car_license_number,

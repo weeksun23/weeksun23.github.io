@@ -340,6 +340,9 @@ define([
 				re.push(i);
 			}
 			return re;
+		},
+		getEmptyStr : function(v){
+			return v === "--" ? "" : v;
 		}
 	};
 	return Index;

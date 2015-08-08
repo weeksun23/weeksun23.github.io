@@ -110,7 +110,13 @@ require([
 						return '--';
 					}
 				},
-				{title : "置信度",field : "enter_recognition_confidence"},
+				{title : "置信度",field : "enter_recognition_confidence",formatter : function(v,r){
+					if(r.is_correct === "1"){
+						return r.correct_confidence;
+					}else{
+						return v;
+					}
+				}},
 				{title : "值班<br>人员",field : "in_operate_name",align:'center'}
 			],
 			correctCarNum : function(item){
@@ -158,7 +164,7 @@ require([
 				text : "取消",close : true
 			}],
 			provinceData : [
-				[['京','津','粤','泸'],['浙','苏','湘','渝']],
+				[['京','津','粤','沪'],['浙','苏','湘','渝']],
 				[['云','豫','皖','陕'],['桂','新','青','琼']],
 				[['闽','蒙','辽','宁'],['鲁','晋','吉','冀']],
 				[['黑','甘','鄂','赣'],['贵','川','藏']]

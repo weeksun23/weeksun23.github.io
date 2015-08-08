@@ -46,10 +46,10 @@ require([
 						return v ? v : "--";
 					}
 				},
-				{title : "离场<br>应收",field : "received_amount",formatter : Index.getMoney,align:'center'},
-				{title : "离场<br>实收",field : "actual_receivable",
+				{title : "离场<br>应收",field : "actual_receivable",formatter : Index.getMoney,align:'center'},
+				{title : "离场<br>实收",field : "received_amount",
 					formatter : function(v,r){
-						if(+v < +r.received_amount){
+						if(+v < +r.actual_receivable){
 							return Index.getMoney(v) + "<br><a class='text-danger' ms-click='repay(item)' href='javascript:void(0)'>补交</a>";
 						}
 						return Index.getMoney(v);
@@ -118,8 +118,8 @@ require([
 								discount_amount : "",
 								discount_time_min : discount_time_min,
 								prepayment_total_amount : model.prepayment_total_amount,
-								actual_receivable : model.received_amount,
-								received_amount : model.received_amount,
+								actual_receivable : model.actual_receivable,
+								received_amount : model.actual_receivable,
 								payment_mode : "0",
 								pay_origin : "web",
 								last_prepayment_time : vmodel.$item.last_prepayment_time,
@@ -146,8 +146,8 @@ require([
 				enter_time : "--",
 				last_prepayment_time : '--',
 				discount_name : '无优惠',
-				received_amount : '--',
-				received_amount_formatter : '--',
+				actual_receivable : '--',
+				actual_receivable_formatter : '--',
 				prepayment_total_amount : '',
 			},
 			$item : null,
@@ -172,8 +172,8 @@ require([
 						if(vmodel.$item[i]){
 							vmodel.model[i] = vmodel.$item[i];
 						}
-					}
-					vmodel.model.received_amount_formatter = Index.getMoney(vmodel.model.received_amount);
+					}//actual_receivable
+					vmodel.model.actual_receivable_formatter = Index.getMoney(vmodel.model.actual_receivable);
 				}
 			}
 		}

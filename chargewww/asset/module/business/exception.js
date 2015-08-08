@@ -385,8 +385,8 @@ require([
 						return v ? v : "--";
 					}
 				},
-				{title : "离场<br>应收",field : "received_amount",formatter : Index.getMoney,align:'center'},
-				{title : "离场<br>实收",field : "actual_receivable",
+				{title : "离场<br>应收",field : "actual_receivable",formatter : Index.getMoney,align:'center'},
+				{title : "离场<br>实收",field : "received_amount",
 					formatter : Index.getMoney,
 					align:'center'
 				},
