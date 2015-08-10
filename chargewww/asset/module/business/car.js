@@ -74,7 +74,7 @@ require([
 				{title : "车牌图片",field : "enter_car_license_picture",align:'center',
 					formatter : function(v,r,i){
 						return "<img data-index='"+i+"' onerror='Index.onImgError(this)' ms-click='showPic(item)' class='cpointer' src='" +
-							Index.websocket.plateImgUrl + v + "?" + (+new Date) +
+							Index.dealPicSrc(v) +
 							"' height='30' alt='车牌图片' ms-widget='tooltip' data-tooltip-content='点击查看大图'>";
 					}
 				},
@@ -121,7 +121,7 @@ require([
 			],
 			correctCarNum : function(item){
 				var $win = avalon.vmodels.$correctWin;
-				$win.carNumImg = Index.websocket.plateImgUrl + item.enter_car_license_picture + "?" + (+new Date);
+				$win.carNumImg = Index.dealPicSrc(item.enter_car_license_picture);
 				$win.inCarNum = item.car_license_number;
 				$win.curChoose = item.enter_car_license_number.charAt(0);
 				$win.correctNum = item.enter_car_license_number.substring(1);
@@ -133,7 +133,7 @@ require([
 				var imgs = [];
 				for(var i=0,ii;ii=list[i++];){
 					imgs.push({
-						src : Index.websocket.fullImgUrl + ii.enter_car_full_picture + "?" + (+new Date)
+						src : Index.dealPicSrc(ii.enter_car_full_picture)
 					});
 				}
 				var $win = avalon.vmodels.$picWin;

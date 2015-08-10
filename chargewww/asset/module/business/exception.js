@@ -128,7 +128,7 @@ require([
 	var formatter = {
 		img : function(v){
 			return "<img onerror='Index.onImgError(this)' src='" +
-				Index.websocket.plateImgUrl + v + "?" + (+new Date) +
+				Index.dealPicSrc(v) +
 				"' height='30' alt='车牌图片'>";
 		}
 	};
