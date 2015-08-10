@@ -70,6 +70,8 @@ require([
 				columns : [
 					{title : '通道权限名字',field : "channel_permission_group_name"},
 					{title : '通道详细',field : "channelNames"},
+					{title : "起始时间",field : "permission_start_time"},
+					{title : "结束时间",field : "permission_end_time"},
 					{title : "操作",field : "oper",
 						formatter : function(){
 							return "<a href='javascript:void(0)' ms-click='edit(item)'>编辑</a> "+
@@ -83,6 +85,14 @@ require([
 					win.title = "编辑通道权限";
 					win.$editAuth = item;
 					win.authName = item.channel_permission_group_name;
+					var start = (item.permission_start_time || "00:00:00").split(":");
+					win.sH = parseInt(start[0]);
+					win.sM = parseInt(start[1]);
+					win.sS = parseInt(start[2]);
+					var end = (item.permission_end_time || "00:00:00").split(":");
+					win.eH = parseInt(end[0]);
+					win.eM = parseInt(end[1]);
+					win.eS = parseInt(end[2]);
 					var seqList = item.seqList;
 					avalon.each(document.querySelectorAll("#authWin-channelList input"),function(i,v){
 						for(var i=0,ii;ii=seqList[i++];){
@@ -136,7 +146,23 @@ require([
 			title : "",
 			channelMes : "",
 			authNameMes : "",
+			timeMes : "",
 			entranceData : [],
+			sHData : [],
+			sMData : [],
+			sSData : [],
+			eHData : [],
+			eMDate : [],
+			eSData : [],
+			sH : 0,
+			sM : 0,
+			sS : 0,
+			eH : 23,
+			eM : 59,
+			eS : 59,
+			hideMes : function(){
+				avalon.vmodels.$authWin.timeMes = '';
+			},
 			changeEntrance : function(){
 				avalon.vmodels.$authWin.channelMes = '';
 			},
@@ -148,6 +174,14 @@ require([
 				vmodel.authName = '';
 			},
 			afterShow : function(isInit,vmodel){
+				if(isInit){
+					vmodel.sHData = Index.getMinToMax(0,23);
+					vmodel.sMData = Index.getMinToMax(0,59);
+					vmodel.sSData = Index.getMinToMax(0,59);
+					vmodel.eHData = Index.getMinToMax(0,23);
+					vmodel.eMDate = Index.getMinToMax(0,59);
+					vmodel.eSData = Index.getMinToMax(0,59);
+				}
 				vmodel.channelMes = '';
 			},
 			buttons : [{
@@ -167,6 +201,13 @@ require([
 					if(authWin.authName === ''){
 						return authWin.authNameMes = "请输入权限名称";
 					}
+					var sTime = [Index.paddingZero(vmodel.sH),Index.paddingZero(vmodel.sM),
+						Index.paddingZero(vmodel.sS)].join(":");
+					var eTime = [Index.paddingZero(vmodel.eH),Index.paddingZero(vmodel.eM),
+						Index.paddingZero(vmodel.eS)].join(":");
+					if(eTime <= sTime){
+						return authWin.timeMes = "结束时间必须大于开始时间";
+					}
 					var grpList = [];
 					var mappingList = [];
 					if(authWin.$editAuth){
@@ -182,12 +223,14 @@ require([
 							channel_permission_group_seq : grpSeq
 						});
 					}
+					grpList.push({
+						channel_permission_group_seq : grpSeq,
+						channel_permission_group_name : authWin.authName,
+						permission_start_time : sTime,
+						permission_end_time : eTime
+					});
 					if(authWin.$editAuth){
 						//编辑
-						grpList.push({
-							channel_permission_group_seq : grpSeq,
-							channel_permission_group_name : authWin.authName
-						});
 						//先删除channel_permission_group_mapping_seq
 						SYNCHRONIZATION_CUSTOMER({
 							synchronization_type : '3',
@@ -207,10 +250,6 @@ require([
 						});
 					}else{
 						//添加
-						grpList.push({
-							channel_permission_group_seq : grpSeq,
-							channel_permission_group_name : authWin.authName
-						});
 						SYNCHRONIZATION_CUSTOMER({
 							synchronization_type : '2',
 							permission_group_list : grpList,

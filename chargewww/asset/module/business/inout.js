@@ -182,6 +182,28 @@ require([
 				createVideo(direction);
 			}
 		},
+		inIsAlwaysOpenMode : false,
+		outIsAlwaysOpenMode : false,
+		//入场 常开 正常模式切换
+		toggleMode : function(d){
+			var list = d + "List";
+			var index = d + "Index";
+			var mode = d + "IsAlwaysOpenMode";
+			Index.websocket.send({
+				command : "CONSTANT_OPEN_CONTROL",
+				biz_content : {
+					entrance_channel_seq : content[list][content[index]].entrance_channel_seq,
+					type : content[mode] ? "0" : "1"
+				}
+			},document.body,function(data){
+				if(data.code === '0'){
+					Index.alert("操作成功");
+					content[mode] = !content[mode];
+				}else{
+					Index.alert("操作失败");
+				}
+			});
+		},
 		showInVideo : false,
 		showOutVideo : false,
 		showCarlist : function(){
@@ -200,6 +222,56 @@ require([
 			$win.curChoose = content.inCarNum.charAt(0);
 			$win.correctNum = content.inCarNum.substring(1);
 			$win.open();
+		},
+		catchCamera : function(d){
+			var list = d + "List";
+			var index = d + "Index";
+			var seq = content[list][content[index]].entrance_channel_seq;
+			for(var i=0,ii;ii=cameraData[i++];){
+				if(ii.entrance_channel_seq === seq){
+					var ip = ii.equipment_recognition_camera_ip;
+					Index.websocket.send({
+						command : "RECOGNITION_CAMERA_CONTROL",
+						biz_content : {
+							entrance_channel_seq : seq,
+							equipment_recognition_camera_ip : ip
+						}
+					},document.body,function(data){
+						if(data.code === '0'){
+							Index.alert("操作成功");
+						}else{
+							Index.alert("操作失败");
+						}
+					});
+					return;
+				}
+			}
+		},
+		inPicIndex : 0,
+		outPicIndex : 0,
+		changePicIndex : function(d,t){
+			var list = d + "List";
+			var indexStr = d + "Index";
+			var channel = content[list][content[indexStr]].entrance_channel_seq;
+			var index = content[d + "PicIndex"] + t;
+			if(index < 0){
+				Index.alert("该通道消息已经是最新的");
+				return;
+			}
+			Index.websocket.send({
+				command : "GET_LAST_REAL_TIME_CAR",
+				biz_content : {
+					channel : channel,
+					sequence : index + ""
+				}
+			},document.body,function(data){
+				if(data.code === '0' && data.msg === "ok"){
+					GET_LAST_REAL_TIME_CAR_RETURN(data);
+					content[d + "PicIndex"] = index; 
+				}else{
+					Index.alert("没有上一条记录了");
+				}
+			});
 		},
 		reCamera : function(){
 			avalon.vmodels.$recameraWin.open();
@@ -401,7 +473,7 @@ require([
 				{title : "车牌图片",field : "enter_car_license_picture",width : 100,
 					formatter : function(v){
 						return "<img onerror='Index.onImgError(this);' width='100' ms-click='showPic(item)' alt='车牌图片' src='"+
-						Index.websocket.plateImgUrl + v + "?" + (+new Date) +
+						Index.dealPicSrc(v) +
 						"' title='点击查看大图' class='img-rounded img-responsive cpointer'>";
 					}
 				},
@@ -417,8 +489,7 @@ require([
 			doMatch : function(item){
 				avalon.vmodels.$carListDialog.close();
 				content.outInCarNum = item.car_license_number;
-				content.outInCarImg = Index.websocket.plateImgUrl + 
-					item.enter_car_license_picture + "?" + (+new Date);
+				content.outInCarImg = Index.dealPicSrc(item.enter_car_license_picture);
 				content.outInCarTime = item.enter_time;
 				content.outCarType = Index.mData.getVipType(item.enter_vip_type);
 				getCharge(item.car_license_number,item.enter_time,content.outCarTime);
@@ -426,8 +497,7 @@ require([
 			//查看大图
 			showPic : function(item){
 				avalon.vmodels.$picDialog.open();
-				avalon.vmodels.$picDialog.picSrc = Index.websocket.fullImgUrl + 
-					item.enter_car_full_picture + "?" + (+new Date);
+				avalon.vmodels.$picDialog.picSrc = Index.dealPicSrc(item.enter_car_full_picture);
 			}
 		},
 		$picDialogOpts : {
@@ -635,8 +705,8 @@ require([
 					inTime : enter.enter_time,
 					inCarNum : enter.car_license_number,
 					inCarType : Index.mData.getVipType(enter.enter_vip_type),
-					inCarFullImg : Index.websocket.fullImgUrl + enter.enter_car_full_picture + "?" + (+new Date),
-					inCarImg : Index.websocket.plateImgUrl + enter.enter_car_license_picture + "?" + (+new Date)
+					inCarFullImg : Index.dealPicSrc(enter.enter_car_full_picture),
+					inCarImg : Index.dealPicSrc(enter.enter_car_license_picture)
 				};
 			}else{
 				target = {
@@ -659,18 +729,18 @@ require([
 					enter_time : "--"
 				};
 				if(enter.enter_car_license_picture){
-					var outInCarImg = Index.websocket.plateImgUrl + enter.enter_car_license_picture + "?" + (+new Date);
+					var outInCarImg = Index.dealPicSrc(enter.enter_car_license_picture);
 				}else{
 					outInCarImg = Index.noCarImgSrc;
 				}
 				var leave = target.leaveCar;
 				var model = {
-					outCarFullImg : Index.websocket.fullImgUrl + leave.leave_car_full_picture + "?" + (+new Date),
+					outCarFullImg : Index.dealPicSrc(leave.leave_car_full_picture),
 					outInCarNum : enter.car_license_number,
 					outInCarImg : outInCarImg,
 					outInCarTime : enter.enter_time,
 					outCarNum : leave.leave_car_license_number,
-					outCarImg : Index.websocket.plateImgUrl + leave.leave_car_license_picture + "?" + (+new Date),
+					outCarImg : Index.dealPicSrc(leave.leave_car_license_picture),
 					outCarTime : leave.leave_time,
 					outCarType : Index.mData.getVipType(leave.leave_vip_type),
 					outCarCost : "--"

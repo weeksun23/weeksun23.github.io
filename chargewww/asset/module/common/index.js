@@ -343,7 +343,37 @@ define([
 		},
 		getEmptyStr : function(v){
 			return v === "--" ? "" : v;
-		}
+		},
+		getMinToMax : function(min,max){
+			var re = [];
+			for(var i=min;i<=max;i++){
+				re.push(i);
+			}
+			return re;
+		},
+		paddingZero : function(str,len){
+	    	len = len || 2;
+	    	str = str + "";
+	    	var strLen = str.length;
+	    	if(strLen >= len) return str;
+	    	return new Array(len - strLen + 1).join('0') + str;
+	    },
+	    dealPicSrc : function(src){
+	    	var isFull = src.indexOf("_full_") !== -1;
+	    	var isPlate = src.indexOf("_plate_") !== -1;
+	    	if(!isFull && !isPlate){
+	    		return Index.noCarImgSrc;
+	    	}
+	    	if(isFull){
+	    		var folderName = "FullPic";
+	    		var ip = src.split("_full_")[0];
+	    	}else{
+	    		folderName = "PlateNumberPic";
+	    		ip = src.split("_plate_")[0];
+	    	}
+	    	ip = ip.replace(/_/g,".");
+	    	return "http://" + ip + ":8088/" + folderName + "/" + src + "?" + (+new Date);
+	    }
 	};
 	return Index;
 });

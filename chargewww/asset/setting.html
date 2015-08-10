@@ -80,6 +80,49 @@
 						<div class='text-danger' ms-visible='authNameMes'>{{authNameMes}}</div>
 					</div>
 				</div>
+				<div class="form-group" ms-click='hideMes'>
+					<label class="col-sm-2 control-label">起始时间</label>
+					<div class="col-sm-3">
+						<div class='input-group'>
+							<select class='form-control' ms-duplex='sH'><option ms-repeat='sHData' ms-attr-value='el'>{{el}}</option></select>
+							<span class="input-group-addon">时</span>
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<div class='input-group'>
+							<select class='form-control' ms-duplex='sM'><option ms-repeat='sMData' ms-attr-value='el'>{{el}}</option></select>
+							<span class="input-group-addon">分</span>
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<div class='input-group'>
+							<select class='form-control' ms-duplex='sS'><option ms-repeat='sSData' ms-attr-value='el'>{{el}}</option></select>
+							<span class="input-group-addon">秒</span>
+						</div>
+					</div>
+				</div>
+				<div class="form-group mgb0" ms-class='has-error:timeMes' ms-click='hideMes'>
+					<label class="col-sm-2 control-label">结束时间</label>
+					<div class="col-sm-3">
+						<div class='input-group'>
+							<select class='form-control' ms-duplex='eH'><option ms-repeat='eHData' ms-attr-value='el'>{{el}}</option></select>
+							<span class="input-group-addon">时</span>
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<div class='input-group'>
+							<select class='form-control' ms-duplex='eM'><option ms-repeat='eMDate' ms-attr-value='el'>{{el}}</option></select>
+							<span class="input-group-addon">分</span>
+						</div>
+					</div>
+					<div class="col-sm-3">
+						<div class='input-group'>
+							<select class='form-control' ms-duplex='eS'><option ms-repeat='eSData' ms-attr-value='el'>{{el}}</option></select>
+							<span class="input-group-addon">秒</span>
+						</div>
+					</div>
+					<div class="col-sm-offset-2 col-sm-10 text-danger" ms-visible='timeMes'>{{timeMes}}</div>
+				</div>
 			</fieldset>
 		</form>
 	</div>
