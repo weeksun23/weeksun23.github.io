@@ -461,7 +461,7 @@ require([
 					if(data.code === "0" && data.msg === "ok"){
 						REAL_TIME_CAR_LIST = data.real_time_list;
 						var obj = Index.getRange(REAL_TIME_CAR_LIST,'enter_time');
-						if(obj){
+						if(obj && obj.min && obj.max){
 							avalon.vmodels.$startDate.setValue(new Date(obj.min.replace(/\-/g,'/')));
 							avalon.vmodels.$endDate.setValue(new Date(obj.max.replace(/\-/g,'/')));
 						}else{

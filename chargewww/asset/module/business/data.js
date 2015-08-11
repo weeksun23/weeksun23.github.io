@@ -42,11 +42,19 @@ define(function(){
 			{v : "56",t : "海格"},{v : "57",t : "宇通"},{v : "58",t : "中国重汽"},{v : "59",t : "北奔重卡"},
 			{v : "60",t : "华菱星马"},{v : "61",t : "跃进"},{v : "62",t : "黄海"}
 		],
+		pass_mode : [
+			{v : "0",t : "未确定"},{v : "1",t : "自动放行"},
+			{v : "2",t : "手动放行"},{v : "3",t : "异常放行"},
+			{v : "4",t : "常开放行"}
+		],
 		getVipType : function(type){
 			return getText(DATA.vip_type,type);
 		},
 		getCarLogo : function(v){
 			return getText(DATA.car_logo,v);
+		},
+		getPassMode : function(v){
+			return getText(DATA.pass_mode,v);
 		}
 	};
 	return DATA;
