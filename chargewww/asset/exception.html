@@ -368,9 +368,51 @@
 					<div ms-widget="table,$unpayList,$unpayListOpts"></div>
 				</div>
 			</div>
+			<div title='补录' data-iconCls="glyphicon-tag">
+				<div class='col-sm-12 mgt10'>
+					<form class="form-horizontal">
+						<fieldset>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">车牌号码</label>
+								<div class="col-sm-4">
+									<input type="text" class="form-control" placeholder='请输入车牌关键字' ms-duplex='retype.car_license_number'>
+								</div>
+								<label class="col-sm-2 control-label">VIP类型</label>
+								<div class="col-sm-4">
+									<select class="form-control" ms-duplex='retype.vip_type'>
+										<option value=''>请选择</option>
+										<option ms-attr-value='el' ms-repeat='retype_vips'>{{el}}</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">通道</label>
+								<div class="col-sm-4">
+									<select class="form-control" ms-duplex='retype.channel'>
+										<option value=''>请选择</option>
+										<option ms-repeat="retype_channelData" ms-attr-value='el.value'>{{el.text}}</option>
+									</select>
+								</div>
+								<label class="col-sm-2 control-label">操作人</label>
+								<div class="col-sm-4">
+									<select class="form-control" ms-duplex='retype.oper'>
+										<option value=''>请选择</option>
+										<option ms-attr-value='el' ms-repeat='retype_operators'>{{el}}</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+							    <div class="col-sm-10 col-sm-offset-2">
+							    	<button type="button" class="btn btn-primary" ms-click='retypeSearch'><i class='glyphicon glyphicon-search'></i> 搜索</button>
+							    </div>
+							</div>
+						</fieldset>
+					</form>
+					<div ms-widget="table,$retypeList,$retypeListOpts"></div>
+				</div>
+			</div>
 		</div>
 	</div>
-	
 	<!--
 	 -->
 </div>

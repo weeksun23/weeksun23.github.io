@@ -17,6 +17,7 @@ require([
 			case "2":return "abnormal_enter_car_list";
 			case "3":return "unmatch_leave_car_list";
 			case "4":return "uncharge_car_list";
+			case "5":return "human_record_list";
 		}
 	}
 	function getLeverByListId(listId){
@@ -26,6 +27,7 @@ require([
 			case "$intoList":return "2";
 			case "$outList":return "3";
 			case "$unpayList":return "4";
+			case "$retypeList":return "5";
 		}
 	}
 	function getChannelData(list,key){
@@ -104,14 +106,18 @@ require([
 					//content.unpay_channelData = getChannelData(list,"leave_channel");
 					//content.unpay_vip_type = getVipType(list,"leave_channel");
 					content.unpay_operators =  Index.getUnsameVal(list,"operator");
+				}else if(listId === "$retypeList"){
+					content.retype_vips = getVipType(list,"enter_type");
+					content.retype_channelData = getChannelData(list,"enter_channel");
+					content.retype_operators = Index.getUnsameVal(list,"in_operate_name");
 				}
 			}
 		});
 	}
-	var idArr = ['$correctList','$matchList','$intoList','$outList','$unpayList'];
+	var idArr = ['$correctList','$matchList','$intoList','$outList','$unpayList','$retypeList'];
 	var headerData = (function(){
 		var re = [];
-		for(var i=0;i<5;i++){
+		for(var i=0;i<6;i++){
 			re.push({
 				icons : [{
 					iconCls : 'glyphicon-refresh',
@@ -391,6 +397,40 @@ require([
 					align:'center'
 				},
 				{title : "收费员",field : "operator"}
+			]
+		},
+		retype : {
+			car_license_number : "",
+			vip_type : "",
+			channel : "",
+			oper : ""
+		},
+		retype_vips : [],
+		retype_channelData : [],
+		retype_operators : [],
+		retypeSearch : function(){
+			var list = list_data.$retypeList;
+			var model = content.retype;
+			var re = [];
+			for(var i=0,ii=list.length;i<ii;i++){
+				var item = list[i];
+				if((model.car_license_number && item.car_license_number.indexOf(model.car_license_number) === -1) 
+					|| (model.channel && item.enter_channel !== model.channel)
+					|| (model.vip_type && item.enter_vip_type !== model.vip_type)
+					|| (model.oper && item.in_operate_name !== model.oper)){
+					continue;
+				}
+				re.push(item);
+			}
+			avalon.vmodels.$retypeList.loadFrontPageData(re);
+		},
+		$retypeListOpts : {
+			title : "补录列表",
+			columns : [
+				{title : "最终车牌",field : "car_license_number"},
+				{title : "进场时间",field : "enter_time"},
+				{title : "进场类型",field : "enter_vip_type"},
+				{title : '操作人',field : "in_operate_name"}
 			]
 		}
 	});

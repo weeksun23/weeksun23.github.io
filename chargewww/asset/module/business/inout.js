@@ -649,6 +649,12 @@ require([
 				createVideo(direction);
 				//content.toggleVideo(direction);
 			}
+			Index.websocket.send({
+				command : "GET_LAST_REAL_TIME_CAR",
+				biz_content : {
+					channel : content[direction + "List"][content[direction + "Index"]].entrance_channel_seq
+				}
+			},document.body,GET_LAST_REAL_TIME_CAR_RETURN);
 		}
 	});
 	//切换优惠 重新下发获取金额指令
