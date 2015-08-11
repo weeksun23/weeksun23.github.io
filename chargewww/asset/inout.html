@@ -38,7 +38,7 @@
 				    	{{showInVideo ? '监控录像' : '识别图像'}}
 				    </h3>
 				    <div class='pull-right'>
-				    	<button ms-visible='!showInVideo' class='btn btn-success' ms-widget="tooltip" data-tooltip-content="切换为常开模式" data-tooltip-position='top' ms-click='toggleMode("in")'>
+				    	<button ms-visible='!showInVideo' class='btn btn-success' ms-widget="tooltip,$inModeTip,$inModeTipOpts" ms-click='toggleMode("in")'>
 					    	<i class='glyphicon' ms-class='glyphicon-{{inIsAlwaysOpenMode ? "export" : "import"}}'></i>
 					    </button>
 					    <button ms-visible='!showInVideo' class='btn btn-danger' ms-widget="tooltip" data-tooltip-content="抓拍" data-tooltip-position='top' ms-click='catchCamera("in")'>
@@ -123,7 +123,7 @@
 	  			<div class="panel-heading clearfix">
 				    <h3 class="panel-title pull-left">{{showOutVideo ? '监控录像' : '识别图像'}}</h3>
 				    <div class='pull-right'>
-				    	<button ms-visible='!showOutVideo' class='btn btn-success' ms-widget="tooltip" data-tooltip-content="切换为常开模式" data-tooltip-position='top' ms-click='toggleMode("out")'>
+				    	<button ms-visible='!showOutVideo' class='btn btn-success' ms-widget="tooltip,$outModeTip,$outModeTipOpts" ms-click='toggleMode("out")'>
 					    	<i class='glyphicon' ms-class='glyphicon-{{outIsAlwaysOpenMode ? "export" : "import"}}'></i>
 					    </button>
 					    <button ms-visible='!showOutVideo' class='btn btn-danger' ms-widget="tooltip" data-tooltip-content="抓拍" data-tooltip-position='top' ms-click='catchCamera("out")'>

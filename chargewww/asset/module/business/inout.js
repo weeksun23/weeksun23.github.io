@@ -184,6 +184,14 @@ require([
 		},
 		inIsAlwaysOpenMode : false,
 		outIsAlwaysOpenMode : false,
+		$inModeTipOpts : {
+			content : "切换为常开模式",
+			position : "top"
+		},
+		$outModeTipOpts : {
+			content : "切换为常开模式",
+			position : "top"
+		},
 		//入场 常开 正常模式切换
 		toggleMode : function(d){
 			var list = d + "List";
@@ -199,6 +207,7 @@ require([
 				if(data.code === '0'){
 					Index.alert("操作成功");
 					content[mode] = !content[mode];
+					avalon.vmodels["$" + d + "ModeTip"].content = content[mode] ? "切换为正常模式" : "切换为常开模式";
 				}else{
 					Index.alert("操作失败");
 				}
@@ -706,7 +715,8 @@ require([
 					inCarNum : enter.car_license_number,
 					inCarType : Index.mData.getVipType(enter.enter_vip_type),
 					inCarFullImg : Index.dealPicSrc(enter.enter_car_full_picture),
-					inCarImg : Index.dealPicSrc(enter.enter_car_license_picture)
+					inCarImg : Index.dealPicSrc(enter.enter_car_license_picture),
+					inIsAlwaysOpenMode : !!item.constant_open_mode
 				};
 			}else{
 				target = {
@@ -714,7 +724,8 @@ require([
 					inCarNum : "--",
 					inCarType : "--",
 					inCarFullImg : Index.noCarImgSrc,
-					inCarImg : Index.noCarImgSrc
+					inCarImg : Index.noCarImgSrc,
+					inIsAlwaysOpenMode : !!item.constant_open_mode
 				};
 			}
 			avalon.mix(content,target);
@@ -743,7 +754,8 @@ require([
 					outCarImg : Index.dealPicSrc(leave.leave_car_license_picture),
 					outCarTime : leave.leave_time,
 					outCarType : Index.mData.getVipType(leave.leave_vip_type),
-					outCarCost : "--"
+					outCarCost : "--",
+					outIsAlwaysOpenMode : !!item.constant_open_mode
 				};
 				if(leave.leave_type !== '0'){
 					model.outCarCost = leave.leave_type === '1' ? "已付费" : "异常离场";
@@ -766,7 +778,8 @@ require([
 					outInCarTime : "--",
 					outCarTime : "--",
 					outCarType : "--",
-					outCarCost : "--"
+					outCarCost : "--",
+					outIsAlwaysOpenMode : !!item.constant_open_mode
 				};
 			}
 			avalon.mix(content,model);

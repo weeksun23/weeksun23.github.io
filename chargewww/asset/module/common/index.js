@@ -305,13 +305,19 @@ define([
 		},
 		getRange : function(list,key){
 			if(list.length === 0) return;
-			var min = list[0].enter_time;
-			var max = min;
+			var min;
+			var max;
 			for(var i=1,ii;ii=list[i++];){
-				if(ii[key] < min){
+				if(!ii[key] && ii[key] !== 0) continue;
+				if(min === undefined){
 					min = ii[key];
-				}else if(ii[key] > max){
 					max = ii[key];
+				}else{
+					if(ii[key] < min){
+						min = ii[key];
+					}else if(ii[key] > max){
+						max = ii[key];
+					}
 				}
 			}
 			return {
@@ -330,14 +336,18 @@ define([
 			return "￥" + (+m / 100).toFixed(2);
 		},
 		personalInfo : personalInfo,
-		getUnsameVal : function(list,key){
+		getUnsameVal : function(list,key,isObj){
 			var obj = {};
 			for(var i=0,ii;ii=list[i++];){
+				if(!ii[key] && ii[key] !== 0) continue;
 				obj[ii[key]] = 1;
 			}
 			var re = [];
 			for(var i in obj){
-				re.push(i);
+				re.push(isObj ? {
+					text : i,
+					value : i
+				} : i);
 			}
 			return re;
 		},
@@ -359,6 +369,9 @@ define([
 	    	return new Array(len - strLen + 1).join('0') + str;
 	    },
 	    dealPicSrc : function(src){
+	    	if(!src){
+	    		return Index.noCarImgSrc;
+	    	}
 	    	var isFull = src.indexOf("_full_") !== -1;
 	    	var isPlate = src.indexOf("_plate_") !== -1;
 	    	if(!isFull && !isPlate){
@@ -372,7 +385,7 @@ define([
 	    		ip = src.split("_plate_")[0];
 	    	}
 	    	ip = ip.replace(/_/g,".");
-	    	return "http://" + ip + ":8088/" + folderName + "/" + src + "?" + (+new Date);
+	    	return "http://" + ip + "/" + folderName + "/" + src + "?" + (+new Date);
 	    }
 	};
 	return Index;
