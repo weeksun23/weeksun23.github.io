@@ -429,7 +429,7 @@ require([
 			columns : [
 				{title : "最终车牌",field : "car_license_number"},
 				{title : "进场时间",field : "enter_time"},
-				{title : "进场类型",field : "enter_vip_type"},
+				{title : "进场类型",field : "enter_vip_type",formatter : Index.mData.getVipType},
 				{title : '操作人',field : "in_operate_name"}
 			]
 		}

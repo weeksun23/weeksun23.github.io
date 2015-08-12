@@ -242,9 +242,26 @@ define([
 		total_parking_space_remaining : "--",
 		total_parking_space : "--"
 	});
+	//实时更新停车位信息
 	websocket.callbacks.PUSH_PARKING_SPACE = function(data){
 		top.total_parking_space_remaining = data.total_parking_space_remaining;
 		top.total_parking_space = data.total_parking_space;
+	};
+	//强制下线
+	websocket.callbacks.FORCE_OFFLINE = function(data){
+		alert(data.login_account + ",使用人:"+data.name+"上线,您已被强制下线！");
+		websocket.send({
+			command : "USER_ACCESS",
+			biz_content : {
+				username : top.accountName,
+				ip : "127.0.0.1",
+				time : avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss"),
+				type : "LOGOUT"
+			}
+		},document.body,function(data){
+			localStorage.removeItem("curAccount");
+			location.href = "login.html";
+		});
 	};
 	var Index = window.Index = {
 		mData : mData,
