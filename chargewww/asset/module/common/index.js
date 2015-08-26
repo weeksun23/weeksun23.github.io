@@ -249,6 +249,10 @@ define([
 	};
 	//强制下线
 	websocket.callbacks.FORCE_OFFLINE = function(data){
+		if(personalInfo.user_role === '1'){
+			//管理员不用下线
+			return;
+		}
 		alert(data.login_account + ",使用人:"+data.name+"上线,您已被强制下线！");
 		websocket.send({
 			command : "USER_ACCESS",

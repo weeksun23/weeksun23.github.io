@@ -91,6 +91,17 @@ require([
 			}
 			avalon.vmodels.$carList.loadFrontPageData(re);
 		},
+		rePaySearch : function(){
+			var re = [];
+			for(var i=0,ii=prepayment_list.length;i<ii;i++){
+				var item = prepayment_list[i];
+				if(item.actual_receivable === item.received_amount){
+					continue;
+				}
+				re.push(item);
+			}
+			avalon.vmodels.$carList.loadFrontPageData(re);
+		},
 		$repayWinOpts : {
 			title : "补交金额",
 			buttons : [{

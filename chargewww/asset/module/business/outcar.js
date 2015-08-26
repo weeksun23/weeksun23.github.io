@@ -19,10 +19,10 @@ require([
 				for(var i=0,item;item=car_out_list[i++];){
 					if(
 						(model.car_license_number && item.car_license_number.indexOf(model.car_license_number) === -1) ||
-						(model.sInDateStr && item.enter_time < model.sInDateStr) ||
-						(model.eInDateStr && item.enter_time > model.eInDateStr) ||
-						(model.sOutDateStr && item.leave_time < model.sOutDateStr) ||
-						(model.eOutDateStr && item.leave_time > model.eOutDateStr) ||
+						(model.sInDateStr && (!item.enter_time || item.enter_time < model.sInDateStr)) ||
+						(model.eInDateStr && (!item.enter_time || item.enter_time > model.eInDateStr)) ||
+						(model.sOutDateStr && (!item.leave_time || item.leave_time < model.sOutDateStr)) ||
+						(model.eOutDateStr && (!item.leave_time || item.leave_time > model.eOutDateStr)) ||
 						(model.vip_type && model.vip_type !== item.vip_type) ||
 						(model.in_operate_name && model.in_operate_name !== '空' && item.enter_operator !== model.in_operate_name) ||
 						(model.in_operate_name === '空' && item.enter_operator !== null && item.enter_operator !== undefined) ||

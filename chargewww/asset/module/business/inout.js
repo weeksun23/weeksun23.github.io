@@ -702,6 +702,10 @@ require([
 					}
 					content.$fire("outIndex",content.outIndex);
 					avalon.log("有车出场了:",channelData);
+					if(channelData.enterCar === null){
+						//没匹配
+						avalon.vmodels.$carListDialog.open();
+					}
 				}else{
 					//if(hasIn) return;///////////////////////////////
 					//hasIn = true;///////////////////////////////////////
