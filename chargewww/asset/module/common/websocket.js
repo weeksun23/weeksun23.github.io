@@ -20,29 +20,16 @@ define(function(){
 		send : function(order,area,func,unPrint){
 			if(!socketHelper.login){
 				//非登录页发的请求都必须进行登录验证
-				var account = localStorage.getItem("curAccount");
-				if(!account){
-					location.href = "login.html";
-					return;
-				}
-				var key = "wwwcharge-login-" + account;
-				var cache = localStorage.getItem(key);
-				if(!cache || !+cache){
-					//缓存非数字
-					localStorage.removeItem(key);
-					location.href = "login.html";
-					return;
-				}
-				var time = +cache;
+				var personalInfo = Index.personalInfo;
 				var now = new Date().getTime();
-				if(now - time > 30 * 60 * 1000){
+				if(now - personalInfo.loginTimeMillisecond > 30 * 60 * 1000){
 					//30分钟没操作
-					localStorage.removeItem(key);
+					localStorage.removeItem(personalInfo.accountName);
 					location.href = "login.html";
 					return;
 				}
 				//更新登录缓存
-				localStorage.setItem(key,now);
+				personalInfo.loginTimeMillisecond = now;
 			}
 			//获取uuid唯一标识改指令 以便回复获取对应的回调
 			var uuid = generateID();

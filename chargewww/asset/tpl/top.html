@@ -12,37 +12,37 @@
 		<div class="navbar-collapse" ms-class='collapse:navCollapse'>
 			<ul class="nav navbar-nav">
 				<li>
-					<a href="inout.html" class='text-center' ms-class='selected:curIndex === 0'>
+					<a ms-attr-href="inout.html?account={{accountName}}" class='text-center' ms-class='selected:curIndex === 0'>
 						<i class='glyphicon glyphicon-resize-horizontal'></i><br>
 						进出
 					</a>
 				</li>
 				<li>
-					<a href="car.html" class='text-center' ms-class='selected:curIndex === 1'>
+					<a ms-attr-href="car.html?account={{accountName}}" class='text-center' ms-class='selected:curIndex === 1'>
 						<i class='glyphicon glyphicon-bed'></i><br>
 						车辆
 					</a>
 				</li>
 				<li>
-					<a href="outcar.html" class='text-center' ms-class='selected:curIndex === 5'>
+					<a ms-attr-href="outcar.html?account={{accountName}}" class='text-center' ms-class='selected:curIndex === 5'>
 						<i class='glyphicon glyphicon-log-out'></i><br>
 						离场
 					</a>
 				</li>
 				<li>
-					<a href="money.html" class='text-center' ms-class='selected:curIndex === 2'>
+					<a ms-attr-href="money.html?account={{accountName}}" class='text-center' ms-class='selected:curIndex === 2'>
 						<i class='glyphicon glyphicon-th'></i><br>
 						财务
 					</a>
 				</li>
 				<li>
-					<a href="setting.html" class='text-center' ms-class='selected:curIndex === 3'>
+					<a ms-attr-href="setting.html?account={{accountName}}" class='text-center' ms-class='selected:curIndex === 3'>
 						<i class='glyphicon glyphicon-user'></i><br>
 						用户
 					</a>
 				</li>
 				<li>
-					<a href="exception.html" class='text-center' ms-class='selected:curIndex === 4'>
+					<a ms-attr-href="exception.html?account={{accountName}}" class='text-center' ms-class='selected:curIndex === 4'>
 						<i class='glyphicon glyphicon-warning-sign'></i><br>
 						异常
 					</a>
@@ -142,11 +142,13 @@
 			<div class="form-group mgb0">
 			    <div class="col-sm-offset-2 col-sm-10">
 			    	<div class='row'>
-			    		<div class='col-xs-6'>
-			    			<button type="button" ms-click='changePwd' class="btn btn-danger btn-lg btn-block"><i class='glyphicon glyphicon-pencil'></i> 密码修改</button>
-			    		</div>
+			    		<!-- 
 			    		<div class='col-xs-6 hide'>
 			    			<button type="button" class="btn btn-success btn-lg btn-block"><i class='glyphicon glyphicon-refresh'></i> 交接班</button>
+			    		</div>
+			    		-->
+			    		<div class='col-xs-12'>
+			    			<button type="button" ms-click='changePwd' class="btn btn-danger btn-lg btn-block"><i class='glyphicon glyphicon-pencil'></i> 密码修改</button>
 			    		</div>
 			    	</div>
 			    </div>

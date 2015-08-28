@@ -4,6 +4,39 @@ define([
 	"common/dialog/avalon.dialog",
 	"lib/datetimepicker/bootstrap-datetimepicker-module"
 	],function(websocket,mData){
+	//根据url参数获取当前登录的账号
+	var curAccount = (function(){
+		function getUrlParam(){
+			var url = location.href;
+	    	if(url.indexOf("?") === -1) return null;
+	    	var str = url.split("?")[1];
+	    	var arrs = str.split("&");
+	    	var re = {};
+	    	for(var i=0,ii;ii=arrs[i++];){
+	    		var mid = ii.split("=");
+	    		re[mid[0]] = mid[1];
+	    	}
+	    	return re;
+		}
+		var re = getUrlParam();
+		if(!re || !re.account || !localStorage.getItem(re.account)){
+			location.href = 'login.html';
+		}
+		return re.account;
+	})();
+	//根据登录账号从localStorage中获取账户信息
+	var personalInfo = (function(){
+		var re = localStorage.getItem(curAccount);
+		if(!re){
+			location.href = 'login.html';
+		}
+		try{
+			re = JSON.parse(re);
+		}catch(ex){
+			location.href = 'login.html';
+		}
+		return re;
+	})();
 	avalon.config({
 		debug : true
 	});
@@ -80,7 +113,6 @@ define([
 			vmodel.total_discount_amount = Index.getMoney(data.total_discount_amount);
 		});
 	}
-	var personalInfo = JSON.parse(localStorage.getItem("personalInfo") || '{}');
 	var body = avalon.define({
 		$id : "body",
 		curPage : null,
@@ -230,7 +262,7 @@ define([
 					}
 				},document.body,function(data){
 					if(data.code === '0' && data.msg === "ok"){
-						localStorage.removeItem("curAccount");
+						localStorage.removeItem(curAccount);
 						location.href = "login.html";
 						el.disabled = true;
 						el.text = "登出中...";
@@ -238,7 +270,7 @@ define([
 				});
 			});
 		},
-		accountName : localStorage.getItem("curAccount") || '--',
+		accountName : curAccount,
 		total_parking_space_remaining : "--",
 		total_parking_space : "--"
 	});
@@ -263,7 +295,7 @@ define([
 				type : "LOGOUT"
 			}
 		},document.body,function(data){
-			localStorage.removeItem("curAccount");
+			localStorage.removeItem(curAccount);
 			location.href = "login.html";
 		});
 	};

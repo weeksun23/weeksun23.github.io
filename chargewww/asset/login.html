@@ -113,12 +113,13 @@
 						}else if(data.msg === "ok"){
 							vmodel.errorMsg = "";
 							vmodel.successMsg = "登录成功,跳转中...";
-							localStorage.setItem("curAccount",vmodel.name);
-							localStorage.setItem("wwwcharge-login-" + vmodel.name,new Date().getTime());
 							var personalInfo = data.user_list[0];
-							personalInfo.loginTime = avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss");
-							localStorage.setItem("personalInfo",JSON.stringify(personalInfo));
-							location.href = 'inout.html';
+							var date = new Date();
+							personalInfo.loginTime = avalon.filters.date(date,"yyyy-MM-dd HH:mm:ss");
+							personalInfo.loginTimeMillisecond = date.getTime();
+							personalInfo.accountName = vmodel.name;
+							localStorage.setItem(vmodel.name,JSON.stringify(personalInfo));
+							location.href = 'inout.html?account=' + vmodel.name;
 						}
 					});
 				}

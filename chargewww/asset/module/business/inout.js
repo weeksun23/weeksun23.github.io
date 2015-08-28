@@ -726,7 +726,7 @@ require([
 					inCarType : Index.mData.getVipType(enter.enter_vip_type),
 					inCarFullImg : Index.dealPicSrc(enter.enter_car_full_picture),
 					inCarImg : Index.dealPicSrc(enter.enter_car_license_picture),
-					inIsAlwaysOpenMode : !!item.constant_open_mode
+					inIsAlwaysOpenMode : item.constant_open_mode === '1' || item.constant_open_mode === 1
 				};
 			}else{
 				target = {
@@ -735,7 +735,7 @@ require([
 					inCarType : "--",
 					inCarFullImg : Index.noCarImgSrc,
 					inCarImg : Index.noCarImgSrc,
-					inIsAlwaysOpenMode : !!item.constant_open_mode
+					inIsAlwaysOpenMode : item.constant_open_mode === '1' || item.constant_open_mode === 1
 				};
 			}
 			avalon.mix(content,target);
@@ -765,7 +765,7 @@ require([
 					outCarTime : leave.leave_time,
 					outCarType : Index.mData.getVipType(leave.leave_vip_type),
 					outCarCost : "--",
-					outIsAlwaysOpenMode : !!item.constant_open_mode
+					outIsAlwaysOpenMode : item.constant_open_mode === '1' || item.constant_open_mode === 1
 				};
 				if(leave.leave_type !== '0'){
 					model.outCarCost = leave.leave_type === '1' ? "已付费" : "异常离场";
@@ -789,7 +789,7 @@ require([
 					outCarTime : "--",
 					outCarType : "--",
 					outCarCost : "--",
-					outIsAlwaysOpenMode : !!item.constant_open_mode
+					outIsAlwaysOpenMode : item.constant_open_mode === '1' || item.constant_open_mode === 1
 				};
 			}
 			avalon.mix(content,model);
