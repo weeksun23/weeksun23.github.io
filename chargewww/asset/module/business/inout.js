@@ -702,10 +702,6 @@ require([
 					}
 					content.$fire("outIndex",content.outIndex);
 					avalon.log("有车出场了:",channelData);
-					if(channelData.enterCar === null){
-						//没匹配
-						avalon.vmodels.$carListDialog.open();
-					}
 				}else{
 					//if(hasIn) return;///////////////////////////////
 					//hasIn = true;///////////////////////////////////////
@@ -793,6 +789,13 @@ require([
 				};
 			}
 			avalon.mix(content,model);
+			//若不匹配 则自动弹出窗口
+			if(target.enterCar === null && 
+				content.outCarCost.indexOf("已付费") === -1 && 
+				content.outCarCost.indexOf("异常离场") === -1){
+				//没匹配
+				avalon.vmodels.$carListDialog.open();
+			}
 		});
 		//基本信息指令
 		Index.websocket.send({
