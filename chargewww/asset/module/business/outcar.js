@@ -48,7 +48,7 @@ require([
 				{title : "入场<br>车牌<br>图片",field : "enter_car_license_picture",align:'center',
 					formatter : function(v,r,i){
 						v = v || "";
-						return "<img data-index='"+i+"' onerror='Index.onImgError(this)' ms-click='showPic(item)' class='cpointer' src='" +
+						return "<img data-index='"+i+"' onerror='Index.onImgError(this)' ms-click='showPic(\"enter_car_full_picture\")' class='cpointer' src='" +
 							Index.dealPicSrc(v) +
 							"' height='30' alt='车牌图片' ms-widget='tooltip' data-tooltip-content='点击查看大图'>";
 					}
