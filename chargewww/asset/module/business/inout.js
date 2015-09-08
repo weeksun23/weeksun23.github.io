@@ -93,7 +93,7 @@ require([
 				control_type : control_type || "1",
 				car_license_number : carNum,
 				time : time,
-				opera_name : localStorage.getItem("curAccount"),
+				opera_name : Index.top.accountName,
 				opera_time : time
 			}
 		},area,function(data){
