@@ -22,8 +22,8 @@ define(function(){
 				//非登录页发的请求都必须进行登录验证
 				var personalInfo = Index.personalInfo;
 				var now = new Date().getTime();
-				if(now - personalInfo.loginTimeMillisecond > 30 * 60 * 1000){
-					//30分钟没操作
+				if(now - personalInfo.loginTimeMillisecond > 24 * 60 * 60 * 1000){
+					//24小时没操作
 					localStorage.removeItem(personalInfo.accountName);
 					location.href = "login.html";
 					return;
