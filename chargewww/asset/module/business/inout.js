@@ -501,6 +501,12 @@ require([
 				content.outInCarImg = Index.dealPicSrc(item.enter_car_license_picture);
 				content.outInCarTime = item.enter_time;
 				content.outCarType = Index.mData.getVipType(item.enter_vip_type);
+				//vip 会员 不用付费
+				var viptype = item.enter_vip_type;
+				if(viptype === '2' || viptype === '3'){
+					content.outCarCost = '已付费';
+					return;
+				}
 				getCharge(item.car_license_number,item.enter_time,content.outCarTime);
 			},
 			//查看大图
@@ -767,6 +773,12 @@ require([
 					model.outCarCost = leave.leave_type === '1' ? "已付费" : "异常离场";
 				}else{
 					if(target.enterCar){
+						//vip 会员 不用付费
+						var viptype = target.enterCar.enter_vip_type;
+						if(viptype === '2' || viptype === '3'){
+							model.outCarCost = '已付费';
+							return;
+						}
 						model.outCarCost = "获取中......";
 						//匹配到入场记录 马上发送GET_CHARGE指令
 						getCharge(leave.leave_car_license_number,enter.enter_time,leave.leave_time);
