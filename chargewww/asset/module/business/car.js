@@ -313,7 +313,7 @@ require([
 			if(data.code === "0" && data.msg === "ok"){
 				REAL_TIME_CAR_LIST = data.real_time_list,page
 				REAL_TIME_CAR_LIST.sort(function(a,b){
-					return b.enter_time > a.enter_time;
+					return Index.getDateSortResult(a,b,'enter_time');
 				});
 				avalon.vmodels.$carList.loadFrontPageData(REAL_TIME_CAR_LIST);
 				/*REAL_TIME_CAR_LIST = [{

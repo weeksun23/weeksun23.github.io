@@ -439,6 +439,11 @@ define([
 	    	}
 	    	ip = ip.replace(/_/g,".");
 	    	return "http://" + ip + "/" + folderName + "/" + src + "?" + (+new Date);
+	    },
+	    getDateSortResult : function(a,b,key){
+	    	var time1 = new Date(a[key].replace(/\-/g,"/"));
+	    	var time2 = new Date(b[key].replace(/\-/g,"/"));
+	    	return time2 - time1;
 	    }
 	};
 	return Index;
