@@ -4,7 +4,8 @@ function GetSelectWndInfo(){
 require.config({
 	paths: {
 		jquery : "lib/jquery/jquery-2.1.4"
-	}
+	},
+	urlArgs : "v=" + (+new Date)
 });
 require([
 	"common/index",
