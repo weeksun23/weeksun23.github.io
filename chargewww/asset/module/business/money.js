@@ -214,7 +214,7 @@ require([
 				}
 				content.operators = arr;
 				prepayment_list.sort(function(a,b){
-					return Index.getDateSortResult(a,b,'enter_time');
+					return Index.getDateSortResult(a,b,'last_prepayment_time');
 				});
 				avalon.vmodels.$carList.loadFrontPageData(prepayment_list);
 			}
