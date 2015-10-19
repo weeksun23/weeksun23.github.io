@@ -15,9 +15,19 @@
     <p>
         <textarea readonly id='insert'></textarea>
     </p>
+    <p>
+        <textarea readonly id='bean'></textarea>
+    </p>
+    <p>
+        <textarea readonly id='columns'></textarea>
+    </p>
+    <p>
+        <textarea readonly id='winfields'></textarea>
+    </p>
     <script>
         var tableName = "terminal";
-    	var fields = "terminalId,addrZoneId,terminalGroupId,name,cardType,cardCode,telPhone,Email,addr";
+    	var fields = 
+            "code,placeorderdate,nondelivery,agreeddeliverydate,ordertaxprice,ordernottaxprice,status,ordertype,supplierid,materialid,buyerid,recwarehouseid,remark";
         function getUpdateSql(fields,tableName){
             var str = fields.replace(/[^, ]+/g,function(field){
                 return field + "=#{" + field + "}";
@@ -30,8 +40,35 @@
             });
             document.getElementById("insert").value = "insert into " + tableName + "("+fields+") values("+values+")";
         }
+        function getBeanCode(fields){
+            var arr = fields.split(",");
+            var result = [];
+            for(var i=0,ii=arr.length;i<ii;i++){
+                result.push("private String " + arr[i] + ";\n");
+            }
+            document.getElementById("bean").value = result.join("");
+        }
+        function getColumns(fields){
+            var arr = fields.split(",");
+            var result = [];
+            for(var i=0,ii=arr.length;i<ii;i++){
+                result.push("{field : '"+arr[i]+"',title : '',width : 100},\n");
+            }
+            document.getElementById("columns").value = result.join("");
+        }
+        function getWinfields(fields){
+            var arr = fields.split(",");
+            var result = [];
+            for(var i=0,ii=arr.length;i<ii;i++){
+                result.push(arr[i] + " : {type : 'text',text : ''},\n" );
+            }
+            document.getElementById("winfields").value = result.join("");
+        }
         getInsertSql(fields,tableName);
         getUpdateSql(fields,tableName);
+        getBeanCode(fields);
+        getColumns(fields);
+        getWinfields(fields);
     </script>
 </body>
 </html>
