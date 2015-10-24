@@ -27,7 +27,7 @@
     <script>
         var tableName = "terminal";
     	var fields = 
-            "code,placeorderdate,nondelivery,agreeddeliverydate,ordertaxprice,ordernottaxprice,status,ordertype,supplierid,materialid,buyerid,recwarehouseid,remark";
+            "userid,account,pwd,name,phone,email,organistructid,jobid,roleid";
         function getUpdateSql(fields,tableName){
             var str = fields.replace(/[^, ]+/g,function(field){
                 return field + "=#{" + field + "}";
