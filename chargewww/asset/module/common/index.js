@@ -238,12 +238,63 @@ define([
 				close : true,
 				text : "取消"
 			}]
+		},
+		$correctCarNumOpts : {
+			title : "车位纠正",
+			buttons : [{
+				text : "确定修改",
+				theme : "primary",
+				handler : function(vmodel){
+					var a = vmodel.normal_parking_space_remaining;
+					var b = vmodel.vip_parking_space_remaining;
+					var c = vmodel.appointment_parking_space_remaining;
+					if(!/^\d+$/.test(a) || !/^\d+$/.test(b) || !/^\d+$/.test(c)){
+						return Index.alert("请输入正确的车位数");
+					}
+					websocket.send({
+						command : "SYNCHRONIZATION_PARKING_SPACE",
+						biz_content : {
+							parking_lot_seq : "",
+							total_parking_space : vmodel.total_parking_space,
+							total_normal_parking_space : vmodel.total_normal_parking_space,
+							total_vip_parking_space : vmodel.total_vip_parking_space,
+							total_parking_space_remaining : a + b + c,
+							normal_parking_space_remaining : a,
+							vip_parking_space_remaining : b,
+							appointment_parking_space_remaining : c,
+							last_synchronization_time : avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss")
+						}
+					},document.body,function(data){
+						if(data.code === '0' && data.msg === "ok"){
+							Index.alert('修改成功');
+						}else{
+							Index.alert("修改失败");
+						}
+						vmodel.close();
+					},true);
+				}
+			}],
+			afterShow : function(isInit,vmodel){
+				var data = dealParkingSpaceData.data;
+				vmodel.normal_parking_space_remaining = data.normal_parking_space_remaining;
+				vmodel.vip_parking_space_remaining = data.vip_parking_space_remaining;
+				vmodel.appointment_parking_space_remaining = data.appointment_parking_space_remaining;
+				vmodel.$total_parking_space = data.total_parking_space;
+				vmodel.$total_normal_parking_space = data.total_normal_parking_space;
+				vmodel.$total_vip_parking_space = data.total_vip_parking_space;
+			},
+			normal_parking_space_remaining : "",
+			vip_parking_space_remaining : "",
+			appointment_parking_space_remaining : "",
+			$total_parking_space : "",
+			$total_normal_parking_space : "",
+			$total_vip_parking_space : ""
 		}
 	});
 	var top = avalon.define({
 		$id : "top",
 		navCollapse : true,
-		curIndex : -1,
+		curIndex : null,
 		toggleNav : function(){
 			top.navCollapse = !top.navCollapse;
 		},
@@ -272,13 +323,18 @@ define([
 		},
 		accountName : curAccount,
 		total_parking_space_remaining : "--",
-		total_parking_space : "--"
+		total_parking_space : "--",
+		correctNum : function(){
+			avalon.vmodels.$correctCarNum.open();
+		}
 	});
-	//实时更新停车位信息
-	websocket.callbacks.PUSH_PARKING_SPACE = function(data){
+	function dealParkingSpaceData(data){
+		dealParkingSpaceData.data = data;
 		top.total_parking_space_remaining = data.total_parking_space_remaining;
 		top.total_parking_space = data.total_parking_space;
-	};
+	}
+	//实时更新停车位信息
+	websocket.callbacks.PUSH_PARKING_SPACE = dealParkingSpaceData;
 	//强制下线
 	websocket.callbacks.FORCE_OFFLINE = function(data){
 		if(personalInfo.user_role === '1'){
@@ -343,8 +399,7 @@ define([
 			websocket.send({
 				command : "CHECK_PARKING_SPACE"
 			},null,function(data){
-				top.total_parking_space_remaining = data.total_parking_space_remaining;
-				top.total_parking_space = data.total_parking_space;
+				dealParkingSpaceData(data);
 				func && func();
 			},true);
 		},

@@ -312,11 +312,11 @@ require([
 			command : "GET_REAL_TIME_CAR"
 		},document.body,function(data){
 			if(data.code === "0" && data.msg === "ok"){
-				REAL_TIME_CAR_LIST = data.real_time_list,page
+				REAL_TIME_CAR_LIST = data.real_time_list;
 				REAL_TIME_CAR_LIST.sort(function(a,b){
 					return Index.getDateSortResult(a,b,'enter_time');
 				});
-				avalon.vmodels.$carList.loadFrontPageData(REAL_TIME_CAR_LIST);
+				avalon.vmodels.$carList.loadFrontPageData(REAL_TIME_CAR_LIST,page);
 				/*REAL_TIME_CAR_LIST = [{
 					car_license_number : "sdsd",
 					enter_car_license_number : "sdrewe"

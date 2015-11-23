@@ -119,6 +119,10 @@
 							personalInfo.loginTimeMillisecond = date.getTime();
 							personalInfo.accountName = vmodel.name;
 							localStorage.setItem(vmodel.name,JSON.stringify(personalInfo));
+							if(personalInfo.user_role === '3'){
+								location.href = 'charge.html?account=' + vmodel.name;
+								return;
+							}
 							location.href = 'inout.html?account=' + vmodel.name;
 						}
 					});

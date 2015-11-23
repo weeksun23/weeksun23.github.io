@@ -10,7 +10,7 @@
 			<a class="navbar-brand" href="javascript:void(0)">岗亭收费管理系统<em>v1.1</em></a>
 	    </div>
 		<div class="navbar-collapse" ms-class='collapse:navCollapse'>
-			<ul class="nav navbar-nav">
+			<ul class="nav navbar-nav" ms-if='curIndex !== -1'>
 				<li>
 					<a ms-attr-href="inout.html?account={{accountName}}" class='text-center' ms-class='selected:curIndex === 0'>
 						<i class='glyphicon glyphicon-resize-horizontal'></i><br>
@@ -50,7 +50,7 @@
 			</ul>
 			<div class="navbar-right">
 				<ul class="nav navbar-nav">
-					<li class='mnavbar-carnuminfo'>
+					<li class='mnavbar-carnuminfo cpointer' ms-click='correctNum'>
 						<span class='empty'>
 							<span>空车位</span><br>
 							<span>{{total_parking_space_remaining}}</span>
@@ -184,6 +184,38 @@
 				<div class="col-sm-10">
 					<input type="password" class="form-control" id='pwd-confirm' ms-duplex='changed_password_confirm'>
 					<div class='text-danger' ms-visible='changed_password_confirm_mes'>{{changed_password_confirm_mes}}</div>
+				</div>
+			</div>
+		</fieldset>
+	</div>
+</div>
+<div ms-widget='dialog,$correctCarNum,$correctCarNumOpts'>
+	<div class="form-horizontal">
+		<fieldset>
+			<div class="form-group">
+				<label class="col-sm-4 control-label">总空余车位</label>
+				<div class="col-sm-8">
+					<label class="control-label">
+						{{((+normal_parking_space_remaining) + (+vip_parking_space_remaining) + (+appointment_parking_space_remaining)) || '--'}}
+					</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-4 control-label">临时空余车位数</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" ms-duplex='normal_parking_space_remaining'>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-4 control-label">免费车空余车位数</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" ms-duplex='vip_parking_space_remaining'>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-4 control-label">月租车空余车位数</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" ms-duplex='appointment_parking_space_remaining'>
 				</div>
 			</div>
 		</fieldset>

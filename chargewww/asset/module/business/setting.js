@@ -50,8 +50,7 @@ require([
 					}
 				},
 				{title : "权限",field : "channel_permission_group_name"}
-			],
-			data : []
+			]
 		},
 		parkingName : '--',
 		/******************************************************************/
@@ -80,7 +79,6 @@ require([
 						}
 					}
 				],
-				data : [],
 				edit : function(item){
 					var win = avalon.vmodels.$authWin;
 					win.title = "编辑通道权限";
@@ -321,7 +319,6 @@ require([
 					avalon.vmodels.$carManageWin.$curUser = item;
 					avalon.vmodels.$carManageWin.open();
 				},
-				data : [],
 				edit : function(item){
 					var win = avalon.vmodels.$userWin;
 					win.title = '编辑用户';
