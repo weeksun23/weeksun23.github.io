@@ -6,7 +6,8 @@ require.config({
 });
 require([
 	"common/index",
-	"common/table/avalon.table"
+	"common/table/avalon.table",
+	"common/tooltip/avalon.tooltip"
 ],function(Index){
 	Index.top.curIndex = -1;
 	var content = avalon.define({
@@ -14,7 +15,12 @@ require([
 		$carListOpts : {
 			title : "车辆记录列表",
 			columns : [
-				{title : "车牌号",field : "car_license_number"},
+				{title : "车牌号",field : "car_license_number",
+					formatter : function(v){
+						return "<a href='javascript:void(0)' ms-click='correctCarNum(item)' ms-widget='tooltip' data-tooltip-content='点击纠正车牌'>" +
+							v + "</a>";
+					}
+				},
 				{title : "车牌图片",field : "enter_car_license_picture",align:'center',
 					formatter : function(v,r,i){
 						return "<img data-index='"+i+"' onerror='Index.onImgError(this)' src='" +
@@ -30,6 +36,15 @@ require([
 					}
 				}
 			],
+			correctCarNum : function(item){
+				var $win = avalon.vmodels.$correctWin;
+				$win.carNumImg = Index.dealPicSrc(item.enter_car_license_picture);
+				$win.inCarNum = item.car_license_number;
+				$win.curChoose = item.car_license_number.charAt(0);
+				$win.correctNum = item.car_license_number.substring(1);
+				$win.$curRecord = item;
+				$win.open();
+			},
 			pay : function(item){
 				var $paywin = avalon.vmodels.$paywin;
 				$paywin.picSrc = Index.dealPicSrc(item.enter_car_full_picture);
@@ -127,16 +142,21 @@ require([
 								car_license_number : vmodel.car_license_number,
 								enter_car_card_number : "",
 								enter_time : Index.getEmptyStr(vmodel.enter_time),
+								discount_validate_value : "",
+								discount_no : "",
 								discount_name : discount_name.join("+"),
 								discount_amount : "",
-								discount_time_min : totalTime,
+								discount_time_min : totalTime + '',
 								prepayment_total_amount : vmodel.$total_amountActual,
 								actual_receivable : vmodel.$supplementary,
 								received_amount : vmodel.$supplementary,
 								payment_mode : "0",
 								pay_origin : "center",
 								last_prepayment_time : avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss"),
-								operator : Index.top.accountName
+								operator : Index.top.accountName,
+								status : 1,
+								report_status : "",
+								report_time : ""
 							}]
 						}
 					},document.body,function(data){
@@ -156,6 +176,41 @@ require([
 					ii._checked = false;
 				}
 			}
+		},
+		$correctWinOpts : {
+			title : "校正车牌",
+			$curRecord : null,
+			buttons : [{
+				text : '非机动车',theme : "danger",handler : function(vmodel){
+					doCorrectCarNum(vmodel.$curRecord.car_license_number,vmodel.$curRecord.enter_time,
+						"非机动车" + avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss"),vmodel);
+				}
+			},{
+				text : '无牌车',theme : "primary",handler : function(vmodel){
+					doCorrectCarNum(vmodel.$curRecord.car_license_number,vmodel.$curRecord.enter_time,
+						"无牌车" + avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss"),vmodel);
+				}
+			},{
+				text : "确认校正",theme : "success",handler : function(vmodel){
+					doCorrectCarNum(vmodel.$curRecord.car_license_number,vmodel.$curRecord.enter_time,
+						vmodel.curChoose + vmodel.correctNum,vmodel);
+				}
+			},{
+				text : "取消",close : true
+			}],
+			provinceData : [
+				[['京','津','粤','沪'],['浙','苏','湘','渝']],
+				[['云','豫','皖','陕'],['桂','新','青','琼']],
+				[['闽','蒙','辽','宁'],['鲁','晋','吉','冀']],
+				[['黑','甘','鄂','赣'],['贵','川','藏']]
+			],
+			curChoose : "粤",
+			doChoose : function(j){
+				avalon.vmodels.$correctWin.curChoose = j;
+			},
+			carNumImg : "image/no-car.png",
+			inCarNum : "--",
+			correctNum : ""
 		}
 	});
 	avalon.scan();
@@ -184,7 +239,7 @@ require([
 			},document.body);
 		}
 	});
-	function load(func,area){
+	function load(func,area,page){
 		Index.websocket.send({
 			command : "GET_REAL_TIME_CAR"
 		},area,function(data){
@@ -193,7 +248,7 @@ require([
 				REAL_TIME_CAR_LIST.sort(function(a,b){
 					return Index.getDateSortResult(a,b,'enter_time');
 				});
-				avalon.vmodels.$carList.loadFrontPageData(REAL_TIME_CAR_LIST);
+				avalon.vmodels.$carList.loadFrontPageData(REAL_TIME_CAR_LIST,page || 1);
 				func && func();
 			}
 		});
@@ -233,6 +288,31 @@ require([
 				$paywin.supplementary = Index.getMoney(data.supplementary);
 				$paywin.$total_amountActual = data.total_amount;
 				$paywin.$supplementary = data.supplementary;
+			}
+		});
+	}
+	//校正车牌
+	function doCorrectCarNum(oldNum,time,newNum,vmodel){
+		Index.websocket.send({
+			command : "SYNCHRONIZATION_ADJUST",
+			biz_content : {
+				is_appoint : "1",
+				origin_car_license_number : oldNum,
+				origin_time : time,
+				adjust_list_car_license_number : newNum,
+				adjust_list_recognition_confidence : "100",
+				report_status : "1",
+				report_time : "",
+				modify_time : avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss"),
+				modify_by : Index.top.accountName
+			}
+		},vmodel.widgetElement,function(data){
+			if(data.code === "0" && data.msg === "ok"){
+				Index.alert("校正成功");
+				vmodel.close();
+				load(null,document.body,avalon.vmodels.$carList.curPage);
+			}else{
+				Index.alert("校正失败，请重试。");
 			}
 		});
 	}
