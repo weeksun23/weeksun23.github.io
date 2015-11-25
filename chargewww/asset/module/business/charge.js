@@ -70,7 +70,7 @@ require([
 				var result = [];
 				for(var i=0,item;item=REAL_TIME_CAR_LIST[i++];){
 					if(
-						(car_license_number && item.enter_car_license_number.indexOf(car_license_number) === -1)
+						(car_license_number && item.car_license_number.indexOf(car_license_number) === -1)
 					){
 						continue;
 					}
@@ -135,6 +135,7 @@ require([
 							discount_name.push(ii.discount_name + "*" + ii._count);
 						}
 					}
+					var now = avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss");
 					Index.websocket.send({
 						command : "SYNCHRONIZATION_PREPAYMENT",
 						biz_content : {
@@ -145,18 +146,18 @@ require([
 								discount_validate_value : "",
 								discount_no : "",
 								discount_name : discount_name.join("+"),
-								discount_amount : "",
+								discount_amount : '0',
 								discount_time_min : totalTime + '',
 								prepayment_total_amount : vmodel.$total_amountActual,
 								actual_receivable : vmodel.$supplementary,
 								received_amount : vmodel.$supplementary,
 								payment_mode : "0",
 								pay_origin : "center",
-								last_prepayment_time : avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss"),
+								last_prepayment_time : now,
 								operator : Index.top.accountName,
-								status : 1,
-								report_status : "",
-								report_time : ""
+								status : '1',
+								report_status : "1",
+								report_time : now
 							}]
 						}
 					},document.body,function(data){

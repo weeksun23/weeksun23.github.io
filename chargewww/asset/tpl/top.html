@@ -192,6 +192,7 @@
 <div ms-widget='dialog,$correctCarNum,$correctCarNumOpts'>
 	<div class="form-horizontal">
 		<fieldset>
+			<!--
 			<div class="form-group">
 				<label class="col-sm-4 control-label">总空余车位</label>
 				<div class="col-sm-8">
@@ -199,22 +200,22 @@
 						{{((+normal_parking_space_remaining) + (+vip_parking_space_remaining) + (+appointment_parking_space_remaining)) || '--'}}
 					</label>
 				</div>
-			</div>
+			</div> -->
 			<div class="form-group">
 				<label class="col-sm-4 control-label">临时空余车位数</label>
-				<div class="col-sm-8">
+				<div class="col-sm-6">
 					<input type="text" class="form-control" ms-duplex='normal_parking_space_remaining'>
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-sm-4 control-label">免费车空余车位数</label>
-				<div class="col-sm-8">
+				<div class="col-sm-6">
 					<input type="text" class="form-control" ms-duplex='vip_parking_space_remaining'>
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-sm-4 control-label">月租车空余车位数</label>
-				<div class="col-sm-8">
+				<div class="col-sm-6">
 					<input type="text" class="form-control" ms-duplex='appointment_parking_space_remaining'>
 				</div>
 			</div>
