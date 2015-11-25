@@ -1,17 +1,23 @@
 require.config({
 	paths: {
-		jquery : "lib/jquery/jquery-2.1.4"
+		jquery : "lib/jquery/jquery-2.1.4",
+		'html5qrcode' : "lib/html5qrcode/html5-qrcode"
+	},
+	shim : {
+		html5qrcode : ['jquery']
 	},
 	urlArgs : "v=" + (+new Date)
 });
 require([
 	"common/index",
+	'business/charge.qrcode',
 	"common/table/avalon.table",
 	"common/tooltip/avalon.tooltip"
-],function(Index){
+],function(Index,QrcodeScanner){
 	Index.top.curIndex = -1;
 	var content = avalon.define({
 		$id : "content",
+		parkingName : "",
 		$carListOpts : {
 			title : "车辆记录列表",
 			columns : [
@@ -103,6 +109,7 @@ require([
 			$supplementary : '',
 			title : "付费",
 			discount_list : [],
+			qrcode_discount_list : [],
 			daelDiscountNum : function(el,d){
 				var _count = el._count + d;
 				if(_count <= 1){
@@ -117,10 +124,21 @@ require([
 					getCharge(avalon.vmodels.$paywin);
 				},100);
 			},
+			cancelQrcodeDiscount : function(i){
+				avalon.vmodels.$paywin.qrcode_discount_list.removeAt(i);
+			},
 			buttons : [{
-				text : "优惠扫描",
+				text : "优惠扫码",
 				theme : "primary",
-				handler : function(){
+				handler : function(vmodel){
+					/*vmodel.qrcode_discount_list.push({
+						discount_validate_value : "30",
+						discount_no : "ssss",
+						discount_name : "fefeff",
+						discount_amount : '0',
+						discount_time_min : '30',
+					});*/
+					avalon.vmodels.$qrcode.open();
 				}
 			},{
 				text : "确定付费",
@@ -135,6 +153,10 @@ require([
 							discount_name.push(ii.discount_name + "*" + ii._count);
 						}
 					}
+					var discount_no = [];
+					for(var i=0,ii;ii=vmodel.qrcode_discount_list[i++];){
+						discount_no.push(ii.discount_no);
+					}
 					var now = avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss");
 					Index.websocket.send({
 						command : "SYNCHRONIZATION_PREPAYMENT",
@@ -144,7 +166,7 @@ require([
 								enter_car_card_number : "",
 								enter_time : Index.getEmptyStr(vmodel.enter_time),
 								discount_validate_value : "",
-								discount_no : "",
+								discount_no : discount_no.join("+"),
 								discount_name : discount_name.join("+"),
 								discount_amount : '0',
 								discount_time_min : totalTime + '',
@@ -172,6 +194,11 @@ require([
 			}],
 			picSrc : "image/no-car.png",
 			afterShow : function(isInit,vmodel){
+				if(isInit){
+					vmodel.qrcode_discount_list.$watch("length",function(){
+						getCharge(vmodel);
+					});
+				}
 				for(var i=0,ii;ii=vmodel.discount_list[i++];){
 					ii._count = 1;
 					ii._checked = false;
@@ -212,6 +239,65 @@ require([
 			carNumImg : "image/no-car.png",
 			inCarNum : "--",
 			correctNum : ""
+		},
+		//二维码扫描窗口
+		$qrcodeOpts : {
+			title : "优惠扫码",
+			result : "",
+			error : "",
+			videoError : "",
+			isCatching : false,
+			qrCodeHtml : "",
+			$scanner : null,
+			buttons : [{
+				text : "{{isCatching ? '暂停' : '继续'}}",
+				theme : "primary",
+				handler : function(vmodel){
+					vmodel.isCatching = !vmodel.isCatching;
+				}
+			}],
+			afterShow : function(isInit,vmodel){
+				if(isInit){
+					window.QRCODE_SCAN_CALLBACK = function(flag,result){
+						if(flag === 1){
+							Index.websocket.send({
+								command : "GET_CODE_MESSAGE",
+								biz_content : {
+									qrcode : result,
+									operator : Index.top.accountName,
+									opera_time : avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss")
+								}
+							},document.body,function(data){
+								if(data.code === '0' && data.msg === "ok"){
+									vmodel.close();
+									avalon.vmodels.$paywin.qrcode_discount_list.push(data);
+								}else{
+									//解释失败
+									setTimeout(function(){
+										document.querySelector("#qrCodeIframe").contentWindow.continueScan();
+									},1000);
+								}
+							});
+						}else if(flag === -1){
+							vmodel.videoError = "抱歉，您的浏览器不支持该功能";
+						}else if(flag === 0){
+							vmodel.result = '扫描中,请稍候...';
+						}
+					};
+					vmodel.$watch("isCatching",function(newVal){
+						if(newVal){
+							vmodel.qrCodeHtml = '<iframe id="qrCodeIframe" width="100%" height="100%" frameborder="0" scrolling="no" src="charge.qrcode.html?'+(+new Date)+'"></iframe>';
+						}else{
+							vmodel.qrCodeHtml = '';
+							vmodel.result = '';
+						}
+					});
+				}
+				vmodel.isCatching = true;
+			},
+			onClose : function(vmodel){
+				vmodel.isCatching = false;
+			}
 		}
 	});
 	avalon.scan();
@@ -223,21 +309,23 @@ require([
 			request_time : avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss")
 		}
 	},document.body,function(data){
-		Index.init();
 		if(data.code === '0' && data.msg === "ok"){
-			loadInterval(function(){
-				Index.websocket.send({
-					command : "GET_DISCOUNT"
-				},document.body,function(data){
-					if(data.code === "0" && data.msg === "ok"){
-						discount_list = data.discount_list;
-						for(var i=0,ii;ii=discount_list[i++];){
-							ii._checked = false;
-							ii._count = 1;
+			content.parkingName = data.parking_lot_list[0].parking_lot_name;
+			Index.init(function(){
+				loadInterval(function(){
+					Index.websocket.send({
+						command : "GET_DISCOUNT"
+					},document.body,function(data){
+						if(data.code === "0" && data.msg === "ok"){
+							discount_list = data.discount_list;
+							for(var i=0,ii;ii=discount_list[i++];){
+								ii._checked = false;
+								ii._count = 1;
+							}
 						}
-					}
-				});
-			},document.body);
+					});
+				},document.body);
+			},document.body,data);
 		}
 	});
 	function load(func,area,page){
@@ -263,10 +351,15 @@ require([
 	function getCharge($paywin){
 		var discount_list = $paywin.discount_list;
 		var totalTime = 0;
+		//固定优惠
 		for(var i=0,ii;ii=discount_list[i++];){
 			if(ii._checked){
 				totalTime += (+ii.discount_time_min * ii._count);
 			}
+		}
+		//扫码优惠
+		for(var i=0,ii;ii=$paywin.qrcode_discount_list[i++];){
+			totalTime += (+ii.discount_time_min);
 		}
 		var enter_time = $paywin.enter_time;
 		if(totalTime > 0){

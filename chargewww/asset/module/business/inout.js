@@ -817,7 +817,7 @@ require([
 				request_time : avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss")
 			}
 		},document.body,function(data){
-			Index.init();
+			Index.init(null,null,data);
 			if(data.code === '0' && data.msg === "ok"){
 				cameraData = data.camera_list;
 				//获取优惠信息

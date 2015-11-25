@@ -265,46 +265,47 @@ require([
 		}
 	},document.body,function(data){
 		entrance_channel_list = data.entrance_channel_list;
-		getCar(1,function(){
-			var channelObj = {};
-			var users = {};
-			for(var i=0,ii;ii=REAL_TIME_CAR_LIST[i++];){
-				channelObj[ii.enter_channel] = 1;
-				users[ii.in_operate_name] = 1;
-			}
-			//通道号
-			var arr = [];
-			for(var i in channelObj){
-				avalon.each(entrance_channel_list,function(j,item){
-					if(item.entrance_channel_seq === i){
-						arr.push({
-							text : item.entrance_name,
-							value : i
-						});
-					}
-				});
-			}
-			content.channelData = arr;
-			arr = [];
-			//操作人
-			for(var i in users){
-				arr.push(i);
-			}
-			content.operUsers = arr;
-			//日期
-			var obj = Index.getRange(REAL_TIME_CAR_LIST,"enter_time");
-			if(obj){
-				content.model.sDateStr = obj.min;
-				content.model.eDateStr = obj.max;
-			}else{
-				var nowStr = avalon.filters.date(new Date(),"yyyy-MM-dd hh:mm:ss");
-				content.model.sDateStr = nowStr;
-				content.model.eDateStr = nowStr;
-			}
-			$("#inTimePicker").datetimepicker("update");
-			$("#outTimePicker").datetimepicker("update");
-			Index.init();
-		});
+		Index.init(function(){
+			getCar(1,function(){
+				var channelObj = {};
+				var users = {};
+				for(var i=0,ii;ii=REAL_TIME_CAR_LIST[i++];){
+					channelObj[ii.enter_channel] = 1;
+					users[ii.in_operate_name] = 1;
+				}
+				//通道号
+				var arr = [];
+				for(var i in channelObj){
+					avalon.each(entrance_channel_list,function(j,item){
+						if(item.entrance_channel_seq === i){
+							arr.push({
+								text : item.entrance_name,
+								value : i
+							});
+						}
+					});
+				}
+				content.channelData = arr;
+				arr = [];
+				//操作人
+				for(var i in users){
+					arr.push(i);
+				}
+				content.operUsers = arr;
+				//日期
+				var obj = Index.getRange(REAL_TIME_CAR_LIST,"enter_time");
+				if(obj){
+					content.model.sDateStr = obj.min;
+					content.model.eDateStr = obj.max;
+				}else{
+					var nowStr = avalon.filters.date(new Date(),"yyyy-MM-dd hh:mm:ss");
+					content.model.sDateStr = nowStr;
+					content.model.eDateStr = nowStr;
+				}
+				$("#inTimePicker").datetimepicker("update");
+				$("#outTimePicker").datetimepicker("update");
+			});
+		},document.body,data);
 	});
 	//获取车辆列表
 	function getCar(page,func){

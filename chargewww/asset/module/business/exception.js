@@ -86,8 +86,8 @@ require([
 						}
 					},document.body,function(data){
 						getChannelData.entrance_channel_list = data.entrance_channel_list;
+						avalon.vmodels.$correctCarNum.$parking_lot_seq = data.parking_lot_list[0].parking_lot_seq;
 						$("div.date").datetimepicker(Index.getDateTimePickerOpts({startView : 2}));
-						Index.init();
 					});
 				}
 				avalon.vmodels[listId].loadFrontPageData(list);
@@ -145,7 +145,13 @@ require([
 			headerData : headerData,
 			onSelect : function(h,c,i){
 				if(!c.$init){
-					getData(idArr[i]);
+					if(i === 0){
+						Index.init(function(){
+							getData(idArr[i]);
+						},document.body);
+					}else{
+						getData(idArr[i]);
+					}
 				}
 			}
 		},

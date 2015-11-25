@@ -254,7 +254,7 @@ define([
 					websocket.send({
 						command : "SYNCHRONIZATION_PARKING_SPACE",
 						biz_content : {
-							parking_lot_seq : "",
+							parking_lot_seq : vmodel.$parking_lot_seq,
 							total_parking_space : vmodel.total_parking_space,
 							total_normal_parking_space : vmodel.total_normal_parking_space,
 							total_vip_parking_space : vmodel.total_vip_parking_space,
@@ -271,7 +271,7 @@ define([
 							Index.alert("修改失败");
 						}
 						vmodel.close();
-					},true);
+					});
 				}
 			}],
 			afterShow : function(isInit,vmodel){
@@ -288,7 +288,8 @@ define([
 			appointment_parking_space_remaining : "",
 			$total_parking_space : "",
 			$total_normal_parking_space : "",
-			$total_vip_parking_space : ""
+			$total_vip_parking_space : "",
+			$parking_lot_seq : ''
 		}
 	});
 	var top = avalon.define({
@@ -334,7 +335,9 @@ define([
 		top.total_parking_space = data.total_parking_space;
 	}
 	//实时更新停车位信息
-	websocket.callbacks.PUSH_PARKING_SPACE = dealParkingSpaceData;
+	websocket.callbacks.PUSH_PARKING_SPACE = function(data){
+		dealParkingSpaceData(data);
+	};
 	//强制下线
 	websocket.callbacks.FORCE_OFFLINE = function(data){
 		if(personalInfo.user_role === '1'){
@@ -395,13 +398,31 @@ define([
 		isCarNum : function(num){
 			return num && num !== '--' && num.indexOf("未") === -1;
 		},
-		init : function(func){
+		init : function(func,area,data){
+			if(!area){
+				area = null;
+			}
+			if(data && data.parking_lot_list && data.parking_lot_list.length > 0){
+				avalon.vmodels.$correctCarNum.$parking_lot_seq = data.parking_lot_list[0].parking_lot_seq;
+			}
 			websocket.send({
 				command : "CHECK_PARKING_SPACE"
-			},null,function(data){
+			},area,function(data){
 				dealParkingSpaceData(data);
-				func && func();
-			},true);
+				websocket.send({
+					command : "GET_VIP_TYPE"
+				},area,function(data){
+					var re = [];
+					for(var i=0,ii;ii=data.vip_type_list[i++];){
+						re.push({
+							v : ii.vip_type,
+							t : ii.remark
+						});
+					}
+					Index.mData.vip_type = re;
+					func && func();
+				});
+			});
 		},
 		initWidget : function(id,widgetAttr,vmodel){
 			var el = document.getElementById(id);

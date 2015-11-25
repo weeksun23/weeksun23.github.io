@@ -202,17 +202,19 @@ require([
 		}
 	},document.body,function(data){
 		entrance_channel_list = data.entrance_channel_list;
-		Index.websocket.send({
-			command : "GET_CAR_OUT_RECORD"
-		},document.body,function(data){
-			car_out_list = data.car_out_list;
-			//日期
-			setTime("enter_time","In");
-			setTime("leave_time","Out");
-			content.inOperUsers = [{value : '空',text : "空"}].concat(Index.getUnsameVal(car_out_list,"enter_operator",true));
-			content.outOperUsers = [{value : '空',text : "空"}].concat(Index.getUnsameVal(car_out_list,"leave_operator",true));
-			avalon.vmodels.$carList.loadFrontPageData(car_out_list);
-		});
+		Index.init(function(){
+			Index.websocket.send({
+				command : "GET_CAR_OUT_RECORD"
+			},document.body,function(data){
+				car_out_list = data.car_out_list;
+				//日期
+				setTime("enter_time","In");
+				setTime("leave_time","Out");
+				content.inOperUsers = [{value : '空',text : "空"}].concat(Index.getUnsameVal(car_out_list,"enter_operator",true));
+				content.outOperUsers = [{value : '空',text : "空"}].concat(Index.getUnsameVal(car_out_list,"leave_operator",true));
+				avalon.vmodels.$carList.loadFrontPageData(car_out_list);
+			});
+		},document.body,data);
 	});
 	$("#sInTimePicker,#eInTimePicker,#sOutTimePicker,#eOutTimePicker").datetimepicker(Index.getDateTimePickerOpts({startView : 2}));
 });

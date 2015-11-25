@@ -797,14 +797,15 @@ require([
 			request_time : avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss")
 		}
 	},document.body,function(data){
-		Index.init();
 		if(data.code === '0' && data.msg === "ok"){
-			Entrance_channel_list = data.entrance_channel_list;
-			avalon.vmodels.$authWin.entranceData = Entrance_channel_list;
-			content.parkingName = data.parking_lot_list[0].parking_lot_name;
-			getList(function(data){
-				setUserTbData(data);
-			});
+			Index.init(function(){
+				ntrance_channel_list = data.entrance_channel_list;
+				avalon.vmodels.$authWin.entranceData = Entrance_channel_list;
+				content.parkingName = data.parking_lot_list[0].parking_lot_name;
+				getList(function(data){
+					setUserTbData(data);
+				});
+			},document.body,data);
 		}
 	});
 });

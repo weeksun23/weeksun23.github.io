@@ -221,8 +221,15 @@ require([
 			func && func();
 		});
 	}
-	loadData(function(){
-		Index.init();
+	Index.websocket.send({
+		command : "GET_PARKING_LOT_BASE_DATE",
+		biz_content : {
+			request_time : avalon.filters.date(new Date(),"yyyy-MM-dd HH:mm:ss")
+		}
+	},document.body,function(data){
+		Index.init(function(){
+			loadData();
+		},document.body,data);
 	});
 	function getCharge(vmodel){
 		var car_license_number = vmodel.model.car_license_number;

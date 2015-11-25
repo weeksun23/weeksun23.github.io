@@ -9,13 +9,24 @@
 <link href="css/base.css" rel="stylesheet">
 <link href="css/index.css" rel="stylesheet">
 <style>
-	.img-container{height: 300px;margin-bottom: 10px;}
-	.img-container img{height: 100%;margin: 0px auto;display: block;}
+	.img-container{
+		margin-bottom: 10px;
+		border-radius: 10px;text-align:center;
+		border: 5px solid rgba(39,40,34,.3);
+	}
+	.img-container img{
+		width:100%;;margin: 0px auto;max-width:350px;
+	}
 	@media (min-width: 768px){
 		.mcontent{margin-left: 0;}
-		.search-container{padding-top: 130px}
+		.search-container{padding-top: 20px}
 	}
 	.control-label.discount-item{text-align: left;}
+	.qrcode-area{
+		width:160px;
+		height: 135px;margin: 0px auto;border-radius: 10px;
+		border: 5px solid rgba(39,40,34,.3);
+	}
 </style>
 <!--[if lt IE 10]>
 <script>alert("抱歉，请使用IE10+,Google Chrome,firefox等其他高级浏览器登录本系统!");</script>
@@ -24,11 +35,13 @@
 <body ms-controller='body'>
 <div ms-include-src="'tpl/top.html'" data-include-replace="true"></div>
 <div class="mcontent container-fluid" ms-controller='content'>
+	<h2>
+		<span class='text-primary'>{{parkingName}}</span>
+	</h2>
 	<div class='row'>
 		<div class='col-sm-6 text-center'>
-			<h2>车牌大图</h2>
 			<div class='img-container'>
-				<img onerror="Index.onImgError(this);" ms-attr-src='bigPicSrc' alt='车牌大图' class='img-thumbnail'>
+				<img onerror="Index.onImgError(this);" ms-attr-src='bigPicSrc' alt='车牌大图'>
 			</div>
 		</div>
 		<div class='col-sm-6 search-container'>
@@ -55,10 +68,8 @@
 		<div class='row'>
 			<div class='col-sm-6'>
 				<div class='img-container'>
-					<img onerror="Index.onImgError(this);" ms-attr-src='picSrc' alt='车牌大图' class='img-thumbnail'>
+					<img onerror="Index.onImgError(this);" ms-attr-src='picSrc' alt='车牌大图'>
 				</div>
-			</div>
-			<div class='col-sm-6'>
 				<div class="form-horizontal">
 					<fieldset>
 						<div class="form-group">
@@ -79,6 +90,12 @@
 								<input type="text" class="form-control" ms-duplex="enter_vip_type" readonly>
 							</div>
 						</div>
+					</fieldset>
+				</div>
+			</div>
+			<div class='col-sm-6'>
+				<div class="form-horizontal">
+					<fieldset>
 						<div class="form-group">
 							<label class="col-sm-4 control-label">入场时间</label>
 							<div class="col-sm-8">
@@ -97,7 +114,7 @@
 								<label class="control-label text-danger" ms-if='!discount_list || discount_list.length === 0'>
 									暂无优惠信息
 								</label>
-								<div ms-repeat='discount_list' class='control-label discount-item'>
+								<div ms-repeat='discount_list' class='discount-item'>
 									<label class='control-label'>
 										<input ms-change='updateDiscount' type='checkbox' name='check_discount' ms-duplex-checked='el._checked'>{{el.discount_name}}
 									</label>
@@ -112,6 +129,20 @@
 							</div>
 						</div>
 						<div class="form-group">
+							<label class="col-sm-4 control-label">扫码优惠</label>
+							<div class="col-sm-8">
+								<label class="control-label text-danger" ms-if='!qrcode_discount_list || qrcode_discount_list.length === 0'>
+									暂无优惠信息
+								</label>
+								<label ms-repeat='qrcode_discount_list' class='control-label'>
+									{{el.discount_name}}
+									<button class='btn btn-default btn-xs' ms-click='cancelQrcodeDiscount($index)'>
+										<i class='glyphicon glyphicon-remove'></i>
+									</button>
+								</label>
+							</div>
+						</div>
+						<div class="form-group">
 							<label class="col-sm-4 control-label">出场需缴</label>
 							<div class="col-sm-8">
 								<label class="control-label text-danger">{{supplementary}}</label>
@@ -122,7 +153,6 @@
 			</div>
 		</div>
 	</div>
-
 	<div ms-widget="dialog,$correctWin,$correctWinOpts">
 		<form class="form-horizontal mgt10">
 			<fieldset>
@@ -160,6 +190,14 @@
 				</div>
 			</div>
 		</div>
+	</div>
+	<div ms-widget='dialog,$qrcode,$qrcodeOpts'>
+		<div class='qrcode-area' id='qrcode-area'>
+			{{qrCodeHtml | html}}
+		</div>
+		<p class='text-center' ms-visible='result'>{{result}}</p>
+		<p class='text-center' ms-visible='error'>{{error}}</p>
+		<p class='text-center' ms-visible='videoError'>{{videoError}}</p>
 	</div>
 </div>
 <script src='module/avalon.modern.js'></script>
