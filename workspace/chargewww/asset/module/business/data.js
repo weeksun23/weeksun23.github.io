@@ -12,10 +12,6 @@ define(function(){
 			{v : "8",t : "黄"},{v : "9",t : "绿"},{v : "10",t : "棕"},{v : "11",t : "粉"},
 			{v : "12",t : "紫"},{v : "13",t : "深灰"}
 		],
-		vip_type : [
-			{v : "0",t : "未知"},{v : "1",t : "临时车"},{v : "2",t : "本地VIP"},
-			{v : "3",t : "会员车/月租车"}
-		],
 		car_license_type : [
 			{v : "0",t : "未定义"},{v : "1",t : "蓝牌白色"},{v : "2",t : "黄牌黑字"},
 			{v : "3",t : "黑牌白字"},{v : "4",t : '白牌'}
@@ -47,6 +43,11 @@ define(function(){
 			{v : "2",t : "手动放行"},{v : "3",t : "异常放行"},
 			{v : "4",t : "常开放行"}
 		],
+		//以下数据服务器获取更新覆盖
+		vip_type : [
+			{v : "0",t : "未知"},{v : "1",t : "临时车"},{v : "2",t : "本地VIP"},
+			{v : "3",t : "会员车/月租车"}
+		],
 		getVipType : function(type){
 			return getText(DATA.vip_type,type);
 		},
@@ -55,6 +56,15 @@ define(function(){
 		},
 		getPassMode : function(v){
 			return getText(DATA.pass_mode,v);
+		},
+		getPassType : function(v){
+			if(v === "1"){
+				return "严模式";
+			}else if(v === '2'){
+				return "宽模式";
+			}else{
+				return '未定义';
+			}
 		}
 	};
 	return DATA;

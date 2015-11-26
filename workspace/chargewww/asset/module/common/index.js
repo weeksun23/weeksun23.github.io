@@ -454,13 +454,6 @@ define([
 				max : max
 			};
 		},
-		getPassType : function(v){
-			if(v === "1"){
-				return "严模式";
-			}else if(v === '2'){
-				return "宽模式";
-			}
-		},
 		getMoney : function(m){
 			return "￥" + (+m / 100).toFixed(2);
 		},

@@ -2,7 +2,7 @@ define(function(){
 	//var host = "13531307642.xicp.net";
 	//var host = "192.168.134.106";
 	//var host = "dwdtec.vicp.net";
-	var host = "192.168.1.104";
+	var host = "192.168.1.102";
 	var url = "ws://" + host + ":51601";
 	var socket;
 	//出错后重新连接时间

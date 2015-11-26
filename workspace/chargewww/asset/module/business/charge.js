@@ -10,10 +10,9 @@ require.config({
 });
 require([
 	"common/index",
-	'business/charge.qrcode',
 	"common/table/avalon.table",
 	"common/tooltip/avalon.tooltip"
-],function(Index,QrcodeScanner){
+],function(Index){
 	Index.top.curIndex = -1;
 	var content = avalon.define({
 		$id : "content",
@@ -107,7 +106,7 @@ require([
 			supplementary : '',
 			$total_amountActual : '',
 			$supplementary : '',
-			title : "付费",
+			title : "中央缴费",
 			discount_list : [],
 			qrcode_discount_list : [],
 			daelDiscountNum : function(el,d){
@@ -238,7 +237,11 @@ require([
 			},
 			carNumImg : "image/no-car.png",
 			inCarNum : "--",
-			correctNum : ""
+			correctNum : "",
+			correctNumBlur : function(){
+				var $win = avalon.vmodels.$correctWin;
+				$win.correctNum = $win.correctNum.toUpperCase();
+			}
 		},
 		//二维码扫描窗口
 		$qrcodeOpts : {

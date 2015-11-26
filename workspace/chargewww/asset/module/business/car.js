@@ -94,18 +94,13 @@ require([
 				{title : "放行<br>模式",field : "enter_channel",align:'center',
 					formatter : function(v,r){
 						var type = r.enter_vip_type;
-						if(type === "1"){
-							var key = "normal_car_pass_mode";
-						}else if(type === '2'){
-							key = 'vip_car_pass_mode';
-						}else if(type === '3'){
-							key = 'appointment_car_pass_mode';
-						}else if(type === '0'){
-							key = "no_plate_pass_mode";
-						}
+						var data = ['no_plate_pass_mode','normal_car_pass_mode','vip_car_pass_mode','appointment_car_pass_mode',
+						            'app_car_pass_mode','blacklist_car_pass_mode','selfdefined_car_pass_mode'];
+						var key = data[+type] || 'selfdefined_car_pass_mode';
 						for(var i=0,ii;ii=entrance_channel_list[i++];){
 							if(ii.entrance_channel_seq === v){
-								return Index.getPassType(ii[key]);
+								avalon.log(ii,key);
+								return Index.mData.getPassType(ii[key]);
 							}
 						}
 						return '--';
