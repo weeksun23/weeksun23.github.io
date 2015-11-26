@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title></title>
+<style>
+	body,html{width:100%;height:100%}
+	body{margin:0;padding:0;}
+</style>
+</head>
+<body>
+	<video width='100%' height='100%'></video>
+	<canvas id='qr-canvas' width='298' height='248' style='display:none'></canvas>
+	<script src="jsqrcode-combined.min.js"></script>
+	<script>
+		/*	
+			flag : -1不支持 1扫描成功 0扫描失败
+			parent.QRCODE_SCAN_CALLBACK = function(flag,result){
+			
+			};  
+		*/
+		window.URL = window.URL || window.webkitURL || window.mozURL || window.msURL;
+	    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+		window.onload = function(){
+			window.continueScan = function(){
+				parent.QRCODE_SCAN_CALLBACK(0);
+            	scan();
+			};
+			window.setScanTime = function(time){
+				scanTime = time;
+			};
+			var video = document.querySelector("video");
+	        var canvas = document.querySelector("#qr-canvas");
+	        var context = canvas.getContext('2d');
+	        var scanTime = 1000;
+	        function scan(){
+	        	context.drawImage(video, 0, 0, 307, 250);
+                try {
+                    qrcode.decode();
+                } catch (e) {
+                	//解释失败 继续扫描
+                    setTimeout(function(){
+                    	parent.QRCODE_SCAN_CALLBACK(0);
+                    	scan();
+                    }, scanTime);
+                }
+	        }
+	        if (navigator.getUserMedia) {
+	            navigator.getUserMedia({
+	            	audio: true, video: true
+	            }, function(stream){
+	            	video.src = (window.URL && window.URL.createObjectURL(stream)) || stream;
+	                video.onloadedmetadata = function(e) {
+						video.play();
+						scan();
+			        };
+	            }, function(error) {
+	            	parent.QRCODE_SCAN_CALLBACK(-1);
+	            });
+	        } else {
+	        	parent.QRCODE_SCAN_CALLBACK(-1);
+	        }
+	        qrcode.callback = function (result) {
+	        	parent.QRCODE_SCAN_CALLBACK(1,result);
+	        };
+		};
+	</script>
+</body>
+</html>

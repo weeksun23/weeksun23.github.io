@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title></title>
+<style>
+	body,html{width:100%;height:100%}
+	body,p{margin:0;padding:0;}
+	body{background-color: #f2f2f2}
+	.qrcodedes,.qrcoderesult{text-align: center;margin-top: 10px;}
+	.zone{padding-top: 50px;}
+	.zone .qrcode{margin: 0px auto}
+	.qrcode{border: 1px solid #d2d2d2;width: 300px;height: 250px;position: relative;background-color: #888}
+	.qrcode-border{position: absolute;background-color: #65E102}
+	.qrcode-h{width: 30px;height:8px;}
+	.qrcode-v{width: 8px;height: 30px;}
+	.qrcode-lt{top: 0;left: 0;}
+	.qrcode-rt{top: 0;right: 0;}
+	.qrcode-bl{bottom: 0;left: 0;}
+	.qrcode-br{bottom: 0;right: 0;}
+	.qrcode-scan{width: 100%;height:100%;}
+	.qrcode-scan iframe{width: 100%;height: 100%;}
+</style>
+</head>
+<body>
+	<div class='zone'>
+		<div class='qrcode'>
+			<div class='qrcode-border qrcode-h qrcode-lt'></div>
+			<div class='qrcode-border qrcode-h qrcode-rt'></div>
+			<div class='qrcode-border qrcode-h qrcode-bl'></div>
+			<div class='qrcode-border qrcode-h qrcode-br'></div>
+			<div class='qrcode-border qrcode-v qrcode-lt'></div>
+			<div class='qrcode-border qrcode-v qrcode-rt'></div>
+			<div class='qrcode-border qrcode-v qrcode-bl'></div>
+			<div class='qrcode-border qrcode-v qrcode-br'></div>
+			<div class='qrcode-scan'>
+				
+			</div>
+		</div>
+		<p class='qrcodedes'>将二维码/条码放入框内，即可自动扫描</p>
+		<p class='qrcoderesult'></p>
+	</div>
+	<script>
+		function QRCODE_SCAN_CALLBACK(flag,result){
+			var resultEl = document.querySelector(".qrcoderesult");
+			if(flag === 0){
+				resultEl.innerHTML = '扫描中,请稍候...';
+			}else if(flag === 1){
+				resultEl.innerHTML = '识别成功，结果：' + result + "<br><a href='javascript:void(0)' onclick='beginScann();'>继续扫描</a>";
+			}else if(flag === -1){
+				resultEl.innerHTML = result;
+			}
+		}
+		function beginScann(){
+			document.querySelector("#qrcodeScanner").contentWindow.continueScan();
+		}
+	</script>
+</body>
+</html>
