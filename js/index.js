@@ -42,6 +42,7 @@ require(['data'],function(data){
 			}
 		};
 	});
+	avalon.scan();
 	(function(){
 		function isNoNeedHide(target){
 			target = avalon(target);
