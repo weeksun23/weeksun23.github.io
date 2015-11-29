@@ -125,7 +125,7 @@ require([
 				$win.open();
 			},
 			showPic : function(item){
-				var list = avalon.vmodels.$carList.data;
+				var list = avalon.vmodels.$carList.data.rows;
 				var imgs = [];
 				for(var i=0,ii;ii=list[i++];){
 					imgs.push({

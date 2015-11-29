@@ -254,7 +254,7 @@ define([
 					websocket.send({
 						command : "SYNCHRONIZATION_PARKING_SPACE",
 						biz_content : {
-							parking_lot_seq : vmodel.$parking_lot_seq,
+							parking_lot_seq : Index.param.$parking_lot_seq,
 							total_parking_space : vmodel.total_parking_space,
 							total_normal_parking_space : vmodel.total_normal_parking_space,
 							total_vip_parking_space : vmodel.total_vip_parking_space,
@@ -288,8 +288,7 @@ define([
 			appointment_parking_space_remaining : "",
 			$total_parking_space : "",
 			$total_normal_parking_space : "",
-			$total_vip_parking_space : "",
-			$parking_lot_seq : ''
+			$total_vip_parking_space : ""
 		}
 	});
 	var top = avalon.define({
@@ -398,12 +397,13 @@ define([
 		isCarNum : function(num){
 			return num && num !== '--' && num.indexOf("未") === -1;
 		},
+		param : {},
 		init : function(func,area,data){
 			if(!area){
 				area = null;
 			}
 			if(data && data.parking_lot_list && data.parking_lot_list.length > 0){
-				avalon.vmodels.$correctCarNum.$parking_lot_seq = data.parking_lot_list[0].parking_lot_seq;
+				Index.param.$parking_lot_seq = data.parking_lot_list[0].parking_lot_seq;
 			}
 			websocket.send({
 				command : "CHECK_PARKING_SPACE"

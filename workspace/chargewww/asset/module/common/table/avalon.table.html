@@ -19,7 +19,7 @@
 			<tbody>
 				<tr ms-repeat-item="data[rowsKey]" ms-hover="mtable-tr-hover" ms-class='mtable-tr-selected:item._selected' ms-click='toggleSelect(item)'>
 					<td ms-repeat-el='columns' ms-css-width='el.width' ms-attr-title='{{showColumnTitle ? el.title : ""}}'>
-						<div>{{el.formatter ? el.formatter(item[el.field],item) : item[el.field] | html}}</div>
+						<div>{{el.formatter ? el.formatter(item[el.field],item,$index) : item[el.field] | html}}</div>
 					</td>
 				</tr>
 			</tbody>

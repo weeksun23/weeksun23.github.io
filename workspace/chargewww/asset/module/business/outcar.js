@@ -81,7 +81,7 @@ require([
 				{title : "出场<br>操作<br>员",field : "leave_operator",align : "center"}
 			],
 			showPic : function(key){
-				var list = avalon.vmodels.$carList.data;
+				var list = avalon.vmodels.$carList.data.rows;
 				var imgs = [];
 				for(var i=0,ii;ii=list[i++];){
 					imgs.push({
