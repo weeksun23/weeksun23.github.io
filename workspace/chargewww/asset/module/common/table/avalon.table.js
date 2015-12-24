@@ -171,6 +171,7 @@ define(["avalon","text!./avalon.table.html","css!./avalon.table.css"],function(a
 			param[vmodel.pageNoKey] = page;
 			param[vmodel.pageSizeKey] = vmodel.pageSize;
 			avalon.mix(vmodel.queryParams,param,obj);
+			vmodel.onBeforeLoad();
 			avalon.ajaxGet(vmodel.url,vmodel.queryParams,function(data,errorInfo){
 				if(!data){
 					//错误 
@@ -283,6 +284,7 @@ define(["avalon","text!./avalon.table.html","css!./avalon.table.css"],function(a
 		loadFilter : null,
 		pageNoKey : "pageNo",
 		pageSizeKey : "pageSize",
+		onBeforeLoad : avalon.noop,
 		onLoadSuccess : avalon.noop,
 		onLoadError : avalon.noop,
 		onSelect : avalon.noop

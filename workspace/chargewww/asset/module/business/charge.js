@@ -37,10 +37,11 @@ require([
 				{title : "入场时间",field : "enter_time",align:'center'},
 				{title : "操作",field : "oper",
 					formatter : function(v,r){
-						return "<a href='javascript:void(0)' ms-click='pay(item)'>付费</a>";
+						return "<a ms-class='pay-disabled:interLoading' href='javascript:void(0)' ms-click='pay(item)'>付费</a>";
 					}
 				}
 			],
+			interLoading : false,
 			correctCarNum : function(item){
 				var $win = avalon.vmodels.$correctWin;
 				$win.carNumImg = Index.dealPicSrc(item.enter_car_license_picture);
@@ -51,6 +52,8 @@ require([
 				$win.open();
 			},
 			pay : function(item){
+				if(avalon.vmodels.$carList.interLoading) return;
+				loadInterval.canLoad = false;
 				var $paywin = avalon.vmodels.$paywin;
 				$paywin.picSrc = Index.dealPicSrc(item.enter_car_full_picture);
 				$paywin.car_license_number = item.car_license_number;
@@ -125,6 +128,9 @@ require([
 			},
 			cancelQrcodeDiscount : function(i){
 				avalon.vmodels.$paywin.qrcode_discount_list.removeAt(i);
+			},
+			onClose : function(){
+				loadInterval.canLoad = true;
 			},
 			buttons : [{
 				text : "优惠扫码",
@@ -332,9 +338,11 @@ require([
 		}
 	});
 	function load(func,area,page){
+		avalon.vmodels.$carList.interLoading = true;
 		Index.websocket.send({
 			command : "GET_REAL_TIME_CAR"
 		},area,function(data){
+			avalon.vmodels.$carList.interLoading = false;
 			if(data.code === "0" && data.msg === "ok"){
 				REAL_TIME_CAR_LIST = data.real_time_list;
 				REAL_TIME_CAR_LIST.sort(function(a,b){
@@ -346,11 +354,16 @@ require([
 		});
 	}
 	function loadInterval(func,area){
+		avalon.log("=============定时刷新=============");
+		if(!loadInterval.canLoad){
+			return setTimeout(loadInterval,10000);
+		}
 		load(function(){
 			func && func();
-			setTimeout(loadInterval,60000);
+			setTimeout(loadInterval,10000);
 		},null);
 	}
+	loadInterval.canLoad = true;
 	function getCharge($paywin){
 		var discount_list = $paywin.discount_list;
 		var totalTime = 0;
