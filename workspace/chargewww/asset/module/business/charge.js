@@ -112,7 +112,7 @@ require([
 			title : "中央缴费",
 			discount_list : [],
 			qrcode_discount_list : [],
-			daelDiscountNum : function(el,d){
+			dealDiscountNum : function(el,d){
 				var _count = el._count + d;
 				if(_count <= 1){
 					_count = 1;
@@ -120,6 +120,7 @@ require([
 					_count = 3;
 				}
 				el._count = _count;
+				getCharge(avalon.vmodels.$paywin);
 			},
 			updateDiscount : function(){
 				setTimeout(function(){
