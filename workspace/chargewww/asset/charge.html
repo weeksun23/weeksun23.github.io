@@ -121,11 +121,11 @@
 									<label class='control-label'>
 										<input ms-change='updateDiscount' type='checkbox' name='check_discount' ms-duplex-checked='el._checked'>{{el.discount_name}}
 									</label>
-									<button ms-click-1='updateDiscount' class='btn btn-default btn-xs' ms-attr-disabled='!el._checked' ms-click='daelDiscountNum(el,-1)'>
+									<button class='btn btn-default btn-xs' ms-attr-disabled='!el._checked' ms-click='dealDiscountNum(el,-1)'>
 										<i class='glyphicon glyphicon-minus'></i>
 									</button>
 									<span>{{el._count}}</span>
-									<button ms-click-1='updateDiscount' class='btn btn-default btn-xs' ms-attr-disabled='!el._checked' ms-click='daelDiscountNum(el,1)'>
+									<button class='btn btn-default btn-xs' ms-attr-disabled='!el._checked' ms-click='dealDiscountNum(el,1)'>
 										<i class='glyphicon glyphicon-plus'></i>
 									</button>
 								</div>
