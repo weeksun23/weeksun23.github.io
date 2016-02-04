@@ -74,7 +74,6 @@ require([
 				{title : "入场识别<br>车牌",field : "enter_car_license_number",align:'center'},
 				{title : "车牌图片",field : "enter_car_license_picture",align:'center',
 					formatter : function(v,r,i){
-						avalon.log(r,i);
 						return "<img data-index='"+i+"' onerror='Index.onImgError(this)' ms-click='showPic(item)' class='cpointer' src='" +
 							Index.dealPicSrc(v) +
 							"' height='30' alt='车牌图片' ms-widget='tooltip' data-tooltip-content='点击查看大图'>";
@@ -100,7 +99,6 @@ require([
 						var key = data[+type] || 'selfdefined_car_pass_mode';
 						for(var i=0,ii;ii=entrance_channel_list[i++];){
 							if(ii.entrance_channel_seq === v){
-								avalon.log(ii,key);
 								return Index.mData.getPassType(ii[key]);
 							}
 						}
