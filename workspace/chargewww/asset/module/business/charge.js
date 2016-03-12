@@ -64,7 +64,6 @@ require([
 					$paywin.discount_list = discount_list;
 				}
 				$paywin.open();
-				getCharge($paywin);
 			},
 			onSelect : function(el){
 				content.bigPicSrc = Index.dealPicSrc(el.enter_car_full_picture);
@@ -209,6 +208,7 @@ require([
 					ii._count = 1;
 					ii._checked = false;
 				}
+				getCharge(vmodel);
 			}
 		},
 		$correctWinOpts : {
@@ -339,17 +339,17 @@ require([
 		}
 	});
 	function load(func,area,page){
-		avalon.vmodels.$carList.interLoading = true;
+		//avalon.vmodels.$carList.interLoading = true;
 		Index.websocket.send({
 			command : "GET_REAL_TIME_CAR"
 		},area,function(data){
-			avalon.vmodels.$carList.interLoading = false;
+			//avalon.vmodels.$carList.interLoading = false;
 			if(data.code === "0" && data.msg === "ok"){
 				REAL_TIME_CAR_LIST = data.real_time_list;
 				REAL_TIME_CAR_LIST.sort(function(a,b){
 					return Index.getDateSortResult(a,b,'enter_time');
 				});
-				avalon.vmodels.$carList.loadFrontPageData(REAL_TIME_CAR_LIST,page || 1);
+				content.search();
 				func && func();
 			}
 		});
