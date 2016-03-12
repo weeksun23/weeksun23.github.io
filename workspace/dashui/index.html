@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+<title>打水</title>
+<style>
+	body{margin: 0;padding:0;}
+	body{font-size: 16px;background-color: #f2f2f2;padding: 10px;}
+	.vbh{visibility: hidden;}
+	.mg1{margin-top: 10px;}
+	* {
+	  -webkit-box-sizing: border-box;
+	  -moz-box-sizing: border-box;
+	  box-sizing: border-box;
+	}
+	*:before,
+	*:after {
+	  -webkit-box-sizing: border-box;
+	  -moz-box-sizing: border-box;
+	  box-sizing: border-box;
+	}
+	input{padding: 10px;border:1px solid #ccc;border-radius: 5px;font-size: 16px;}
+	input[readonly]{background-color: #f2f2f2;}
+	.red{color: red;font-weight: bolder;}
+	.container{width: 330px;margin: 0px auto;}
+</style>
+<script src="http://cdn.bootcss.com/avalon.js/1.5.5/avalon.modern.shim.min.js"></script>
+</head>
+<body ms-controller="page">
+	<div class='container'>
+		<div class='mg1'>
+			上盘水位:<input type='number' ms-duplex-number="upWater">
+		</div>
+		<div class='mg1'>
+			下盘水位:<input type='number' ms-duplex-number="downWater">
+		</div>
+		<div class='mg1'>
+			盈利策略:
+			<label class='item'><input type='radio' name='type' ms-duplex-string='type' value='1'>稳赢</label>
+			<label class='item'><input type='radio' name='type' ms-duplex-string='type' value='2'>博上</label>
+			<label class='item'><input type='radio' name='type' ms-duplex-string='type' value='3'>博下</label>
+		</div>
+		<div class='mg1'>
+			上盘资金:<input type='number' ms-duplex-number="upMoney">
+		</div>
+		<div class='mg1'>
+			下盘资金:<input type='number' ms-duplex-number="downMoney" readonly>
+		</div>
+		<div class='mg1'>
+			上盘赢盈亏:<span class='red'>{{upProfit}}</span><br>下盘赢盈亏:<span  class='red'>{{downProfit}}</span>
+		</div>
+
+		<div class='mg1'>
+			上盘赢半盈亏:<span class='red'>{{upHalfProfit}}</span><br>下盘赢半盈亏:<span  class='red'>{{downHalfProfit}}</span>
+		</div>
+	</div>
+	<script>
+		var vmodel = avalon.define({
+			$id : "page",
+			upWater : 1.05,
+			downWater : 0.98,
+			upMoney : '--',
+			downMoney : "--",
+			upProfit : "--",
+			downProfit : "--",
+			upHalfProfit : "--",
+			downHalfProfit : "--",
+			type : '1'
+		});
+		function round(v,e){
+			e = e || 2;
+			var t=1;
+			for(;e>0;t*=10,e--);
+			for(;e<0;t/=10,e++);
+			return Math.round(v*t)/t;
+		}
+		function calc(v){
+			v = Number(v);
+			if(v === NaN){
+				vmodel.downWater = '--';
+				vmodel.upProfit = "--";
+				vmodel.downProfit = "--";
+				return;
+			}
+			if(vmodel.type === '1'){
+				var max = vmodel.upMoney * vmodel.upWater;
+				var min = vmodel.upMoney / vmodel.downWater;
+				vmodel.downMoney = round((max + min) / 2);
+			}else if(vmodel.type === '2'){
+				vmodel.downMoney = round(vmodel.upMoney / vmodel.downWater);
+			}else if(vmodel.type === '3'){
+				vmodel.downMoney = round(vmodel.upMoney * vmodel.upWater);
+			}
+			vmodel.upProfit = round(vmodel.upMoney * (vmodel.upWater + 1) - (vmodel.upMoney + vmodel.downMoney));
+			vmodel.downProfit = round(vmodel.downMoney * (vmodel.downWater + 1) - (vmodel.upMoney + vmodel.downMoney));
+
+			vmodel.upHalfProfit = round(vmodel.upMoney * (vmodel.upWater / 2 + 1) + vmodel.downMoney / 2 - (vmodel.upMoney + vmodel.downMoney));
+			vmodel.downHalfProfit = round(vmodel.downMoney * (vmodel.downWater / 2 + 1) + vmodel.upMoney / 2 - (vmodel.upMoney + vmodel.downMoney));
+		}
+		vmodel.$watch("upMoney",calc);
+		vmodel.$watch("type",function(){
+			calc(vmodel.upMoney);
+		});
+		vmodel.$watch("upWater",function(){
+			calc(vmodel.upMoney);
+		});
+		vmodel.$watch("downWater",function(){
+			calc(vmodel.upMoney);
+		});
+		vmodel.upMoney = 222;
+	</script>
+</body>
+</html>
