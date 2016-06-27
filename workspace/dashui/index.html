@@ -94,9 +94,10 @@
 				return;
 			}
 			if(vmodel.type === '1'){
-				var max = vmodel.upMoney * vmodel.upWater;
-				var min = vmodel.upMoney / vmodel.downWater;
-				vmodel.downMoney = round((max + min) / 2);
+				//var max = vmodel.upMoney * vmodel.upWater;
+				//var min = vmodel.upMoney / vmodel.downWater;
+				vmodel.downMoney = round((vmodel.upMoney * (1 + vmodel.upWater)) / (1 + vmodel.downWater));
+				//vmodel.downMoney = round((max + min) / 2);
 			}else if(vmodel.type === '2'){
 				vmodel.downMoney = round(vmodel.upMoney / vmodel.downWater);
 			}else if(vmodel.type === '3'){

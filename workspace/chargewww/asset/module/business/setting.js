@@ -8,6 +8,7 @@ require([
 	"common/index",
 	"common/table/avalon.table"
 ],function(Index){
+	"use strict";
 	Index.top.curIndex = 3;
 	var content = avalon.define({
 		$id : "content",
@@ -799,7 +800,7 @@ require([
 	},document.body,function(data){
 		if(data.code === '0' && data.msg === "ok"){
 			Index.init(function(){
-				ntrance_channel_list = data.entrance_channel_list;
+				Entrance_channel_list = data.entrance_channel_list;
 				avalon.vmodels.$authWin.entranceData = Entrance_channel_list;
 				content.parkingName = data.parking_lot_list[0].parking_lot_name;
 				getList(function(data){
