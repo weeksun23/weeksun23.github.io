@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+<title>flex</title>
+<style>
+	
+</style>
+</head>
+<body>
+	<textarea id='target' style="width:500px;height:500px;"></textarea>
+	<button onclick="getStr()">获取分割字符串</button>
+	<script>
+		function getStr(){
+			var value = document.querySelector("#target").value;
+			value = value.replace(/\n/g,",").replace(/,$/,"");
+			var arr = value.split(",");
+
+			console.log(arr.length);
+			console.log("'" + arr.join("','") + "'");
+		}
+		//select * from kettlefactory.device where palletsn='PK150168A0014X'
+		//select * from kettlefactory.device where sn in ()
+		//select psnlist from kettlefactory.pallet  where palletsn='PK150168A0011X'
+		//select snlist from kettlefactory.bigpack  where psn in ()
+		//
+	</script>
+	
+</body>
+</html>
