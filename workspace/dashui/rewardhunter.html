@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+<title>rewardhunter</title>
+<style>
+	body{margin: 0;padding:0;}
+	body{font-size: 16px;background-color: #f2f2f2;padding: 10px;padding-top: 0;}
+	.vbh{visibility: hidden;}
+	.mg1{margin-top: 10px;}
+	.tar{text-align: right;}
+	.w80{width: 80px;}
+	* {
+	  -webkit-box-sizing: border-box;
+	  -moz-box-sizing: border-box;
+	  box-sizing: border-box;
+	}
+	*:before,
+	*:after {
+	  -webkit-box-sizing: border-box;
+	  -moz-box-sizing: border-box;
+	  box-sizing: border-box;
+	}
+	/*box*/
+	.box{display: box;display:-webkit-box;}
+	.box-pack-center{box-pack:center;-webkit-box-pack:center;}
+	.box-flex{box-flex:1;-webkit-box-flex:1;}
+	.box-ver{box-orient: vertical;-webkit-box-orient: vertical;}
+	.box-center{box-align:center;-webkit-box-align:center;}
+	input{padding: 10px;border:1px solid #ccc;border-radius: 5px;font-size: 16px;width: 100%;}
+	input[readonly]{background-color: #f2f2f2;}
+	.red{color: red;font-weight: bolder;}
+	.btn{padding:8px 20px;font-size: 16px;}
+	table{border-collapse: collapse;width: 100%}
+	table td,table th{border: 1px solid #d2d2d2;padding:3px;text-align: center;}
+</style>
+<script src="../../js/avalon2.js"></script>
+</head>
+<body :controller="page" class='ms-controller'>
+	<div class='mg1 box box-center'>
+		<div>目标网站水位:</div>
+		<div class='box-flex'>
+			<input type='number' :duplex-number="@targetWater">
+		</div>
+	</div>
+	<div class='mg1 box box-center'>
+		<div>对打网站水位:</div>
+		<div class='box-flex'>
+			<input type='number' :duplex-number="@opppsiteWater">
+		</div>
+	</div>
+	<div class='mg1 box box-center'>
+		<div><span class='vbh'>空空空空</span>充值:</div>
+		<div class='box-flex'>
+			<input type='number' :duplex-number="@targetMoney">
+		</div>
+	</div>
+	<div class='mg1 box box-center'>
+		<div><span class='vbh'>空空空空空</span>送:</div>
+		<div class='box-flex'>
+			<input type='number' :duplex-number="@reward">
+		</div>
+	</div>
+	<div class='mg1 box box-center'>
+		<div><span class='vbh'>空空</span>提款流水:</div>
+		<div class='box-flex'>
+			<input type='number' :duplex-number="@drawwater">
+		</div>
+	</div>
+	<div class='mg1 tar'>
+		<button class='btn' :click="@calc">计算</button>
+	</div>
+	<table :visible="@data.length > 0">
+		<thead>
+			<tr>
+				<th>对打次数</th>
+				<th>总投入</th>
+				<th>总流水</th>
+				<th>亏水钱</th>
+				<th>盈亏</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr :for="($index,el) in @data">
+				<td>{{$index + 1}}</td>
+				<td>{{el.inMoney | number(2)}}</td>
+				<td>{{el.allWater | number(2)}}</td>
+				<td>{{el.waterMoney | number(2)}}</td>
+				<td>{{el.reward | number(2)}}</td>
+			</tr>
+		</tbody>
+	</table>
+	<script>
+		avalon.define({
+			targetWater : 0.96,
+			opppsiteWater : 0.99,
+			targetMoney : 2000,
+			reward : 2000,
+			drawwater : 40000,
+			$id : "page",
+			data : [],
+			calc : function(){
+				this.data = [];
+				var m = this.targetMoney + this.reward;
+				//总投入
+				var inMoney = this.targetMoney + m;
+				//总流水
+				var allWater = m;
+				//亏水钱
+				var waterMoney = m * (1 - this.targetWater);
+				//盈亏
+				var reward = this.reward - waterMoney;
+				while(1){
+					this.data.push({
+						inMoney : inMoney,
+						allWater : allWater,
+						waterMoney : waterMoney,
+						reward : reward
+					});
+					var d = allWater * (1 + this.targetWater);
+					if(allWater + d > this.drawwater){
+						var need = this.drawwater - allWater;
+						inMoney += need;
+						allWater += need;
+						waterMoney += (need * (1 - this.targetWater));
+						reward = this.reward - waterMoney;
+						this.data.push({
+							inMoney : inMoney,
+							allWater : allWater,
+							waterMoney : waterMoney,
+							reward : reward
+						});
+						return;
+					}else{
+						inMoney += d;
+						allWater += d;
+						waterMoney += (d * (1 - this.targetWater));
+						reward = this.reward - waterMoney;
+					}
+				}
+			}
+		});
+	</script>
+</body>
+</html>
